@@ -1,9 +1,8 @@
 <?php
 namespace frontend\modules\user\controllers;
 
-use frontend\controllers\BaseRestActiveController;
 
-class UserController extends BaseRestActiveController
+class UserController extends \frontend\controllers\BaseController
 {
     public $modelClass = 'common\models\User';
 
