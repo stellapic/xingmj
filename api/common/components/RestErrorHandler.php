@@ -17,7 +17,7 @@ class RestErrorHandler extends \yii\base\ErrorHandler
         http_response_code(200);
         header('Content-type: application/json');
         echo json_encode([
-            'code' => $exception->getCode() ?: 500,
+            'code' => 500,
             'message' => $exception->getMessage(),
         ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
         exit();
