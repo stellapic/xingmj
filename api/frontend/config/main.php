@@ -62,6 +62,9 @@ return [
             'enableStrictParsing' => true,
             'showScriptName' => false,
             'rules' => [
+                '/user/login' => '/site/login',
+                // '/user/signup' => '/site/signup',
+                '/user/info' => '/user/info',
                 [
                     'class' => 'yii\rest\UrlRule',
                     'controller' => ['user', 'photo', 'news'],

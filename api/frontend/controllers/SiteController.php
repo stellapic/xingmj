@@ -14,6 +14,7 @@ use frontend\models\PasswordResetRequestForm;
 use frontend\models\ResetPasswordForm;
 use frontend\models\SignupForm;
 use frontend\models\ContactForm;
+use Firebase\JWT\JWT;
 
 /**
  * Site controller
@@ -82,7 +83,7 @@ class SiteController extends Controller
      *
      * @return mixed
      */
-    public function actionLogin()
+    public function actionLoginOld()
     {
         if (!Yii::$app->user->isGuest) {
             return $this->goHome();
@@ -98,6 +99,68 @@ class SiteController extends Controller
                 'model' => $model,
             ]);
         }
+    }
+
+    /**
+     * jwt login
+     */
+    public function actionLogin()
+    {
+
+        $username = Yii::$app->request->post('username');
+        $password = Yii::$app->request->post('password');
+
+        $result = \common\models\User::find()->where(['username' => $username])->asArray()->one();
+
+        if($result)
+        {
+            if (Yii::$app->getSecurity()->validatePassword($password, $result['password_hash'])) 
+            {
+                $tokenId    = base64_encode(random_bytes(32));
+                $issuedAt   = time();
+                $notBefore  = $issuedAt;             //Adding 10 seconds
+                $expire     = $notBefore + Yii::$app->params['JWTExpiration'];            // Adding 180 Days
+                $serverName = 'xingmj';
+                $data = [
+                    'iat'  => $issuedAt,         // Issued at: time when the token was generated
+                    'jti'  => $tokenId,          // Json Token Id: an unique identifier for the token
+                    'iss'  => $serverName,       // Issuer
+                    'nbf'  => $notBefore,        // Not before
+                    'exp'  => $expire,           // Expire
+                    'data' => [                  // Data related to the signer user
+                        'id' => $result['id'],
+                        'username' => $result['username'],
+                        'avatar' => $result['avatar'],
+                        'email' => $result['email'],
+                        'intro' => $result['intro'],
+                        'follow_count' => $result['follow_count'],
+                        'fans_count' => $result['fans_count'],
+                        'thumbs_count' => $result['thumbs_count'],
+                    ]
+                ];
+
+                $jwt = JWT::encode(
+                    $data,
+                    Yii::$app->params['JWTKey'], 
+                    'HS512'
+                );
+
+                $response = [
+                    'status' => true,
+                    'message' => 'Login Success.',
+                    'era_tkn' => $jwt,
+                ];
+            }
+        }
+        else
+        {
+            $response = [
+                'status' => false,
+                'message' => 'Wrong username or password.',
+            ];
+        }
+
+        return $response;
     }
 
     /**
