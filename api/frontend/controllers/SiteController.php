@@ -145,6 +145,13 @@ class SiteController extends Controller
                     'HS512'
                 );
 
+                // invalidate other jwts
+                \common\models\User::updateAll([
+                    'jwt_value' => crc32($jwt),
+                ], [
+                    'id' => $result['id'],
+                ]);
+
                 $response = [
                     'status' => true,
                     'message' => 'Login Success.',
