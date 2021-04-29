@@ -44,7 +44,8 @@ class UploadsController extends \yii\rest\Controller
             throw new \yii\base\ErrorException(sprintf('Upload error(code:%s).', $file->error));
         }
         return [
-            'file' => Yii::$app->params['fileServer'] . $dest,
+            'path' => $dest,
+            'url' => Yii::$app->params['fileServer'] . $dest,
         ];
     }
 }
