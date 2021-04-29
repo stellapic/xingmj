@@ -38,7 +38,7 @@ class UploadsController extends \yii\rest\Controller
         if (!file_exists(Yii::$app->params['uploadPath'] . $destPath)) {
             mkdir(Yii::$app->params['uploadPath'] . $destPath, 0755, true);
         }
-        $fname = sprintf('%s.%s', (date('dHi') . random_int(100000, 999999)), $file->extension);
+        $fname = sprintf('%s.%s', (date('dHis') . random_int(100000, 999999)), $file->extension);
         $dest = sprintf('%s/%s', $destPath, $fname);
         if (!$file->saveAs(Yii::$app->params['uploadPath'] . $dest)) {
             throw new \yii\base\ErrorException(sprintf('Upload error(code:%s).', $file->error));
