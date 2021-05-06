@@ -6,7 +6,6 @@ use Firebase\JWT\JWT;
 
 class UserController extends BaseController
 {
-    public $modelClass = 'common\models\User';
 
     public function actionInfo()
     {

@@ -5,8 +5,10 @@ namespace frontend\controllers;
 use Firebase\JWT\JWT;
 use Yii;
 
-class BaseController extends \yii\rest\ActiveController
+class BaseController extends \yii\rest\Controller
 {
+    public $enableCsrfValidation = false;
+
     public function behaviors()
     {
         $behaviors = parent::behaviors();
@@ -26,14 +28,6 @@ class BaseController extends \yii\rest\ActiveController
         $behaviors['authenticator']['except'] = ['options'];
 
         return $behaviors;
-    }
-
-    public function init()
-    {
-        parent::init();
-        if ($this->modelClass === null) {
-            throw new \yii\base\InvalidConfigException('The "modelClass" property must be set.');
-        }
     }
 
 }

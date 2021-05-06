@@ -10,10 +10,7 @@ class BaseJwtController extends BaseController
     public function init()
     {
         parent::init();
-        if ($this->modelClass === null) {
-            throw new \yii\base\InvalidConfigException('The "modelClass" property must be set.');
-        }
-        Yii::$app->user = $this->checkJwt();
+        $this->checkJwt();
     }
 
     protected function checkJwt()
@@ -26,9 +23,11 @@ class BaseJwtController extends BaseController
             }
             $valid_data = JWT::decode($token, Yii::$app->params['JWTKey'], array('HS512'));
             $valid_data = $valid_data->data;
+            $frontUser = new \frontend\models\User($valid_data);
+            Yii::$app->user->switchIdentity($frontUser);
             return $valid_data;
         } catch (\Exception $e) {
-            throw new \yii\base\UserException('invalid token.');
+            throw new \yii\base\UserException('invalid token.', 403);
         }
     }
 

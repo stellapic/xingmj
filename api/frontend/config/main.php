@@ -21,6 +21,8 @@ return [
         'request' => [
             'csrfParam' => '_csrf-frontend',
             'enableCsrfValidation' => false,
+            'enableCsrfCookie' => false,
+            'enableCookieValidation' => false,
             'parsers' => [
                 'application/json' => 'yii\web\JsonParser',
             ],
@@ -49,8 +51,9 @@ return [
             },
         ],
         'user' => [
-            'identityClass' => 'common\models\User',
+            'identityClass' => 'frontend\models\User',
             'enableSession' => false,
+            'loginUrl' => null,
         ],
         'log' => [
             'traceLevel' => YII_DEBUG ? 3 : 0,
