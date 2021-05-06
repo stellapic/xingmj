@@ -35,15 +35,22 @@ return [
                     // ...
                 ],
             ],
+            'on beforeSend' => function ($event) {
+                /* @var $response Response */
+                $response = $event->sender;
+                $response->data = [
+                    'code' => $response->statusCode,
+                    'message' => $response->statusText,
+                    'data' => $response->data,
+                ];
+                $response->statusCode = 200; // always return 200
+                $response->format = \yii\web\Response::FORMAT_JSON;
+            },
         ],
         'user' => [
             'identityClass' => 'common\models\User',
             'enableAutoLogin' => true,
             'identityCookie' => ['name' => '_identity-frontend', 'httpOnly' => true],
-        ],
-        'session' => [
-            // this is the name of the session cookie used for login on the frontend
-            'name' => 'advanced-frontend',
         ],
         'log' => [
             'traceLevel' => YII_DEBUG ? 3 : 0,
@@ -63,7 +70,7 @@ return [
             'showScriptName' => false,
             'rules' => [
                 '/user/login' => '/site/login',
-                // '/user/signup' => '/site/signup',
+                '/user/signup' => '/site/signup',
                 '/user/info' => '/user/info',
                 '/uploads/photo' => '/uploads/photo',
                 [

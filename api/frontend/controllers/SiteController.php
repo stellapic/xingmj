@@ -110,54 +110,9 @@ class SiteController extends Controller
         $username = Yii::$app->request->post('username');
         $password = Yii::$app->request->post('password');
 
-        $result = \common\models\User::find()->where(['username' => $username])->asArray()->one();
-
-        if(!$result || !Yii::$app->getSecurity()->validatePassword($password, $result['password_hash'])) {
-            return [
-                'status' => false,
-                'message' => 'Wrong username or password.',
-            ];
-        }
-
-        $tokenId    = base64_encode(random_bytes(32));
-        $issuedAt   = time();
-        $notBefore  = $issuedAt;             //Adding 10 seconds
-        $expire     = $notBefore + Yii::$app->params['JWTExpiration'];            // Adding 180 Days
-        $serverName = 'xingmj';
-        $data = [
-            'iat'  => $issuedAt,         // Issued at: time when the token was generated
-            'jti'  => $tokenId,          // Json Token Id: an unique identifier for the token
-            'iss'  => $serverName,       // Issuer
-            'nbf'  => $notBefore,        // Not before
-            'exp'  => $expire,           // Expire
-            'data' => [                  // Data related to the signer user
-                'id' => $result['id'],
-                'username' => $result['username'],
-                'avatar' => $result['avatar'],
-                'email' => $result['email'],
-                'intro' => $result['intro'],
-                'follow_count' => $result['follow_count'],
-                'fans_count' => $result['fans_count'],
-                'thumbs_count' => $result['thumbs_count'],
-            ]
-        ];
-
-        $jwt = JWT::encode(
-            $data,
-            Yii::$app->params['JWTKey'], 
-            'HS512'
-        );
-
-        // invalidate other jwts
-        \common\models\User::updateAll([
-            'jwt_value' => crc32($jwt),
-        ], [
-            'id' => $result['id'],
-        ]);
+        $jwt = $this->autoLogin($username, $password);
 
         return [
-            'status' => true,
-            'message' => 'Login Success.',
             'era_tkn' => $jwt,
         ];
     }
@@ -212,7 +167,7 @@ class SiteController extends Controller
      *
      * @return mixed
      */
-    public function actionSignup()
+    public function actionSignupOld()
     {
         $model = new SignupForm();
         if ($model->load(Yii::$app->request->post()) && $model->signup()) {
@@ -223,6 +178,19 @@ class SiteController extends Controller
         return $this->render('signup', [
             'model' => $model,
         ]);
+    }
+
+    public function actionSignup()
+    {
+        $model = new SignupForm();
+        $model->setAttributes(Yii::$app->request->post());
+        if (!$model->signup()) {
+            throw new \yii\base\UserException(current($model->getFirstErrors()));
+        }
+        $jwt = $this->autoLogin($model->username, $model->password);
+        return [
+            'era_tkn' => $jwt,
+        ];
     }
 
     /**
@@ -318,5 +286,52 @@ class SiteController extends Controller
         return $this->render('resendVerificationEmail', [
             'model' => $model
         ]);
+    }
+
+    private function autoLogin($username, $password)
+    {
+        $result = \common\models\User::find()->where(['username' => $username])->asArray()->one();
+
+        if(!$result || !Yii::$app->getSecurity()->validatePassword($password, $result['password_hash'])) {
+            throw new \yii\base\UserException('Wrong username or password.');
+        }
+
+        $tokenId    = base64_encode(random_bytes(32));
+        $issuedAt   = time();
+        $notBefore  = $issuedAt;             //Adding 10 seconds
+        $expire     = $notBefore + Yii::$app->params['JWTExpiration'];            // Adding 180 Days
+        $serverName = 'xingmj';
+        $data = [
+            'iat'  => $issuedAt,         // Issued at: time when the token was generated
+            'jti'  => $tokenId,          // Json Token Id: an unique identifier for the token
+            'iss'  => $serverName,       // Issuer
+            'nbf'  => $notBefore,        // Not before
+            'exp'  => $expire,           // Expire
+            'data' => [                  // Data related to the signer user
+                'id' => $result['id'],
+                'username' => $result['username'],
+                'avatar' => $result['avatar'],
+                'email' => $result['email'],
+                'intro' => $result['intro'],
+                'follow_count' => $result['follow_count'],
+                'fans_count' => $result['fans_count'],
+                'thumbs_count' => $result['thumbs_count'],
+            ]
+        ];
+
+        $jwt = JWT::encode(
+            $data,
+            Yii::$app->params['JWTKey'], 
+            'HS512'
+        );
+
+        // invalidate other jwts
+        \common\models\User::updateAll([
+            'jwt_value' => crc32($jwt),
+        ], [
+            'id' => $result['id'],
+        ]);
+
+        return $jwt;
     }
 }

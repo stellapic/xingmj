@@ -13,8 +13,7 @@ class UserController extends BaseController
         try {
             $headers = Yii::$app->request->headers;
             $token = $headers->get('era_tkn');
-            if($token)
-            {
+            if ($token) {
                 $valid_data = JWT::decode($token, Yii::$app->params['JWTKey'], array('HS512'));
                 $valid_data = $valid_data->data;
             }
