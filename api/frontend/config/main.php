@@ -27,6 +27,7 @@ return [
         ],
         'response' => [
             'format' => \yii\web\Response::FORMAT_JSON,
+            'charset' => 'UTF-8',
             'formatters' => [
                 \yii\web\Response::FORMAT_JSON => [
                     'class' => 'yii\web\JsonResponseFormatter',
@@ -49,8 +50,7 @@ return [
         ],
         'user' => [
             'identityClass' => 'common\models\User',
-            'enableAutoLogin' => true,
-            'identityCookie' => ['name' => '_identity-frontend', 'httpOnly' => true],
+            'enableSession' => false,
         ],
         'log' => [
             'traceLevel' => YII_DEBUG ? 3 : 0,
