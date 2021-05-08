@@ -5,9 +5,11 @@ namespace frontend\controllers;
 use Firebase\JWT\JWT;
 use Yii;
 
-class BaseController extends \yii\rest\Controller
+class BaseController extends \yii\rest\ActiveController
 {
     public $enableCsrfValidation = false;
+
+    public $modelClass = 'frontend\models\User'; // 
 
     public function behaviors()
     {
@@ -28,6 +30,21 @@ class BaseController extends \yii\rest\Controller
         $behaviors['authenticator']['except'] = ['options'];
 
         return $behaviors;
+    }
+
+    public function actions()
+    {
+        $actions = parent::actions();
+
+        // 禁用 "delete" 和 "create" 动作
+        unset($actions['delete'], $actions['create']);
+        // 禁用其他动作
+        unset($actions['index'], $actions['view'], $actions['update']);
+
+        // 使用 "prepareDataProvider()" 方法自定义数据 provider 
+        // $actions['index']['prepareDataProvider'] = [$this, 'prepareDataProvider'];
+
+        return $actions;
     }
 
 }

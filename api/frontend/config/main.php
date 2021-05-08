@@ -76,6 +76,7 @@ return [
                 '/user/signup' => '/site/signup',
                 '/user/info' => '/user/info',
                 '/uploads/photo' => '/uploads/photo',
+                '/user/profile' => '/user/profile',
                 [
                     'class' => 'yii\rest\UrlRule',
                     'controller' => ['user', 'photo', 'news'],

@@ -290,7 +290,7 @@ class SiteController extends Controller
 
     private function autoLogin($username, $password)
     {
-        $result = \common\models\User::find()->where(['username' => $username])->asArray()->one();
+        $result = \common\models\User::find()->where(['username' => $username, 'status' => \common\models\User::STATUS_ACTIVE])->asArray()->one();
 
         if(!$result || !Yii::$app->getSecurity()->validatePassword($password, $result['password_hash'])) {
             throw new \yii\base\UserException('Wrong username or password.');
@@ -310,12 +310,12 @@ class SiteController extends Controller
             'data' => [                  // Data related to the signer user
                 'id' => $result['id'],
                 'username' => $result['username'],
-                'avatar' => $result['avatar'],
                 'email' => $result['email'],
-                'intro' => $result['intro'],
-                'follow_count' => $result['follow_count'],
-                'fans_count' => $result['fans_count'],
-                'thumbs_count' => $result['thumbs_count'],
+                // 'avatar' => $result['avatar'],
+                // 'intro' => $result['intro'],
+                // 'follow_count' => $result['follow_count'],
+                // 'fans_count' => $result['fans_count'],
+                // 'thumbs_count' => $result['thumbs_count'],
             ]
         ];
 
