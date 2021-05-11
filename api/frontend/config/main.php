@@ -77,6 +77,10 @@ return [
                 '/user/info' => '/user/info',
                 '/uploads/photo' => '/uploads/photo',
                 '/user/profile' => '/user/profile',
+                // photos
+                '/photos/new' => '/photo/new',
+                '/photos/mine' => '/photo/mine',
+                '/photos' => '/photo/list',
                 [
                     'class' => 'yii\rest\UrlRule',
                     'controller' => ['user', 'photo', 'news'],

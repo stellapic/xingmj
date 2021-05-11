@@ -7,10 +7,24 @@ use Yii;
 
 class BaseJwtController extends BaseController
 {
+
+    public $noAuthActions = []; // 不需要登录验证的方法放这里
+
     public function init()
     {
         parent::init();
+    }
+
+    public function beforeAction($action)
+    {
+        if (!parent::beforeAction($action)) {
+            return false;
+        }
+        if (in_array(Yii::$app->controller->action->id, $this->noAuthActions)) {
+            return true;
+        }
         $this->checkJwt();
+        return true;
     }
 
     protected function checkJwt()

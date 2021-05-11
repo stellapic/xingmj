@@ -1,19 +1,31 @@
 <?php
 namespace frontend\controllers;
 
+use common\models\Photo;
+use common\models\search\PhotoSearch;
+use Yii;
 
-class PhotoController extends BaseController
+class PhotoController extends BaseJwtController
 {
-    public $modelClass = 'common\models\User';
+    public $modelClass = 'common\models\Photo';
 
-    public function init()
+    public $noAuthActions = ['list'];
+
+    public function actionNew()
     {
-        echo 'init';exit;
+        // Photo::findAll()
     }
 
-    public function actionTest()
+    public function actionMine()
     {
-        echo 'test';
-        exit;
+        
+    }
+
+    public function actionList()
+    {
+        $queryParams = Yii::$app->request->queryParams;
+        $searchModel = new PhotoSearch();
+        $dataProvider = $searchModel->search($queryParams);
+        return $dataProvider;
     }
 }
