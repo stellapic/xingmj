@@ -1,8 +1,8 @@
 <?php
 
-namespace common\models\search;
+namespace frontend\models\search;
 
-use common\models\Photo;
+use frontend\models\Photo;
 use yii\data\ActiveDataProvider;
 
 class PhotoSearch extends Photo
@@ -15,23 +15,6 @@ class PhotoSearch extends Photo
         return [
             [['keyword', 'category', 'tag'], 'safe'],
         ];
-    }
-
-    public function fields()
-    {
-        $fields = parent::fields();
-        $fields['image'] = function ($model) {
-            return \Yii::$app->params['fileServer'] . $model->photo_url;
-        };
-
-        $fields['url'] = function ($model) {
-            $prefix = '/photos/show/';
-            return $prefix . $model->id;
-        };
-
-        unset ($fields['photo_url']);
-
-        return $fields;
     }
 
     public function search($params)

@@ -1,13 +1,12 @@
 <?php
 namespace frontend\controllers;
 
-use common\models\Photo;
-use common\models\search\PhotoSearch;
+use frontend\models\search\PhotoSearch;
 use Yii;
 
 class PhotoController extends BaseJwtController
 {
-    public $modelClass = 'common\models\Photo';
+    public $modelClass = 'frontend\models\Photo';
 
     public $noAuthActions = ['list'];
 
