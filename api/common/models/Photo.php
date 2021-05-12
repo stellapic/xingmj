@@ -20,9 +20,23 @@ class Photo extends BaseModel
     public function rules()
     {
         return [
-            [['photo_url', 'title', 'category'], 'required'],
-            [['photo_url', 'title', 'take_place', 'intro', 'graph_resolve', 'graph_position'], 'string', 'max' => 255],
+            [['image', 'title', 'category'], 'required'],
+            [['image', 'title', 'take_place', 'intro', 'graph_resolve', 'graph_position'], 'string', 'max' => 255],
+            [['take_params', 'tags', 'device', 'remote_station'], 'safe'],
         ];
+    }
+
+    public function beforeSave($insert)
+    {
+        if (!parent::beforeSave($insert)) {
+            return false;
+        }
+        // add short_id
+        if ($insert) {
+            $this->short_id = $this->getNanoId();
+            $this->creator = \Yii::$app->user->id;
+        }
+        return true;
     }
 
 }

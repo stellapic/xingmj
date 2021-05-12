@@ -80,6 +80,7 @@ return [
                 // photos
                 '/photos/new' => '/photo/new',
                 '/photos/mine' => '/photo/mine',
+                '/photos/show/<shortid:(.)+>' => '/photo/show',
                 '/photos' => '/photo/list',
                 [
                     'class' => 'yii\rest\UrlRule',
