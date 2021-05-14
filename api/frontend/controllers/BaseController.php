@@ -47,4 +47,15 @@ class BaseController extends \yii\rest\ActiveController
         return $actions;
     }
 
+    protected function getRequestedUser($username='')
+    {
+        if (!$username) {
+            $username = Yii::$app->request->get('user');
+        }
+        $frontUser = \frontend\models\User::findOne(['username' => $username]);
+        if (!$frontUser) {
+            throw new \yii\base\UserException('user not exists.');
+        }
+    }
+
 }

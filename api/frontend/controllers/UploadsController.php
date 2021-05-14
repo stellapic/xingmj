@@ -3,7 +3,7 @@ namespace frontend\controllers;
 
 use Yii;
 
-class UploadsController extends \yii\rest\Controller
+class UploadsController extends BaseJwtController
 {
 
     const ALLOWED_TYPES = [
@@ -43,9 +43,20 @@ class UploadsController extends \yii\rest\Controller
         if (!$file->saveAs(Yii::$app->params['uploadPath'] . $dest)) {
             throw new \yii\base\ErrorException(sprintf('Upload error(code:%s).', $file->error));
         }
+        // record upload logs
+        $this->recordUploadLog($dest, $file->name);
         return [
             'path' => $dest,
             'url' => Yii::$app->params['fileServer'] . $dest,
         ];
+    }
+
+    private function recordUploadLog($filePath, $fileName)
+    {
+        Yii::$app->db->createCommand()->insert('sys_uploads_log', [
+            'file_path' => $filePath,
+            'file_name' => $fileName,
+            'creator' => Yii::$app->user->id,
+        ])->execute();
     }
 }
