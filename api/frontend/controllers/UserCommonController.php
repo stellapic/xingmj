@@ -20,6 +20,9 @@ class UserCommonController extends BaseJwtController
         if ($username) {
             $user = $this->getRequestedUser($username);
         } else {
+            /**
+             * @var  \frontend\models\User $user
+             */
             $user = Yii::$app->user->identity;
         }
 
@@ -27,8 +30,6 @@ class UserCommonController extends BaseJwtController
             'avatar' => Yii::$app->request->post('avatar'),
             'intro' => Yii::$app->request->post('intro'),
         ];
-        $u = new \frontend\models\User;
-        $u->updateAttributes($attrs);
-        $user->save();
+        $user->updateAttributes($attrs);
     }
 }

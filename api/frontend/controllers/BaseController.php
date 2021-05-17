@@ -5,7 +5,7 @@ namespace frontend\controllers;
 use Firebase\JWT\JWT;
 use Yii;
 
-class BaseController extends \yii\rest\ActiveController
+class BaseController extends \yii\rest\Controller
 {
     public $enableCsrfValidation = false;
 
@@ -47,6 +47,10 @@ class BaseController extends \yii\rest\ActiveController
         return $actions;
     }
 
+    /**
+     * @param string $username username
+     * @return  \frontend\models\User
+     */
     protected function getRequestedUser($username='')
     {
         if (!$username) {
