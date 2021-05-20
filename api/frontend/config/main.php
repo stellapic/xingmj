@@ -39,6 +39,10 @@ return [
                 ],
             ],
             'on beforeSend' => function ($event) {
+                if (\Yii::$app->request->isOptions) {
+                    \Yii::$app->response->content = '';
+                    return;
+                }
                 /* @var $response Response */
                 $response = $event->sender;
                 $response->data = [

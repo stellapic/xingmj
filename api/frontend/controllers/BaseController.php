@@ -2,7 +2,7 @@
 
 namespace frontend\controllers;
 
-use Firebase\JWT\JWT;
+use common\filters\CorsCommon;
 use Yii;
 
 class BaseController extends \yii\rest\Controller
@@ -21,7 +21,8 @@ class BaseController extends \yii\rest\Controller
 
         // add CORS filter
         $behaviors['corsFilter'] = [
-            'class' => \yii\filters\Cors::class,
+            // 'class' => \yii\filters\Cors::class,
+            'class' => CorsCommon::class,
         ];
 
         // re-add authentication filter
