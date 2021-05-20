@@ -2,10 +2,10 @@
 
 namespace frontend\controllers;
 
-use Firebase\JWT\JWT;
+use common\filters\CorsCommon;
 use Yii;
 
-class BaseController extends \yii\rest\ActiveController
+class BaseController extends \yii\rest\Controller
 {
     public $enableCsrfValidation = false;
 
@@ -21,7 +21,8 @@ class BaseController extends \yii\rest\ActiveController
 
         // add CORS filter
         $behaviors['corsFilter'] = [
-            'class' => \yii\filters\Cors::class,
+            // 'class' => \yii\filters\Cors::class,
+            'class' => CorsCommon::class,
         ];
 
         // re-add authentication filter
@@ -45,6 +46,21 @@ class BaseController extends \yii\rest\ActiveController
         // $actions['index']['prepareDataProvider'] = [$this, 'prepareDataProvider'];
 
         return $actions;
+    }
+
+    /**
+     * @param string $username username
+     * @return  \frontend\models\User
+     */
+    protected function getRequestedUser($username='')
+    {
+        if (!$username) {
+            $username = Yii::$app->request->get('user');
+        }
+        $frontUser = \frontend\models\User::findOne(['username' => $username]);
+        if (!$frontUser) {
+            throw new \yii\base\UserException('user not exists.');
+        }
     }
 
 }

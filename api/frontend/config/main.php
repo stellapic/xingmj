@@ -13,9 +13,9 @@ return [
     'controllerNamespace' => 'frontend\controllers',
     'timezone' => 'Asia/Shanghai',
     'modules' => [
-        // 'user' => [
-        //     'class' => 'frontend\modules\user\Module',
-        // ],
+        'user' => [
+            'class' => 'frontend\modules\user\Module',
+        ],
     ],
     'components' => [
         'request' => [
@@ -39,6 +39,10 @@ return [
                 ],
             ],
             'on beforeSend' => function ($event) {
+                if (\Yii::$app->request->isOptions) {
+                    \Yii::$app->response->content = '';
+                    return;
+                }
                 /* @var $response Response */
                 $response = $event->sender;
                 $response->data = [
@@ -68,23 +72,29 @@ return [
             'class' => 'common\components\RestErrorHandler',
         ],
         'urlManager' => [
+            'class' => 'yii\web\UrlManager',
             'enablePrettyUrl' => true,
-            'enableStrictParsing' => true,
+            // 'enableStrictParsing' => true,
             'showScriptName' => false,
             'rules' => [
+                // general api
+                '/uploads/photo' => '/uploads/photo',
+                // common user api
                 '/user/login' => '/site/login',
                 '/user/signup' => '/site/signup',
-                '/user/info' => '/user/info',
-                '/uploads/photo' => '/uploads/photo',
-                '/user/profile' => '/user/profile',
+                '/user/info/<username:(.)+>' => '/user-common/info',
+                '/user/info' => '/user-common/info',
+                '/user/profile/<username:(.)+>' => '/user-common/profile',
+                '/user/profile' => '/user-common/profile',
                 // photos
                 '/photos/new' => '/photo/new',
                 '/photos/mine' => '/photo/mine',
+                '/photos/show/<shortid:(.)+>' => '/photo/show',
                 '/photos' => '/photo/list',
-                [
-                    'class' => 'yii\rest\UrlRule',
-                    'controller' => ['user', 'photo', 'news'],
-                ],
+                // [
+                //     'class' => 'yii\rest\UrlRule',
+                //     'controller' => ['user', 'photo', 'news'],
+                // ],
             ],
         ],
     ],

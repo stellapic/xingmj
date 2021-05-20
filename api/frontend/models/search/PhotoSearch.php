@@ -21,13 +21,13 @@ class PhotoSearch extends Photo
     {
         $query = self::find();
 
-        $query->select('id, photo_url, title, creator');
+        $query->select('short_id, image, title, creator');
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
             'pagination' => [
-                'page' => isset($params['page']) ? $params['page'] - 1 : 0,
-                'pageSize' => isset($params['pageSize']) ? $params['pageSize'] : 20,
+                'page' => isset($params['page']) ? (int)$params['page'] - 1 : 0,
+                'pageSize' => isset($params['size']) ? (int)$params['size'] : 20,
             ],
             'sort' => [
                 'defaultOrder' => [
