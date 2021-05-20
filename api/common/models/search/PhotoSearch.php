@@ -21,7 +21,7 @@ class PhotoSearch extends Photo
     {
         $fields = parent::fields();
         $fields['image'] = function ($model) {
-            return \Yii::$app->params['fileServer'] . $model->photo_url;
+            return \Yii::$app->params['fileServer'] . $model->image;
         };
 
         $fields['url'] = function ($model) {
@@ -29,7 +29,7 @@ class PhotoSearch extends Photo
             return $prefix . $model->id;
         };
 
-        unset ($fields['photo_url']);
+        unset ($fields['image']);
 
         return $fields;
     }
@@ -38,7 +38,7 @@ class PhotoSearch extends Photo
     {
         $query = self::find();
 
-        $query->select('id, photo_url, title, creator');
+        $query->select('id, image, title, creator');
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
