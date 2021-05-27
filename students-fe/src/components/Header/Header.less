@@ -9,12 +9,17 @@
 }
 .logo {
 	.myFlex();
-	width: @header-height;
 	height: @header-height;
 	padding: 5px 0px !important;
+	font-size: 14px;
+	font-weight: 600;
+	color: #fff;
 	img {
 		height: 100%;
 	}
+}
+.logo:hover {
+	opacity: 0.8;
 }
 .header-left {
 	.myFlex(flex-start);
@@ -44,6 +49,9 @@
 		height: 100%;
 		border-radius: 5px;
 	}
+}
+.login:hover {
+	transform: scale(1.1);
 }
 
 .myFlex(@justifyContent: center, @alignItems: center) {

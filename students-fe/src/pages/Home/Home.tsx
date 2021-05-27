@@ -10,15 +10,23 @@ import Carousel from '../../components/Carousel/Carousel'
 
 type statesType = {
 	students: number[],
-	dataList: Object[]
+	dataList: resultDataTypeDef[]
 }
-
+type resultDataTypeDef = {
+	image: string,
+	redirect_url: string,
+	text: string
+}
 
 class Home extends Component {
 	state: statesType = {
 		students: [1, 2, 3, 4],
 		dataList: [
-			{}
+			{
+				image: "http://139.198.19.132/202105/13144135490341.jpg",
+				redirect_url: "http://xingmj.com",
+				text: "Hello world."
+			}
 		]
 	};
 

@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { Link } from "react-router-dom";
 import "./Header.css";
 
 class Header extends Component {
@@ -11,29 +12,34 @@ class Header extends Component {
 		return (
 			<div id="header" className="row">
 				{/* logo */}
-				<div className="logo">
-					{logoUrl ? <img src={logoUrl} alt="头像" /> : <span>星美集</span>}
-				</div>
+				<Link className="logo" to="/">
+					{logoUrl ? <img src={logoUrl} alt="头像" /> : <span>LOGO</span>}
+					<span>&emsp;星美集</span>
+				</Link>
 				{/* 左侧 */}
 				<div className="col-3 header-left">
-					<div className="header-link">
+					<Link className="header-link" to="/home">
 						<span>首页</span>
-					</div>
-					<div className="header-link">
+					</Link>
+					<Link className="header-link" to="/community">
 						<span>社区</span>
-					</div>
-					<div className="header-link">
+					</Link>
+					<Link className="header-link" to="/collections">
 						<span>图集</span>
-					</div>
+					</Link>
 				</div>
 				{/* 中间站位 */}
 				<div className="col"></div>
 				<div className="col-4 header-right">
-					<div className="header-link">发布文章</div>
-					<div className="header-link">上传作品</div>
-					<div className="header-link login">
+					<Link className="header-link" to="/posting">
+						发布文章
+					</Link>
+					<Link className="header-link" to="/upload">
+						上传作品
+					</Link>
+					<Link className="header-link login" to="/login">
 						{avatarUrl ? <img src={avatarUrl} alt="头像" /> : <span>登录</span>}
-					</div>
+					</Link>
 				</div>
 			</div>
 		);

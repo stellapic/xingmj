@@ -5,10 +5,7 @@ type prosType = {
     dataList: Object[]
 }
 
-export default class Carousel extends Component {
-    props: prosType = {
-        dataList: []
-    }
+export default class Carousel extends Component<prosType> {
     render() {
         const { dataList } = this.props;
         return (
@@ -16,7 +13,7 @@ export default class Carousel extends Component {
                 <div className="carousel-inner">
                     {dataList.map((info) => {
                         return (
-                            <div></div>
+                            <div key={new Date().getTime()}></div>
                         )
                     })}
                 </div>

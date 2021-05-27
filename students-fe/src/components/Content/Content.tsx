@@ -1,7 +1,8 @@
-import React, { Component } from 'react'
+import React, { Component } from 'react';
+import { withRouter, RouteComponentProps } from "react-router-dom";
 import Home from '../../pages/Home/Home';
 
-export default class Content extends Component {
+class Content extends Component<RouteComponentProps> {
     render() {
         return (
             <div id="content">
@@ -10,3 +11,4 @@ export default class Content extends Component {
         )
     }
 }
+export default withRouter(Content)
