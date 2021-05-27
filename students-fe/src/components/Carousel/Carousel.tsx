@@ -1,8 +1,9 @@
 import React from 'react';
+import { CarouselItem } from '../../models/carousel-item.interface';
 import './Carousel.css';
 
 interface CarouselProps {
-  dataList: Object[]
+  dataList: CarouselItem[];
 }
 
 const Carousel: React.FC<CarouselProps> = (props) => {
@@ -10,7 +11,7 @@ const Carousel: React.FC<CarouselProps> = (props) => {
   return (
     <div className="my-carousel">
       <div className="carousel-inner">
-        {dataList.map((info) => {
+        {dataList.map((item: CarouselItem) => {
           return (
             <div key={new Date().getTime()}></div>
           )
