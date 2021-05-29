@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { Input } from "antd";
+import { Input, Typography } from "antd";
 import HomeCarousel from "../../components/HomeCarousel";
 
 import { CarouselItem } from "../../models/carousel-item.interface";
 import styles from "./style.less";
 
 const { Search } = Input;
+const { Title } = Typography;
 
 const defaultDataList: CarouselItem[] = [
   {
@@ -29,23 +30,22 @@ const Home: React.FC<{}> = () => {
   const [dataList, setDataList] = useState<CarouselItem[]>(defaultDataList);
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   useEffect(() => {
-    let timmer = setTimeout(() => {
-      console.log("set state");
+    let timer = setTimeout(() => {
       setDataList((preValue) => {
         return [...preValue, preValue[0]];
       });
     }, 3000);
     return () => {
-      clearTimeout(timmer);
+      clearTimeout(timer);
     };
   }, []);
   return (
-    <div id="home-page">
+    <>
       {/* 轮播图 + 搜索框 */}
       <div className={styles.homeBanner}>
         <div className={styles.bannerContent}>
-          <h1>星美集</h1>
-          <h3 style={{ marginBottom: "50px", marginTop: "20px" }}>{dataList[currentIndex].text}</h3>
+          <Title level={1}>星美集</Title>
+          <Title level={3} style={{ marginBottom: "50px", marginTop: "20px" }}>{dataList[currentIndex].text}</Title>
           {/* 搜索框 */}
           <Search
             placeholder="搜索关键词"
@@ -58,7 +58,7 @@ const Home: React.FC<{}> = () => {
         {/* 底部轮播图 */}
         <HomeCarousel indexChange={setCurrentIndex} dataList={dataList} />
       </div>
-    </div>
+    </>
   );
 };
 
