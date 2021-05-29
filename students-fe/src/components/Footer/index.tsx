@@ -1,9 +1,9 @@
 import React from 'react'
-import "./Footer.css"
+import styles from "./style.less"
 
 const Footer: React.FC<{}> = () => {
   return (
-    <div id="footer">
+    <div id={styles.footer}>
       Copyright © 1999-2021 牧夫天文
     </div>
   );

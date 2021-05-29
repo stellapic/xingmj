@@ -1,6 +1,6 @@
-import React from 'react';
+import React from "react";
 import { withRouter, RouteComponentProps } from "react-router-dom";
-import Home from '../../pages/Home/Home';
+import Home from "../../pages/Home";
 
 const Content: React.FC<RouteComponentProps> = () => {
   return (
@@ -8,5 +8,5 @@ const Content: React.FC<RouteComponentProps> = () => {
       <Home></Home>
     </div>
   );
-}
+};
 export default withRouter(Content);

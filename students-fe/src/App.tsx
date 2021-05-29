@@ -1,7 +1,8 @@
 import React, { Component, Fragment } from "react";
-import Header from "./components/Header/Header";
-import Content from "./components/Content/Content";
-import Footer from "./components/Footer/Footer";
+import Header from "./components/Header";
+import Content from "./components/Content";
+import Footer from "./components/Footer";
+import "antd/dist/antd.css"
 // import Home from "./components/Home";
 
 class App extends Component {
