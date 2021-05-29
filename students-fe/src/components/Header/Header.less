@@ -1,61 +1,61 @@
 @header-height: 50px;
 #header {
-	width: 100%;
-	height: @header-height;
-	background-color: #333;
-	padding: 0 50px;
-	box-sizing: border-box;
-	margin: 0;
+  width: 100%;
+  //   height: @header-height;
+  background-color: #333;
+  padding: 0 50px;
+  box-sizing: border-box;
+  margin: 0;
 }
 .logo {
-	.myFlex();
-	height: @header-height;
-	padding: 5px 0px !important;
-	font-size: 14px;
-	font-weight: 600;
-	color: #fff;
-	img {
-		height: 100%;
-	}
+  .myFlex();
+  height: @header-height;
+  padding: 5px 0px !important;
+  font-size: 14px;
+  font-weight: 600;
+  color: #fff;
+  img {
+    height: 100%;
+  }
 }
 .logo:hover {
-	opacity: 0.8;
+  opacity: 0.8;
 }
 .header-left {
-	.myFlex(flex-start);
+  .myFlex(flex-start);
 }
 .header-right {
-	.myFlex(flex-end);
+  .myFlex(flex-end);
 }
 .header-link {
-	.myFlex();
-	height: @header-height;
-	padding: 0 12px;
-	color: #fff;
-	font-size: 14px;
-	transition: all 0.5s;
-	cursor: pointer;
+  .myFlex();
+  height: @header-height;
+  padding: 0 12px;
+  color: #fff;
+  font-size: 14px;
+  transition: all 0.5s;
+  cursor: pointer;
 }
 .header-link:hover {
-	background-color: rgba(255, 255, 255, 0.3);
+  background-color: rgba(255, 255, 255, 0.3);
 }
 .login {
-	.myFlex();
-	width: 35px;
-	height: 35px;
-	padding: 0;
-	margin-left: 10px;
-	img {
-		height: 100%;
-		border-radius: 5px;
-	}
+  .myFlex();
+  width: 35px;
+  height: 35px;
+  padding: 0;
+  margin-left: 10px;
+  img {
+    height: 100%;
+    border-radius: 5px;
+  }
 }
 .login:hover {
-	transform: scale(1.1);
+  transform: scale(1.1);
 }
 
 .myFlex(@justifyContent: center, @alignItems: center) {
-	display: flex;
-	justify-content: @justifyContent;
-	align-items: @alignItems;
+  display: flex;
+  justify-content: @justifyContent;
+  align-items: @alignItems;
 }

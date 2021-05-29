@@ -1,23 +1,45 @@
 import React from 'react';
+import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
+import { Carousel } from 'react-responsive-carousel';
 import './Carousel.css';
 
 interface CarouselProps {
   dataList: Object[]
 }
 
-const Carousel: React.FC<CarouselProps> = (props) => {
+const MyCarousel: React.FC<CarouselProps> = (props) => {
   const { dataList } = props;
   return (
     <div className="my-carousel">
-      <div className="carousel-inner">
-        {dataList.map((info) => {
+      
+      <Carousel dynamicHeight={false} width="100%" showThumbs={false} autoPlay={true} stopOnHover={false} interval={5000} transitionTime={800} infiniteLoop={true} showStatus={false}>
+        {/* {dataList.map(eachData => {
           return (
-            <div key={new Date().getTime()}></div>
+            <a className="carousel-inner" href={eachData.redirect_url}>
+              <img src={eachData.image} />
+            </a>
           )
-        })}
-      </div>
+        })} */}
+          {/* {dataList.map((info) => {
+            return (
+              <div className="carousel-inner">
+                <img src="https://z3.ax1x.com/2021/05/28/2FsAi9.jpg" />
+              </div>
+            )
+          })} */}
+        <div className="carousel-inner">
+          
+        </div>
+        <div className="carousel-inner">
+          <img src="https://z3.ax1x.com/2021/05/28/2FsAi9.jpg" />
+        </div>
+        <div className="carousel-inner">
+          <img src="https://z3.ax1x.com/2021/05/28/2FsAi9.jpg" />
+        </div>
+      </Carousel>
     </div>
+ 
   );
 };
 
-export default Carousel;
+export default MyCarousel;

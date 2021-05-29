@@ -2,7 +2,8 @@ import React from "react";
 // import { Col, Container, Row } from "reactstrap";
 // import StudentList from "../../components/StudentList";
 // import NewStudentModal from "../../components/NewStudentModal";
-import Carousel from '../../components/Carousel/Carousel'
+import MyCarousel from '../../components/Carousel/Carousel'
+
 
 // import axios from "axios";
 
@@ -25,7 +26,8 @@ const Home: React.FC<{}> = () => {
 
 	return (
 		<div id="home-page">
-			<Carousel dataList={dataList} />
+			{/* <Carousel dataList={dataList} /> */}
+			<MyCarousel dataList={dataList}></MyCarousel>
 		</div>
 	);
 }
