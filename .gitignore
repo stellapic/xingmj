@@ -41,3 +41,5 @@ phpunit.phar
 web.config
 composer.lock
 /yii
+/node_modules
+package-lock.json
