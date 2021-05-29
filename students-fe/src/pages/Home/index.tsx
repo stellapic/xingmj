@@ -28,9 +28,6 @@ const defaultDataList: CarouselItem[] = [
 const Home: React.FC<{}> = () => {
   const [dataList, setDataList] = useState<CarouselItem[]>(defaultDataList);
   const [currentIndex, setCurrentIndex] = useState<number>(0);
-  function solveIndexChange(currentIndex: number) {
-    setCurrentIndex(currentIndex);
-  }
   useEffect(() => {
     let timmer = setTimeout(() => {
       console.log("set state");
@@ -58,9 +55,8 @@ const Home: React.FC<{}> = () => {
             style={{ width: "100%" }}
           />
         </div>
-        {/* <Search className={styles.search}></Search> */}
         {/* 底部轮播图 */}
-        <HomeCarousel indexChange={solveIndexChange} dataList={dataList} />
+        <HomeCarousel indexChange={setCurrentIndex} dataList={dataList} />
       </div>
     </div>
   );
