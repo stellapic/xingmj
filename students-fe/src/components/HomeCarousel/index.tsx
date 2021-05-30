@@ -17,7 +17,7 @@ const HomeCarousel: React.FC<HomeCarouselProps> = (props) => {
   const children = dataList.map((item: CarouselItem) => {
     return (
       <a target="blank" className={styles.carouselInner} href={item.redirect_url} key={item.image}>
-        <Image src={item.image} alt={item.text} preview={false} width={'100%'} />
+        <Image src={item.image} preview={false} width={'100%'} />
       </a>
     );
   });

@@ -3,33 +3,20 @@ import { Input, Typography } from "antd";
 import HomeCarousel from "../../components/HomeCarousel";
 
 import { CarouselItem } from "../../models/carousel-item.interface";
+import { apiListHomeSlides } from '../../request/api';
+
 import styles from "./style.less";
 
 const { Search } = Input;
 const { Title } = Typography;
 
-const defaultDataList: CarouselItem[] = [
-  {
-    image: "https://z3.ax1x.com/2021/05/28/2FsAi9.jpg",
-    redirect_url: "http://xingmj.com",
-    text: "Hello world0.",
-  },
-  {
-    image: "https://z3.ax1x.com/2021/05/28/2FsAi9.jpg",
-    redirect_url: "http://xingmj.com",
-    text: "Hello world1.",
-  },
-  {
-    image: "https://z3.ax1x.com/2021/05/28/2FsAi9.jpg",
-    redirect_url: "http://xingmj.com",
-    text: "Hello world2.",
-  },
-];
-
 const Home: React.FC<{}> = () => {
-  const [dataList, setDataList] = useState<CarouselItem[]>(defaultDataList);
+  const [dataList, setDataList] = useState<CarouselItem[]>([]);
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   useEffect(() => {
+    apiListHomeSlides().then((res) => {
+      setDataList(res.data);
+    });
     let timer = setTimeout(() => {
       setDataList((preValue) => {
         return [...preValue, preValue[0]];
@@ -39,6 +26,11 @@ const Home: React.FC<{}> = () => {
       clearTimeout(timer);
     };
   }, []);
+
+  if (!dataList || dataList.length === 0) {
+    return null;
+  }
+
   return (
     <>
       {/* 轮播图 + 搜索框 */}
