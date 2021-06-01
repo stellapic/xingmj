@@ -3,7 +3,7 @@ import { Input, Typography } from "antd";
 import HomeCarousel from "../../components/HomeCarousel";
 
 import { CarouselItem } from "../../models/carousel-item.interface";
-import { apiListHomeSlides } from '../../request/api';
+import { apiListHomeSlides } from "../../request/api";
 
 import styles from "./style.less";
 
@@ -17,14 +17,6 @@ const Home: React.FC<{}> = () => {
     apiListHomeSlides().then((res) => {
       setDataList(res.data);
     });
-    let timer = setTimeout(() => {
-      setDataList((preValue) => {
-        return [...preValue, preValue[0]];
-      });
-    }, 3000);
-    return () => {
-      clearTimeout(timer);
-    };
   }, []);
 
   if (!dataList || dataList.length === 0) {
@@ -33,23 +25,32 @@ const Home: React.FC<{}> = () => {
 
   return (
     <>
-      {/* 轮播图 + 搜索框 */}
+      {/* 顶部轮播图模块 */}
       <div className={styles.homeBanner}>
+        {/* 搜索框 */}
         <div className={styles.bannerContent}>
-          <Title level={1}>星美集</Title>
-          <Title level={3} style={{ marginBottom: "50px", marginTop: "20px" }}>{dataList[currentIndex].text}</Title>
+          {/* 主标题 */}
+          <Title level={1} style={{ color: "#fff" }}>
+            星美集
+          </Title>
+          {/* 次级标题 */}
+          <Title level={3} style={{ marginBottom: "50px", marginTop: "20px", color: "#fff" }}>
+            {dataList[currentIndex].text}
+          </Title>
           {/* 搜索框 */}
           <Search
             placeholder="搜索关键词"
             size="large"
             allowClear
             enterButton="搜索"
-            style={{ width: "100%" }}
+            style={{ width: "80%" }}
           />
         </div>
         {/* 底部轮播图 */}
         <HomeCarousel indexChange={setCurrentIndex} dataList={dataList} />
       </div>
+      {/* 页面主体内容 */}
+      <div className="mainContent"></div>
     </>
   );
 };
