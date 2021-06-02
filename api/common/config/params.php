@@ -7,7 +7,7 @@ return [
     'user.passwordResetTokenExpire' => 3600,
     'user.passwordMinLength' => 6,
     // file uploads
-    'maxUploadImageSizeMb' => 5,
+    'maxUploadImageSizeMb' => 20,
     'uploadPath' => '/data/resources',
     'fileServer' => 'http://139.198.19.132',
 ];
