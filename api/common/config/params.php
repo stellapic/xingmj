@@ -8,6 +8,6 @@ return [
     'user.passwordMinLength' => 6,
     // file uploads
     'maxUploadImageSizeMb' => 5,
-    'uploadPath' => '/data/resources/uploads',
+    'uploadPath' => '/data/resources',
     'fileServer' => 'http://139.198.19.132',
 ];
