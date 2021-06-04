@@ -1,6 +1,7 @@
 <?php
 namespace frontend\models;
 
+use common\enums\ThumbnailEnum;
 use common\helpers\ImageHelper;
 
 class Photo extends \common\models\Photo
@@ -10,7 +11,8 @@ class Photo extends \common\models\Photo
     {
         $fields = parent::fields();
         $fields['image'] = function ($model) {
-            return \Yii::$app->params['fileServer'] . ImageHelper::convertToThumbnailPath($model->image);
+            $thumbnailPath = $model->image_info[ThumbnailEnum::MEDIUM]['path'] ?? ImageHelper::convertToThumbnailPath($model->image);
+            return \Yii::$app->params['fileServer'] . $thumbnailPath;
         };
 
         $fields['id'] = function ($model) {
@@ -28,10 +30,10 @@ class Photo extends \common\models\Photo
         }
 
         $fields['width'] = function ($model) {
-            return 300;
+            return $model->image_info[ThumbnailEnum::MEDIUM]['width'] ?? 300;
         };
         $fields['height'] = function ($model) {
-            return 300;
+            return $model->image_info[ThumbnailEnum::MEDIUM]['height'] ?? 300;
         };
 
         // remove some fields

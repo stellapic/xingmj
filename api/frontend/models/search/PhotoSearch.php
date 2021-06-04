@@ -21,7 +21,7 @@ class PhotoSearch extends Photo
     {
         $query = self::find();
 
-        $query->select('short_id, image, title, creator');
+        $query->select('short_id, image, title, creator, image_info');
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
