@@ -21,7 +21,7 @@ class ThumbnailJob extends \yii\base\BaseObject implements \yii\queue\RetryableJ
         $sourcePath = \Yii::$app->params['uploadPath'] . $this->photo_path;
         $thumbnailPath = ImageHelper::convertToThumbnailPath($this->photo_path, $spec);
         $absoluteThumbnailPath = \Yii::$app->params['uploadPath'] . '/thumbnail/' . $thumbnailPath;
-        $command = "/usr/bin/gm convert {$sourcePath} -scale \"300x300>\" {$absoluteThumbnailPath}";
+        $command = "/usr/bin/gm convert {$sourcePath} -scale \"300x>\" {$absoluteThumbnailPath}";
         system($command, $return_var);
         if (!file_exists($absoluteThumbnailPath)) {
             throw new \common\base\BaseException("thumbnail file not exists, try again later.");
