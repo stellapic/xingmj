@@ -91,7 +91,7 @@ if not (img_width and img_height) then
     lua_log(scale_type.. ' is not match!',ngx.ERR)
     ngx.exit(404)
 else
-    img_size = img_width..'x'..img_height
+    img_size = img_width..'x' -- ..'x'..img_height
     lua_log(uri..' is match!')
     local img_original_uri = string.gsub(uri, cur_uri_reg, '')
     lua_log('img_original_uri_old===' .. uri)
