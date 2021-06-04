@@ -37,7 +37,7 @@ class Photo extends \common\models\Photo
         };
 
         // remove some fields
-        unset ($fields['short_id'], $fields['deleted'], $fields['create_at'], $fields['update_at']);
+        unset ($fields['short_id'], $fields['image_info'], $fields['deleted'], $fields['create_at'], $fields['update_at']);
 
         return $fields;
     }

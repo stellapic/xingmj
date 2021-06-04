@@ -30,11 +30,13 @@ class ThumbnailJob extends \yii\base\BaseObject implements \yii\queue\RetryableJ
         $info = getimagesize($absoluteThumbnailPath);
         list($width, $height) = $info;
         $photo = Photo::findOne($this->photo_id);
-        $photo->image_info[$spec] = [
+        $imageInfo = $photo->image_info;
+        $imageInfo[$spec] = [
             'path' => $thumbnailPath,
             'width' => $width,
             'height' => $height,
         ];
+        $photo->image_info = $imageInfo;
         $photo->save(true, ['image_info']);
     }
 
