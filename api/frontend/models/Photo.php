@@ -1,6 +1,8 @@
 <?php
 namespace frontend\models;
 
+use common\helpers\ImageHelper;
+
 class Photo extends \common\models\Photo
 {
 
@@ -8,7 +10,7 @@ class Photo extends \common\models\Photo
     {
         $fields = parent::fields();
         $fields['image'] = function ($model) {
-            return \Yii::$app->params['fileServer'] . $model->image;
+            return \Yii::$app->params['fileServer'] . ImageHelper::convertToThumbnailPath($model->image);
         };
 
         $fields['id'] = function ($model) {

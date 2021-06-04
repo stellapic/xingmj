@@ -29,6 +29,11 @@ class PhotoController extends BaseJwtController
         if (!$photo->save()) {
             throw new \yii\base\UserException(Yii::$app->debris->analyErr($photo->getFirstErrors()));
         }
+        // auto resize
+        Yii::$app->queue->push(new \common\queues\ThumbnailJob([
+            'photo_id' => $photo->id,
+            'photo_path' => $photo->image,
+        ]));        
         return [
             'shortid' => $photo->short_id,
         ];
