@@ -90,6 +90,7 @@ return [
                 '/photos/new' => '/photo/new',
                 '/photos/mine' => '/photo/mine',
                 '/photos/show/<shortid:(.)+>' => '/photo/show',
+                '/photos/u/<username:(.)+>' => '/photo/user-works',
                 '/photos' => '/photo/list',
                 // [
                 //     'class' => 'yii\rest\UrlRule',
