@@ -6,8 +6,8 @@ use common\helpers\ImageHelper;
 use common\models\Photo;
 
 /**
- * 自动生成缩略图(w=300)
- * command: /usr/bin/gm convert {source} -scale "1200x1200>" {target}
+ * 自动生成缩略图(w=600)
+ * command: /usr/bin/gm convert {source} -scale "1200x>" {target}
  * 
  */
 class ThumbnailJob extends \yii\base\BaseObject implements \yii\queue\RetryableJobInterface
@@ -21,7 +21,7 @@ class ThumbnailJob extends \yii\base\BaseObject implements \yii\queue\RetryableJ
         $sourcePath = \Yii::$app->params['uploadPath'] . $this->photo_path;
         $thumbnailPath = ImageHelper::convertToThumbnailPath($this->photo_path, $spec);
         $absoluteThumbnailPath = \Yii::$app->params['uploadPath'] . '/thumbnail/' . $thumbnailPath;
-        $command = "/usr/bin/gm convert {$sourcePath} -scale \"300x>\" {$absoluteThumbnailPath}";
+        $command = "/usr/bin/gm convert {$sourcePath} -scale \"600x>\" {$absoluteThumbnailPath}";
         system($command, $return_var);
         if (!file_exists($absoluteThumbnailPath)) {
             throw new \common\base\BaseException("thumbnail file not exists, try again later.");
