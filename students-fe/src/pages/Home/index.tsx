@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { Input, Typography } from "antd";
+import { Input, Typography, Card } from "antd";
 import HomeCarousel from "../../components/HomeCarousel";
+import ImageCollection from "../../components/ImageCollection";
 
 import { CarouselItem } from "../../models/carousel-item.interface";
 import { apiListHomeSlides } from "../../request/api";
@@ -50,7 +51,9 @@ const Home: React.FC<{}> = () => {
         <HomeCarousel indexChange={setCurrentIndex} dataList={dataList} />
       </div>
       {/* 页面主体内容 */}
-      <div className="mainContent"></div>
+      <Card className="mainContent">
+        <ImageCollection />
+      </Card>
     </>
   );
 };
