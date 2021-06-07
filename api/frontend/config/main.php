@@ -80,8 +80,8 @@ return [
                 // general api
                 '/uploads/photo' => '/uploads/photo',
                 // common user api
-                '/user/login' => '/site/login',
-                '/user/signup' => '/site/signup',
+                '/user/login' => '/user-common/login',
+                '/user/signup' => '/user-common/signup',
                 '/user/info/<username:(.)+>' => '/user-common/info',
                 '/user/info' => '/user-common/info',
                 '/user/profile/<username:(.)+>' => '/user-common/profile',
@@ -90,6 +90,7 @@ return [
                 '/photos/new' => '/photo/new',
                 '/photos/mine' => '/photo/mine',
                 '/photos/show/<shortid:(.)+>' => '/photo/show',
+                '/photos/u/<username:(.)+>' => '/photo/user-works',
                 '/photos' => '/photo/list',
                 // [
                 //     'class' => 'yii\rest\UrlRule',

@@ -56,6 +56,8 @@
     "react-dev-utils": "^10.2.1",
     "react-dom": "^16.12.0",
     "react-redux": "^7.2.4",
+    "react-grid-gallery": "^0.5.5",
+    "react-photo-gallery": "^8.0.0",
     "react-responsive-carousel": "^3.2.18",
     "react-router-dom": "^5.2.0",
     "reactstrap": "^8.1.1",

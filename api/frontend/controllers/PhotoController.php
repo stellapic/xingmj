@@ -10,7 +10,11 @@ class PhotoController extends BaseJwtController
 {
     public $modelClass = 'frontend\models\Photo';
 
-    public $noAuthActions = ['list', 'show'];
+    public $noAuthActions = [
+        'list',
+        'show',
+        'user-works',
+    ];
 
     public function actionNew()
     {
@@ -29,6 +33,11 @@ class PhotoController extends BaseJwtController
         if (!$photo->save()) {
             throw new \yii\base\UserException(Yii::$app->debris->analyErr($photo->getFirstErrors()));
         }
+        // auto resize
+        Yii::$app->queue->push(new \common\queues\ThumbnailJob([
+            'photo_id' => $photo->id,
+            'photo_path' => $photo->image,
+        ]));        
         return [
             'shortid' => $photo->short_id,
         ];
@@ -62,4 +71,21 @@ class PhotoController extends BaseJwtController
         $dataProvider = $searchModel->search($queryParams);
         return $dataProvider;
     }
+
+
+    /**
+     * 用户作品列表
+     * @param string $username 用户名
+     */
+    public function actionUserWorks($username)
+    {
+        $user = $this->getRequestedUser($username);
+        $queryParams = Yii::$app->request->queryParams;
+        $searchModel = new PhotoSearch();
+        $dataProvider = $searchModel->search($queryParams);
+        $dataProvider->query->andWhere(['creator' => $user->id]);
+        return $dataProvider;
+    }
+
+
 }

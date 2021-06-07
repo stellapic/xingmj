@@ -34,7 +34,7 @@ class UploadsController extends BaseJwtController
             throw new \yii\base\UserException('File type not allowed.');
         }
         // do the save operation
-        $destPath = '/' . date('Ym');
+        $destPath = '/uploads/' . date('Ym');
         if (!file_exists(Yii::$app->params['uploadPath'] . $destPath)) {
             mkdir(Yii::$app->params['uploadPath'] . $destPath, 0755, true);
         }

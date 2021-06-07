@@ -61,6 +61,7 @@ class BaseController extends \yii\rest\Controller
         if (!$frontUser) {
             throw new \yii\base\UserException('user not exists.');
         }
+        return $frontUser;
     }
 
 }

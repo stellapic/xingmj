@@ -1,6 +1,9 @@
 <?php
 namespace frontend\models;
 
+use common\enums\ThumbnailEnum;
+use common\helpers\ImageHelper;
+
 class Photo extends \common\models\Photo
 {
 
@@ -11,9 +14,8 @@ class Photo extends \common\models\Photo
             return \Yii::$app->params['fileServer'] . $model->image;
         };
 
-        $fields['url'] = function ($model) {
-            $prefix = '/photos/show/';
-            return $prefix . $model->short_id;
+        $fields['id'] = function ($model) {
+            return $model->short_id;
         };
 
         $fields['creator'] = function ($model) {
@@ -27,7 +29,14 @@ class Photo extends \common\models\Photo
         }
 
         // remove some fields
-        unset ($fields['id'], $fields['short_id'], $fields['deleted'], $fields['create_at'], $fields['update_at']);
+        unset (
+            $fields['short_id'],
+            $fields['image_info'],
+            $fields['general_status'],
+            $fields['deleted'],
+            $fields['create_at'],
+            $fields['update_at']
+        );
 
         return $fields;
     }
