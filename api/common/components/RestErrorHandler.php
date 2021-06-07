@@ -17,6 +17,7 @@ class RestErrorHandler extends \yii\base\ErrorHandler
 
         $response = \Yii::$app->getResponse();
         $response->setStatusCode(200);
+        $response->format = $response::FORMAT_JSON;
         $response->content = json_encode([
             'code' => 500,
             'message' => $exception->getMessage(),
