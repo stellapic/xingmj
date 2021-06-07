@@ -11,8 +11,7 @@ class Photo extends \common\models\Photo
     {
         $fields = parent::fields();
         $fields['image'] = function ($model) {
-            $thumbnailPath = $model->image_info[ThumbnailEnum::MEDIUM]['path'] ?? ImageHelper::convertToThumbnailPath($model->image);
-            return \Yii::$app->params['fileServer'] . $thumbnailPath;
+            return \Yii::$app->params['fileServer'] . $model->image;
         };
 
         $fields['id'] = function ($model) {
