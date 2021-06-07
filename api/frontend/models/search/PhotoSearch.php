@@ -2,6 +2,7 @@
 
 namespace frontend\models\search;
 
+use common\enums\PhotoEnum;
 use frontend\models\Photo;
 use yii\data\ActiveDataProvider;
 
@@ -22,6 +23,9 @@ class PhotoSearch extends Photo
         $query = self::find();
 
         $query->select('short_id, image, title, creator, image_info');
+
+        // add common conditions here
+        $query->andWhere(['general_status' => PhotoEnum::GENERAL_STATUS_READY]);
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
