@@ -2,6 +2,7 @@
 
 namespace common\queues;
 
+use common\enums\PhotoEnum;
 use common\helpers\ImageHelper;
 use common\models\Photo;
 
@@ -37,7 +38,8 @@ class ThumbnailJob extends \yii\base\BaseObject implements \yii\queue\RetryableJ
             'height' => $height,
         ];
         $photo->image_info = $imageInfo;
-        $photo->save(true, ['image_info']);
+        $photo->general_status = PhotoEnum::GENERAL_STATUS_READY;
+        $photo->save(true, ['image_info', 'general_status']);
     }
 
     /**
