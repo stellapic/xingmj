@@ -14,13 +14,16 @@ class RestErrorHandler extends \yii\base\ErrorHandler
             'message' => $exception->getMessage(),
             'trace' => $exception->getTraceAsString(),
         ]);
-        http_response_code(200);
-        header('Content-type: application/json');
-        echo json_encode([
+
+        $response = \Yii::$app->getResponse();
+        $response->setStatusCode(200);
+        $response->content = json_encode([
             'code' => 500,
             'message' => $exception->getMessage(),
         ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
-        exit();
+        $response->off('beforeSend'); // reserve original response headers.
+        $response->send();
+        exit;
     }
 
     private function recordLog($exception)
