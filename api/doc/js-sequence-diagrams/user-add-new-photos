@@ -1,0 +1,8 @@
+User->LoginApi:username,password
+LoginApi-->User:era_tkn
+Note over User: Goto:/photo/new
+User->UploadApi:[file:image]
+UploadApi-->User:file_path
+Note over User: Fill Form
+User->AddPhotoApi:[formdata]
+AddPhotoApi-->User:short_id

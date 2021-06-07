@@ -28,15 +28,15 @@ class Photo extends \common\models\Photo
             };
         }
 
-        $fields['width'] = function ($model) {
-            return $model->image_info[ThumbnailEnum::MEDIUM]['width'] ?? 300;
-        };
-        $fields['height'] = function ($model) {
-            return $model->image_info[ThumbnailEnum::MEDIUM]['height'] ?? 300;
-        };
-
         // remove some fields
-        unset ($fields['short_id'], $fields['image_info'], $fields['deleted'], $fields['create_at'], $fields['update_at']);
+        unset (
+            $fields['short_id'],
+            $fields['image_info'],
+            $fields['general_status'],
+            $fields['deleted'],
+            $fields['create_at'],
+            $fields['update_at']
+        );
 
         return $fields;
     }

@@ -3,6 +3,8 @@
 namespace frontend\models\search;
 
 use common\enums\PhotoEnum;
+use common\enums\ThumbnailEnum;
+use common\models\User;
 use frontend\models\Photo;
 use yii\data\ActiveDataProvider;
 
@@ -69,6 +71,31 @@ class PhotoSearch extends Photo
         // p($params);
         // echo $query->createCommand()->getRawSql();exit;
         return $dataProvider;
+    }
+
+    public function fields()
+    {
+        return [
+            'id' => function () {
+                return $this->short_id;
+            },
+            'image' => function () {
+                return \Yii::$app->params['fileServer'] . $this->image;
+            },
+            'title',
+            'creator' => function () {
+                return User::find()->limit(1)->select('username')->where(['id' => $this->creator])->scalar();
+            },
+            'width' => function () {
+                return $this->image_info[ThumbnailEnum::MEDIUM]['width'] ?? 600;
+            },
+            'height' => function () {
+                return $this->image_info[ThumbnailEnum::MEDIUM]['height'] ?? 600;
+            },
+            'tags' => function () {
+                return $this->tags ? array_keys($this->tags) : [];
+            },
+        ];
     }
 
 }
