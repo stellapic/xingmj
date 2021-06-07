@@ -1,12 +1,28 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { Row, Col } from "antd";
 import styles from "./style.less";
+import Modal, { modalTypes } from "../Modals";
 
 const Header: React.FC<{}> = () => {
-  const avatarUrl = "https://z3.ax1x.com/2021/05/26/29wTmR.jpg";
+  // const avatarUrl = "https://z3.ax1x.com/2021/05/26/29wTmR.jpg";
+  let avatarUrl = "";
   const logoUrl = "https://z3.ax1x.com/2021/05/26/296wEd.png";
+  const [modalVisible, setModalVisible] = useState(false);
+  const [modalType, setModalType] = useState<modalTypes>("Login");
 
+  (function checkLoginState() {
+    avatarUrl = localStorage.getItem("avatarUrl") as string;
+  })();
+  const showModal = () => {
+    setModalVisible(true);
+  };
+  const hideModal = () => {
+    setModalVisible(false);
+  };
+  const typeChange = (type: modalTypes) => {
+    setModalType(type);
+  };
   return (
     <Row id={styles.header}>
       {/* logo */}
@@ -41,9 +57,14 @@ const Header: React.FC<{}> = () => {
           <Link className={styles.headerLink} to="/upload">
             上传作品
           </Link>
-          <Link className={`${styles.login}`} to="/login">
+          <div className={styles.login} onClick={showModal}>
             {avatarUrl ? <img src={avatarUrl} alt="头像" /> : <span>登录</span>}
-          </Link>
+          </div>
+          <Modal
+            visible={modalVisible}
+            type={modalType}
+            onCancel={hideModal}
+            typeChange={typeChange}></Modal>
         </Row>
       </Col>
     </Row>

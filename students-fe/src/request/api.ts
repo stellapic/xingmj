@@ -5,6 +5,12 @@ export interface UserLoginData {
   password: string;
 }
 
+export interface UserSignUpData {
+  username: string;
+  password: string;
+  email: string;
+}
+
 export interface UploadPhotosData {
   file: any;
 }
@@ -19,6 +25,10 @@ export interface ListPhotosParam {
 
 export const apiUserLogin = (data: UserLoginData) => {
   return service.post('/user/login', data);
+};
+
+export const apiUserSignUp = (data: UserSignUpData) => {
+  return service.post('/user/signup', data);
 };
 
 export const apiUploadPhotos = (data: UploadPhotosData) => {
