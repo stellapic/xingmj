@@ -6,3 +6,5 @@ UploadApi-->User:file_path
 Note over User: Fill Form
 User->AddPhotoApi:[formdata]
 AddPhotoApi-->User:short_id
+Note left of User:background \nthumbnail \nprocess
+User->PhotoListApi:we can now see photos in list.
