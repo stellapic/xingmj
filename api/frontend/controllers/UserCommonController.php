@@ -67,7 +67,7 @@ class UserCommonController extends BaseJwtController
 
     private function autoLogin($username, $password)
     {
-        $result = \common\models\User::find()->where(['username' => $username, 'status' => \common\models\User::STATUS_ACTIVE])->asArray()->one();
+        $result = \common\models\User::find()->where(['username' => $username])->andWhere(['!=', 'status', \common\models\User::STATUS_DELETED])->asArray()->one();
 
         if(!$result || !Yii::$app->getSecurity()->validatePassword($password, $result['password_hash'])) {
             throw new \yii\base\UserException('Wrong username or password.');
