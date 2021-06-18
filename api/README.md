@@ -72,3 +72,17 @@ environments/            contains environment-based overrides
 ```
 ./yii serve --docroot="backend/web/"
 ```
+
+
+资源地址
+-------------------
+
+Postman 接口文档（客户端版本8.5.1以上）
+```
+https://documenter.getpostman.com/view/3089343/TzK17FbU
+```
+
+Git 源码地址
+```
+https://github.com/helloEson/xingmj.git
+```

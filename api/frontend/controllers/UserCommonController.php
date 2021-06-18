@@ -47,8 +47,13 @@ class UserCommonController extends BaseJwtController
 
         $jwt = $this->autoLogin($username, $password);
 
+        $user = \common\models\User::find()->where(['username' => $username])->andWhere(['!=', 'status', \common\models\User::STATUS_DELETED])->asArray()->one();
+
         return [
             'era_tkn' => $jwt,
+            'user' => [
+                'avatar' => $user['avatar'] ? \Yii::$app->params['fileServer'] . $user['avatar'] : '',
+            ]
         ];
     }
 
