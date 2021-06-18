@@ -21,6 +21,8 @@
 }
 .logo:hover {
   opacity: 0.8;
+  color: #fff !important;
+  text-decoration: none !important;
 }
 .headerLeft {
   .myFlex(flex-start);
@@ -36,9 +38,13 @@
   font-size: 14px;
   transition: all 0.5s;
   cursor: pointer;
+  text-decoration: none;
+  transition: all 0.3s;
 }
 .headerLink:hover {
   background-color: rgba(255, 255, 255, 0.3);
+  color: #fff !important;
+  text-decoration: none !important;
 }
 .login {
   .myFlex();
@@ -56,10 +62,20 @@
     border-radius: 5px;
   }
 }
-.login:hover {
-  transform: scale(1.1);
+.myMenuItem {
+  cursor: initial !important;
+  padding: 8px 0px !important;
 }
-
+.myMenuItem:hover {
+  background-color: #fff !important;
+}
+.personalCardBtn {
+  cursor: pointer;
+  transition: 0.3s;
+}
+.personalCardBtn:hover {
+  color: #888;
+}
 .myFlex(@justifyContent: center, @alignItems: center) {
   display: flex;
   justify-content: @justifyContent;

@@ -10,12 +10,13 @@ const service = axios.create({
 
 service.interceptors.request.use((config: AxiosRequestConfig) => { 
   const token = window.localStorage.getItem('userToken');
-  config.data = Object.assign({}, config.data, {
-    token: token,
-  })
+  // config.data = Object.assign({}, config.data, {
+  //   token: token,
+  // })
   config.headers = {
-    'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'
-  }
+    "Content-Type": "application/x-www-form-urlencoded; charset=utf-8",
+    era_tkn: token,
+  };
   config.data = QS.stringify(config.data)
   return config
 }, error => { 

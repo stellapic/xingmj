@@ -1,20 +1,27 @@
 import React from "react";
+import { connect } from "react-redux";
+import { stateType } from "../../redux/store";
+import { createSetTokenAction } from "../../redux/actions";
 import { Button, Input, Form, Checkbox, message } from "antd";
 import { UserOutlined, LockOutlined, MailOutlined, CheckSquareOutlined } from "@ant-design/icons";
-import { apiUserSignUp } from "../../../request/api";
+import { apiUserSignUp } from "../../request/api";
 
 // 注册组件props接口定义
-interface RegisterProps {
+interface SignUpProps {
   typeChange: (type: "Login" | "Register" | "UserInfo") => void;
+  setToken: (userToken: string) => void;
   onCancel: () => void;
 }
 
+// 服务条款
+
 // 注册组件
-const Register: React.FC<RegisterProps> = (props) => {
+const SignUp: React.FC<SignUpProps> = (props) => {
   const [form] = Form.useForm();
   // 表单提交时触发的函数
   const onFinish = (values: any) => {
     console.log(values);
+    // 检查是否同意服务条款
     if (!values.agree) {
       message.error("请同意服务条款");
     } else {
@@ -24,13 +31,7 @@ const Register: React.FC<RegisterProps> = (props) => {
       });
     }
   };
-  // 更新密码的值
-  // const formValueChange = (changeValues: any) => {
-  //   const { password } = changeValues;
-  //   if (password === undefined) return;
-  //   setPassword(password);
-  // };
-  // 检查两次输入的密码是否一致
+  // 校验两次输入的密码是否一致
   const checkPassword = (rule: any, value: string) => {
     let nowPassword = form.getFieldValue("password");
     console.log(nowPassword, value);
@@ -116,4 +117,6 @@ const Register: React.FC<RegisterProps> = (props) => {
     </Form>
   );
 };
-export default Register;
+export default connect((state: stateType) => ({ userToken: state.userToken }), {
+  setToken: createSetTokenAction,
+})(SignUp);

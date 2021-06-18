@@ -17,14 +17,7 @@ code {
   background-color: #764abc !important;
   border: none !important;
 }
-a {
-  text-decoration: none;
-  transition: all 0.3s;
-}
-a:hover {
-  color: #fff !important;
-  text-decoration: none !important;
-}
+
 /* 多级选项框的高度 */
 .ant-cascader-menu {
   height: auto !important;

@@ -1,15 +1,22 @@
 import React from "react";
+import { connect } from "react-redux";
+import { stateType } from "../../redux/store";
+import { createSetTokenAction } from "../../redux/actions";
 import { Button, Input, Form, Checkbox, message } from "antd";
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
-import { apiUserLogin, UserLoginData } from "../../../request/api";
-import { modalTypes } from "../index";
+import { apiUserLogin, UserLoginData, apiGetUserInfo } from "../../request/api";
+import { modalTypes } from "./index";
 
 interface LoginProps {
   typeChange: (type: modalTypes) => void;
   onCancel: () => void;
+  setToken: (userToken: string) => void;
 }
 const Login: React.FC<LoginProps> = (props) => {
+  console.log(props);
+
   const [form] = Form.useForm();
+  // 创建初始化的表单值
   const initialValues: UserLoginData & { remember: boolean } = {
     remember: localStorage.getItem("remember") === "true" ? true : false,
     username: localStorage.getItem("username") as string,
@@ -32,18 +39,25 @@ const Login: React.FC<LoginProps> = (props) => {
     apiUserLogin({
       username: username,
       password: password,
-    }).then((data: any) => {
-      form.resetFields();
-      // 成功登录的时候显示登录成功，并关闭弹窗
-      if (data.code === 200) {
-        message.success("登录成功");
-        localStorage.setItem("userToken", data.data["era_tkn"]);
-        props.onCancel();
-      } else {
-        // 失败的时候显示错误信息
-        message.error("用户名或密码错误");
-      }
-    });
+    })
+      .then((data: any) => {
+        form.resetFields();
+        // 成功登录的时候显示登录成功，并关闭弹窗
+        if (data.code === 200) {
+          message.success("登录成功");
+          console.log(data);
+          // 将返回的token和avatarUrl存到localstorage中
+          localStorage.setItem("userToken", data.data["era_tkn"]);
+          localStorage.setItem("avatarUrl", data.data.user.avatar);
+          // 更新store中的
+          props.setToken(data.data["era_tkn"]);
+          // 隐藏弹框
+          props.onCancel();
+        } else {
+          // 失败的时候显示错误信息
+          message.error("用户名或密码错误");
+        }
+      })
   };
   return (
     <Form
@@ -91,7 +105,7 @@ const Login: React.FC<LoginProps> = (props) => {
           type="link"
           onClick={(e) => {
             e.preventDefault();
-            props.typeChange("Register");
+            props.typeChange("SignUp");
           }}>
           立即注册
         </Button>
@@ -99,4 +113,7 @@ const Login: React.FC<LoginProps> = (props) => {
     </Form>
   );
 };
-export default Login;
+
+export default connect((state: stateType) => ({ userToken: state.userToken }), {
+  setToken: createSetTokenAction,
+})(Login);

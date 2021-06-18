@@ -1,19 +1,21 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { connect } from "react-redux";
+import { stateType } from "../../redux/store";
 import { Link } from "react-router-dom";
-import { Row, Col } from "antd";
-import styles from "./style.less";
+import { Row, Col, Dropdown } from "antd";
+import UserInfoMenu from "./UserInfoMenu";
 import Modal, { modalTypes } from "../Modals";
+import styles from "./style.less";
 
-const Header: React.FC<{}> = () => {
-  // const avatarUrl = "https://z3.ax1x.com/2021/05/26/29wTmR.jpg";
-  let avatarUrl = "";
+const Header: React.FC<{ userToken: string | null }> = (props) => {
+  let avatarUrl =
+    (localStorage.getItem("avatarUrl") as string) ||
+    "https://ftp.bmp.ovh/imgs/2021/06/d3edeccdd9ffeedb.png";
   const logoUrl = "https://z3.ax1x.com/2021/05/26/296wEd.png";
+
   const [modalVisible, setModalVisible] = useState(false);
   const [modalType, setModalType] = useState<modalTypes>("Login");
 
-  (function checkLoginState() {
-    avatarUrl = localStorage.getItem("avatarUrl") as string;
-  })();
   const showModal = () => {
     setModalVisible(true);
   };
@@ -23,18 +25,11 @@ const Header: React.FC<{}> = () => {
   const typeChange = (type: modalTypes) => {
     setModalType(type);
   };
+  const userInfoMenu = UserInfoMenu({ userToken: props.userToken });
   return (
     <Row id={styles.header}>
-      {/* logo */}
-      <Col>
-        <Link className={styles.logo} to="/">
-          {logoUrl ? <img src={logoUrl} alt="头像" /> : <span>LOGO</span>}
-          <span>&emsp;星美集</span>
-        </Link>
-      </Col>
-
       {/* 左侧 */}
-      <Col span={5}>
+      <Col flex="auto">
         <Row className={styles.headerLeft}>
           <Link className={styles.headerLink} to="/home">
             <span>首页</span>
@@ -47,9 +42,15 @@ const Header: React.FC<{}> = () => {
           </Link>
         </Row>
       </Col>
-      {/* 中间站位 */}
-      <Col flex="auto"></Col>
-      <Col span={7}>
+      {/* Logo */}
+      <Col flex="auto">
+        <Link className={styles.logo} to="/">
+          {logoUrl ? <img src={logoUrl} alt="LOGO" /> : <span>LOGO</span>}
+          <span>&emsp;星美集</span>
+        </Link>
+      </Col>
+      {/* 右侧 */}
+      <Col flex="auto">
         <Row className={styles.headerRight}>
           <Link className={styles.headerLink} to="/posting">
             发布文章
@@ -57,9 +58,18 @@ const Header: React.FC<{}> = () => {
           <Link className={styles.headerLink} to="/upload">
             上传作品
           </Link>
-          <div className={styles.login} onClick={showModal}>
-            {avatarUrl ? <img src={avatarUrl} alt="头像" /> : <span>登录</span>}
-          </div>
+
+          {props.userToken ? (
+            <div className={styles.login}>
+              <Dropdown overlay={userInfoMenu} trigger={["click"]} placement="bottomRight" arrow>
+                <img src={avatarUrl} alt="头像" />
+              </Dropdown>
+            </div>
+          ) : (
+            <div className={styles.headerLink} onClick={showModal}>
+              登录
+            </div>
+          )}
           <Modal
             visible={modalVisible}
             type={modalType}
@@ -71,4 +81,4 @@ const Header: React.FC<{}> = () => {
   );
 };
 
-export default Header;
+export default connect((state: stateType) => ({ userToken: state.userToken }))(Header);

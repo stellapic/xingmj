@@ -1,4 +1,4 @@
-import service from './index';
+import service from "./index";
 
 export interface UserLoginData {
   username: string;
@@ -23,24 +23,28 @@ export interface ListPhotosParam {
   page?: number;
 }
 
+export const apiGetUserInfo = () => {
+  return service.post("/user/info");
+};
+
 export const apiUserLogin = (data: UserLoginData) => {
-  return service.post('/user/login', data);
+  return service.post("/user/login", data);
 };
 
 export const apiUserSignUp = (data: UserSignUpData) => {
-  return service.post('/user/signup', data);
+  return service.post("/user/signup", data);
 };
 
 export const apiUploadPhotos = (data: UploadPhotosData) => {
-  return service.post('/uploads/photo', data);
+  return service.post("/uploads/photo", data);
 };
 
 export const apiListPhotos = (params: ListPhotosParam) => {
-  return service.get('/photos', {
-    params
+  return service.get("/photos", {
+    params,
   });
 };
 
 export const apiListHomeSlides = () => {
-  return service.get('home/slides', {});
+  return service.get("home/slides", {});
 };
