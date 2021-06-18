@@ -18,6 +18,7 @@ class CorsCommon extends Cors
         'Access-Control-Allow-Credentials' => null,
         'Access-Control-Max-Age' => 86400,
         'Access-Control-Expose-Headers' => [],
+        'Access-Control-Allow-Headers' => ['era_tkn', ],
     ];
 
     /**
@@ -35,6 +36,14 @@ class CorsCommon extends Cors
         if (!isset($requestHeaders['Access-Control-Request-Method'])) {
             $requestHeaders['Access-Control-Request-Method'] = $this->cors['Access-Control-Request-Method'][0];
         }
+
+        // if (!isset($this->cors['Access-Control-Expose-Headers'])) {
+        //     $responseHeaders['Access-Control-Expose-Headers'] = implode(', ', $this->cors['Access-Control-Expose-Headers']);
+        // }
+
+        // if (isset($this->cors['Access-Control-Allow-Headers'])) {
+        //     $responseHeaders['Access-Control-Allow-Headers'] = implode(', ', $this->cors['Access-Control-Allow-Headers']);
+        // }
 
         return parent::prepareHeaders($requestHeaders);
 
