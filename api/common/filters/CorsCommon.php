@@ -20,4 +20,24 @@ class CorsCommon extends Cors
         'Access-Control-Expose-Headers' => [],
     ];
 
+    /**
+     * For each CORS headers create the specific response.
+     * @param array $requestHeaders CORS headers we have detected
+     * @return array CORS headers ready to be sent
+     */
+    public function prepareHeaders($requestHeaders)
+    {
+
+        if (!isset($requestHeaders['Origin'])) {
+            $requestHeaders['Origin'] = 'self';
+        }
+
+        if (!isset($requestHeaders['Access-Control-Request-Method'])) {
+            $requestHeaders['Access-Control-Request-Method'] = $this->cors['Access-Control-Request-Method'][0];
+        }
+
+        return parent::prepareHeaders($requestHeaders);
+
+    }
+
 }
