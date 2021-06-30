@@ -1,3 +1,5 @@
+'use strict'
+
 import { setTimeout, setInterval } from 'timers/promises'
 
 import config from '../config.js'

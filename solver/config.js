@@ -1,3 +1,5 @@
+'use strict'
+
 const config = {
     LOG_LEVEL: 'trace', // fatal/error/warn/info/debug/trace
     LOG_SRC: false, // do not set true in production env
