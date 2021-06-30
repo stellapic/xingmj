@@ -12,8 +12,8 @@ const log = Logger.getInstance()
 
 /**
  * send request to astrometry api by axios
- * @param Object options { url, form, headers, config, callback }
- * @returns 
+ * @param object options { url, form, headers, config, callback }
+ * @returns void
  */
 const request = (options) => {
     axios.defaults.baseURL = config.BASE_URL
@@ -54,6 +54,11 @@ const request = (options) => {
     });
 }
 
+/**
+ * retrieve session from astrometry api
+ * @param string apikey
+ * @returns string session
+ */
 const login = async (apikey) => {
     const url = config.API_LOGIN
     const form = new FormData()
@@ -89,6 +94,12 @@ const login = async (apikey) => {
     return session
 }
 
+/**
+ * upload image url to astrometry
+ * @param string session
+ * @param string image_url, astro image url
+ * @returns int subid, submission id
+ */
 const upload = async (session, image_url) => {
     const url = config.API_URL_UPLOAD
     const form = new FormData()
@@ -130,6 +141,31 @@ const upload = async (session, image_url) => {
     return subid
 }
 
+/**
+ * retrive submission status from astrometry
+ * @param int subid
+ * @returns Object sub
+    sub {
+        "user": 27946,
+        "processing_started": "2021-06-29 06:24:01.873119",
+        "processing_finished": "2021-06-29 06:24:03.171189",
+        "user_images": [
+            4824972
+        ],
+        "images": [
+            11241864
+        ],
+        "jobs": [
+            5391553
+        ],
+        "job_calibrations": [
+            [
+                5391553,
+                3775027
+            ]
+        ]
+    }
+ */
 const submission = async (subid) => {
     const url = `${config.API_SUB_STATUS}/${subid}`
 
@@ -162,6 +198,41 @@ const submission = async (subid) => {
     return sub
 }
 
+/**
+ * retrieve job info
+ * @param int jobid
+ * @returns object job
+    job {
+        "objects_in_field": [
+            "The star 34Cyg",
+            "NGC 6888",
+            "IC 4996",
+            "Crescent Nebula"
+        ],
+        "machine_tags": [
+            "Crescent Nebula",
+            "NGC 6888",
+            "IC 4996",
+            "The star 34Cyg"
+        ],
+        "tags": [
+            "Crescent Nebula",
+            "NGC 6888",
+            "IC 4996",
+            "The star 34Cyg"
+        ],
+        "status": "success",
+        "original_filename": "170731i7ts6la2h89c72c9.jpg",
+        "calibration": {
+            "ra": 303.03413131799505,
+            "dec": 38.34357146538215,
+            "radius": 1.869603156099992,
+            "pixscale": 5.484660589627083,
+            "orientation": 359.2039311771184,
+            "parity": 1.0
+        }
+    }
+ */
 const job = async (jobid) => {
     const url = config.API_JOB_INFO.replace('{jobid}', jobid)
 
@@ -186,6 +257,13 @@ const job = async (jobid) => {
     return sub
 }
 
+/**
+ * upload image url to astrometry
+ * @param int jobid
+ * @param string path, local path
+ * @param string type, full/display
+ * @returns void
+ */
 const annotate = async (jobid, path, type='full') => {
     const url = (type === 'full')
                 ? `${config.API_ANNOTATED_FULL}/${jobid}`
