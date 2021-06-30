@@ -105,7 +105,10 @@ const upload = async (session, image_url) => {
     const form = new FormData()
     const json = {
         'session': session,
-        'url': image_url // 'https://bbs.imufu.cn/data/attachment/forum/202105/15/052433hb2ms80mz1f50h0o.jpg'
+        'url': image_url, // 'https://bbs.imufu.cn/data/attachment/forum/202105/15/052433hb2ms80mz1f50h0o.jpg'
+        'allow_commercial_use': 'n',
+        'allow_modifications': 'n',
+        'publicly_visible': 'n'
     }
 
     form.append('request-json', JSON.stringify(json))
@@ -289,5 +292,8 @@ const annotate = async (jobid, path, type='full') => {
 
     return sub
 }
+
+
+// const skyplot = async ()
 
 export { login, upload, submission, job, annotate }
