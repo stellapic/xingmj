@@ -258,7 +258,7 @@ const job = async (jobid) => {
 }
 
 /**
- * upload image url to astrometry
+ * get annotated image from astrometry
  * @param int jobid
  * @param string path, local path
  * @param string type, full/display
