@@ -5,7 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "export NODE_ENV='test' && node ./test/test.js",
     "start": "export NODE_ENV='production' && node index.js",
     "dev": "export NODE_ENV='development' && node index.js"
   },
