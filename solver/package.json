@@ -1,11 +1,20 @@
 {
   "name": "solver",
   "version": "1.0.0",
-  "description": "Astronomy image solver",
+  "description": "Astronomy picture solver",
   "main": "index.js",
+  "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "export NODE_ENV='test' && node ./test/test.js",
+    "start": "export NODE_ENV='production' && node index.js",
+    "dev": "export NODE_ENV='development' && node index.js"
   },
   "author": "china.chenxi@gmail.com",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "@hapi/hapi": "^20.1.4",
+    "axios": "^0.21.1",
+    "bunyan": "^1.8.15",
+    "form-data": "^2.3.3"
+  }
 }

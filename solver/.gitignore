@@ -1,0 +1,9 @@
+# Mac DS_Store Files
+.DS_Store
+
+# test files
+./test/annotated_images/*
+
+/.vscode
+/node_modules
+package-lock.json
