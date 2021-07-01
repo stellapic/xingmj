@@ -1,6 +1,7 @@
 'use strict'
 
 import fs from 'fs'
+import path from 'path'
 import axios from 'axios'
 import FormData from 'form-data'
 
@@ -88,7 +89,7 @@ const login = async (apikey) => {
             'callback': callback
         })
     } catch (e) {
-        console.log(e)
+        log.error(e)
     }
 
     return session
@@ -138,7 +139,7 @@ const upload = async (session, image_url) => {
             'callback': callback
         })
     } catch (e) {
-        console.log(e)
+        log.error(e)
     }
 
     return subid
@@ -195,7 +196,7 @@ const submission = async (subid) => {
             'callback': callback
         })
     } catch (e) {
-        console.log(e)
+        log.error(e)
     }
 
     return sub
@@ -244,9 +245,9 @@ const job = async (jobid) => {
         resolve(response.data)
     }
 
-    let sub = null
+    let job = null
     try {
-        sub = await request(
+        job = await request(
         {
             'url': url,
             'config': {},
@@ -254,46 +255,93 @@ const job = async (jobid) => {
             'callback': callback
         })
     } catch (e) {
-        console.log(e)
+        log.error(e)
     }
 
-    return sub
+    return job
+}
+
+/**
+ * annotate and skyplot callback function for request 
+ * @param object response
+ * @param function resolve
+ * @param function reject
+ * @returns void
+ */
+const image_callback = async function (response, resolve, reject) {
+    const content_type = response.headers['content-type']
+    const content_length = parseInt(response.headers['content-length'])
+    const is_image = (content_type.split('/')[0] === 'image')
+    
+    if (!is_image) {
+        reject('astrometry returns is not image')
+    }
+
+    try {
+        const fd = fs.openSync(this.filepath, 'w')
+        const bytes = fs.writeSync(fd, response.data)
+
+        if (content_length !== bytes) {
+            reject(`write image file failed, bytes: ${bytes}/${content_length}`)
+        }
+
+        resolve(bytes)
+    } catch (e) {
+        reject(e)
+    }
 }
 
 /**
  * get annotated image from astrometry
  * @param int jobid
- * @param string path, local path
- * @param string type, full/display
- * @returns void
+ * @param string filepath, local path to storage annotated images
+ * @param string type, full/display, default is full
+ * @returns int bytes, images bytes
  */
-const annotate = async (jobid, path, type='full') => {
+const annotate = async (jobid, filepath, type='full') => {
+    // try {
+    //     fs.accessSync(filepath, fs.constants.R_OK | fs.constants.W_OK)
+    // } catch (e) {
+    //     return 0
+    // }
+
     const url = (type === 'full')
                 ? `${config.API_ANNOTATED_FULL}/${jobid}`
                 : `${config.API_ANNOTATED_DISPLAY}/${jobid}`
 
-    const callback = (response, resolve, reject) => {
-        response.data.pipe(fs.createWriteStream(path))
-        resolve(response.data)
-    }
-
-    let sub = null
     try {
-        sub = await request(
+        await request(
         {
             'url': url,
-            'config': { responseType: 'stream' },
+            'config': { responseType: 'arraybuffer' },
             'method': 'get',
-            'callback': callback
+            'callback': image_callback.bind({ 'filepath': filepath })
         })
     } catch (e) {
-        console.log(e)
+        log.error(e)
+        return 0
     }
-
-    return sub
 }
 
+/**
+ * get skp plot image from astrometry, zoom[0-3]
+ * @param int job_calibration_id
+ * @returns void
+ */
+const skyplot = async (job_calibration_id, filepath, zoom=0) => {
+    const url = `${config.API_SKY_PLOT}${zoom}/${job_calibration_id}`
 
-// const skyplot = async ()
+    try {
+        await request(
+        {
+            'url': url,
+            'config': { responseType: 'arraybuffer' },
+            'method': 'get',
+            'callback': image_callback.bind({ 'filepath': filepath })
+        })
+    } catch (e) {
+        log.error(e)
+    }
+}
 
-export { login, upload, submission, job, annotate }
+export { login, upload, submission, job, annotate, skyplot }
