@@ -2,7 +2,7 @@
 .DS_Store
 
 # test files
-./test/annotated_images/*
+./test/annotated_images/
 
 /.vscode
 /node_modules
