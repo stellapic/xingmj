@@ -106,7 +106,8 @@ const upload = async (session, image_url) => {
     const form = new FormData()
     const json = {
         'session': session,
-        'url': image_url, // 'https://bbs.imufu.cn/data/attachment/forum/202105/15/052433hb2ms80mz1f50h0o.jpg'
+        'url': image_url,
+        'parity': 2, // 0/1/2
         'allow_commercial_use': 'n',
         'allow_modifications': 'n',
         'publicly_visible': 'n'
@@ -173,16 +174,22 @@ const upload = async (session, image_url) => {
 const submission = async (subid) => {
     const url = `${config.API_SUB_STATUS}/${subid}`
 
-    const callback = (response, resolve, reject) => {
+    const callback = (response, resolve) => {
         const jobs = response.data.jobs
         const job_calibrations = response.data.job_calibrations
 
-        if (jobs.length !== 0 && jobs[0]) {
-            log.debug(`get submission success, jobs: ${jobs.join(', ')}`)
+        if (jobs.length !== 0 && jobs[0] && job_calibrations.length !== 0) {
+            log.debug(`get submission success, jobs: ${jobs.join(', ')}, job_calibrations: ${job_calibrations[0].join(', ')}`)
+
+            resolve({
+                jobs: jobs,
+                job_calibrations: job_calibrations
+            })
         }
+
         resolve({
-            jobs: jobs,
-            job_calibrations: job_calibrations
+            jobs: [],
+            job_calibrations: []
         })
     }
 
@@ -275,6 +282,7 @@ const image_callback = async function (response, resolve, reject) {
     
     if (!is_image) {
         reject('astrometry returns is not image')
+        return
     }
 
     try {
@@ -343,5 +351,6 @@ const skyplot = async (job_calibration_id, filepath, zoom=0) => {
         log.error(e)
     }
 }
+
 
 export { login, upload, submission, job, annotate, skyplot }
