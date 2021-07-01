@@ -5,9 +5,9 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "test": "export NODE_ENV='test' && node ./test/test.js",
-    "start": "export NODE_ENV='production' && node index.js",
-    "dev": "export NODE_ENV='development' && node index.js"
+    "test": "export NODE_ENV='test' && node ./test/test.js | ./node_modules/bunyan/bin/bunyan",
+    "dev": "export NODE_ENV='development' && node index.js | ./node_modules/bunyan/bin/bunyan",
+    "start": "export NODE_ENV='production' && node index.js"
   },
   "author": "china.chenxi@gmail.com",
   "license": "ISC",
