@@ -60,7 +60,10 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
-        return $this->render('index');
+        // var_dump(Yii::$app->user->getIdentity()->avatarUrl);exit;
+        return $this->render('index', [
+            'loginUser' => Yii::$app->user->getIdentity(),
+        ]);
     }
 
     /**

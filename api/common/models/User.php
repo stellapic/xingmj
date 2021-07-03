@@ -224,4 +224,13 @@ class User extends ActiveRecord implements IdentityInterface
             'thumbs_count' => $this->thumbs_count,
         ];
     }
+
+    public function getAvatarUrl()
+    {
+        if ($this->avatar) {
+            return \Yii::$app->params['fileServer'] . $this->avatar;
+        }
+        return '/static/avatar_default.png';
+    }
+
 }
