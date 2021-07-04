@@ -32,12 +32,12 @@ class SiteController extends Controller
                     ],
                 ],
             ],
-            'verbs' => [
-                'class' => VerbFilter::className(),
-                'actions' => [
-                    'logout' => ['post'],
-                ],
-            ],
+            // 'verbs' => [
+            //     'class' => VerbFilter::className(),
+            //     'actions' => [
+            //         'logout' => ['post'],
+            //     ],
+            // ],
         ];
     }
 
@@ -74,13 +74,13 @@ class SiteController extends Controller
     public function actionLogin()
     {
         if (!Yii::$app->user->isGuest) {
-            // return $this->goHome();
+            return $this->goHome();
         }
 
         $this->layout = 'blank';
 
         $model = new LoginForm();
-        if ($model->load(Yii::$app->request->post()) && $model->login()) {
+        if ($model->load(Yii::$app->request->post()) && $model->login() && $model->isManager) {
             return $this->goBack();
         } else {
             $model->password = '';

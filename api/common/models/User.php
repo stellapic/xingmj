@@ -233,4 +233,9 @@ class User extends ActiveRecord implements IdentityInterface
         return '/static/avatar_default.png';
     }
 
+    public function getIsManager()
+    {
+        return $this->is_manager == 1;
+    }
+
 }

@@ -26,7 +26,7 @@
         <a class="nav-link" data-widget="pushmenu" href="#"><i class="fas fa-bars"></i></a>
       </li>
       <li class="nav-item d-none d-sm-inline-block">
-        <a href="/adminlte/index3.html" class="nav-link">Home</a>
+        <a href="/" class="nav-link">首页</a>
       </li>
       <li class="nav-item d-none d-sm-inline-block">
         <a href="#" class="nav-link">Contact</a>
@@ -284,13 +284,6 @@
             <h3 class="card-title">Icons</h3>
           </div> <!-- /.card-body -->
           <div class="card-body">
-            <!-- <p>You can use any font library you like with AdminLTE 3.</p>
-            <strong>Recommendations</strong>
-            <div>
-              <a href="https://fontawesome.com/">Font Awesome</a><br>
-              <a href="https://useiconic.com/open/">Iconic Icons</a><br>
-              <a href="http://ionicons.com/">Ion Icons</a><br>
-            </div> -->
             <?= $content ?>
           </div><!-- /.card-body -->
         </div>

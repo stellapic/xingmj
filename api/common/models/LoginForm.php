@@ -84,4 +84,13 @@ class LoginForm extends Model
 
         return $this->_user;
     }
+
+    /**
+     * Check if current user is a manager
+     * @return Boolean
+     */
+    protected function getIsManager()
+    {
+        return $this->_user->is_manager == 1;
+    }
 }
