@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title><?=Yii::$app->params['appName'] ?>管理后台<?= $pageTitle ? " | $pageTitle" : '' ?></title>
+  <title><?=Yii::$app->params['appName'] ?>管理后台<?= $title ? " | $title" : '' ?></title>
   <!-- Tell the browser to be responsive to screen width -->
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <!-- Font Awesome -->
@@ -133,7 +133,7 @@
         </div>
       </li>
       <li class="nav-item">
-        <a class="nav-link" data-widget="control-sidebar" data-slide="true" href="/site/logout">
+        <a class="nav-link" href="/site/logout">
           <i class="fas fa-sign-out-alt"></i>
         </a>
       </li>
@@ -189,7 +189,7 @@
             </a>
             <ul class="nav nav-treeview">
               <li class="nav-item">
-                <a href="/adminlte/index.html" class="nav-link">
+                <a href="/photo" class="nav-link">
                   <i class="far fa-image nav-icon"></i>
                   <p>图片列表</p>
                   <!-- 精选列表 -->
@@ -316,6 +316,6 @@
 <!-- AdminLTE App -->
 <script src="/adminlte/dist/js/adminlte.min.js"></script>
 <!-- AdminLTE for demo purposes -->
-<script src="/adminlte/dist/js/demo.js"></script>
+<!-- <script src="/adminlte/dist/js/demo.js"></script> -->
 </body>
 </html>
