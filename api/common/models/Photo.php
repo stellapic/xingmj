@@ -21,7 +21,7 @@ class Photo extends BaseModel
     {
         return [
             [['image', 'title', 'category'], 'required'],
-            [['general_status'], 'integer'],
+            [['general_status', 'is_recommend'], 'integer'],
             [['image', 'title', 'take_place', 'intro', 'graph_resolve', 'graph_position'], 'string', 'max' => 255],
             [['take_params', 'tags', 'device', 'remote_station', 'image_info'], 'safe'],
         ];
