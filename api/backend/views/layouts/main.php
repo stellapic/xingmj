@@ -16,7 +16,7 @@
   <!-- Google Font: Source Sans Pro -->
   <!-- <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet"> -->
 </head>
-<body class="hold-transition sidebar-mini layout-navbar-fixed">
+<body class="hold-transition sidebar-mini layout-navbar-fixed text-sm">
 <div class="wrapper">
   <!-- Navbar -->
   <nav class="main-header navbar navbar-expand navbar-white navbar-light">
@@ -133,7 +133,7 @@
         </div>
       </li>
       <li class="nav-item">
-        <a class="nav-link" data-widget="control-sidebar" data-slide="true" href="#">
+        <a class="nav-link" data-widget="control-sidebar" data-slide="true" href="/site/logout">
           <i class="fas fa-sign-out-alt"></i>
         </a>
       </li>
@@ -144,7 +144,7 @@
   <!-- Main Sidebar Container -->
   <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
-    <a href="/adminlte/index3.html" class="brand-link">
+    <a href="/" class="brand-link">
       <img src="/adminlte/dist/img/AdminLTELogo.png"
            alt="<?=Yii::$app->params['appName'] ?> Logo"
            class="brand-image img-circle elevation-3"
@@ -172,7 +172,7 @@
 
           <li class="nav-item">
             <a href="../widgets.html" class="nav-link">
-              <i class="nav-icon fas fa-th"></i>
+              <i class="nav-icon fas fa-home"></i>
               <p>
                 首页轮播图
                 <span class="right badge badge-danger">New</span>
@@ -181,7 +181,7 @@
           </li>
           <li class="nav-item has-treeview menu-open">
             <a href="#" class="nav-link">
-              <i class="nav-icon fas fa-tachometer-alt"></i>
+              <i class="nav-icon fas fa-images"></i>
               <p>
                 图片管理
                 <i class="right fas fa-angle-left"></i>
@@ -190,32 +190,32 @@
             <ul class="nav nav-treeview">
               <li class="nav-item">
                 <a href="/adminlte/index.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
+                  <i class="far fa-image nav-icon"></i>
                   <p>图片列表</p>
                   <!-- 精选列表 -->
                 </a>
               </li>
               <li class="nav-item">
                 <a href="/adminlte/index3.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
+                  <i class="far fa-folder nav-icon"></i>
                   <p>类别管理</p>
                 </a>
               </li>
               <li class="nav-item">
                 <a href="/adminlte/index3.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
+                  <i class="fas fa-hashtag nav-icon"></i>
                   <p>标签管理</p>
                 </a>
               </li>
               <li class="nav-item">
                 <a href="/adminlte/index3.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
+                  <i class="fas fa-laptop-code nav-icon"></i>
                   <p>远程台管理</p>
                 </a>
               </li>
               <li class="nav-item">
                 <a href="/adminlte/index2.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
+                  <i class="far fa-comments nav-icon"></i>
                   <p>图片评论</p>
                 </a>
               </li>
@@ -223,7 +223,7 @@
           </li>
           <li class="nav-item has-treeview menu-open">
             <a href="#" class="nav-link">
-              <i class="nav-icon fas fa-tachometer-alt"></i>
+              <i class="nav-icon fas fa-cogs"></i>
               <p>
                 系统管理
                 <i class="right fas fa-angle-left"></i>
@@ -232,19 +232,19 @@
             <ul class="nav nav-treeview">
               <li class="nav-item">
                 <a href="/adminlte/index.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
+                  <i class="fas fa-user nav-icon"></i>
                   <p>管理员列表</p>
                 </a>
               </li>
               <li class="nav-item">
                 <a href="/adminlte/index.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
+                  <i class="fas fa-users nav-icon"></i>
                   <p>普通用户列表</p>
                 </a>
               </li>
               <li class="nav-item">
                 <a href="/adminlte/index2.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
+                  <i class="fas fa-cog nav-icon"></i>
                   <p>系统设置</p>
                 </a>
               </li>
