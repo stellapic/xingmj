@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title><?=Yii::$app->params['appName'] ?>管理后台<?= $title ? " | $title" : '' ?></title>
+  <title><?=Yii::$app->params['appName'] ?>管理后台<?= $this->params['title'] ? ' | ' . $this->params['title'] : '' ?></title>
   <!-- Tell the browser to be responsive to screen width -->
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <!-- Font Awesome -->
@@ -13,10 +13,27 @@
   <link href="https://cdn.bootcdn.net/ajax/libs/ionicons/2.0.1/css/ionicons.min.css" rel="stylesheet">
   <!-- Theme style -->
   <link rel="stylesheet" href="/adminlte/dist/css/adminlte.min.css">
+  <!-- Select2 -->
+  <link rel="stylesheet" href="/adminlte/plugins/select2/css/select2.min.css">
   <!-- Google Font: Source Sans Pro -->
   <!-- <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet"> -->
+  <style type="text/css">
+    .pagination-container {clear: both;display: block;height: 42px;line-height: 1;}
+    .pagination-container>div {float: right; display: block;}
+    .pagination-container>.pagination>li {
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      margin: 0 1px;
+    }
+    .pagination-container>.pagination>li>a,span {    display: block;
+    padding: 5px 8px;
+    }
+    .pagination-container>.pagination>li>a:hover {
+      background: rgba(0,0,0,.075);
+    }
+  </style>
 </head>
-<body class="hold-transition sidebar-mini layout-navbar-fixed text-sm">
+<body class="hold-transition sidebar-mini layout-navbar-fixed text-sm sidebar-collapse" style="height: auto; min-height: 100%;">
 <div class="wrapper">
   <!-- Navbar -->
   <nav class="main-header navbar navbar-expand navbar-white navbar-light">
@@ -264,41 +281,35 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1>Icons</h1>
+            <h1><?= $this->params['title'] ?></h1>
           </div>
           <div class="col-sm-6">
-            <ol class="breadcrumb float-sm-right">
+            <!-- <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="#">Home</a></li>
               <li class="breadcrumb-item active">Icons</li>
-            </ol>
+            </ol> -->
           </div>
         </div>
       </div><!-- /.container-fluid -->
     </section>
 
     <!-- Main content -->
+    <!-- jQuery -->
+    <script src="/adminlte/plugins/jquery/jquery.min.js"></script>
     <section class="content">
       <div class="container-fluid">
-        <div class="card card-primary card-outline">
-          <div class="card-header">
-            <h3 class="card-title">Icons</h3>
-          </div> <!-- /.card-body -->
-          <div class="card-body">
-            <?= $content ?>
-          </div><!-- /.card-body -->
-        </div>
-      </div><!-- /.container-fluid -->
+                <?= $content ?>
+              </div>
     </section>
     <!-- /.content -->
   </div>
   <!-- /.content-wrapper -->
-  <footer class="main-footer">
+  <footer class="main-footer text-sm">
     <div class="float-right d-none d-sm-block">
       <!-- <b>Version</b> 3.0.0 -->
     </div>
-    <!-- <strong>Copyright &copy; 2021 xingmj.com.</strong> All rights
-    reserved. -->
-    Footer information.
+    <strong>Copyright &copy; 2021 xingmj.com.</strong> All rights
+    reserved.
   </footer>
 
   <!-- Control Sidebar -->
@@ -309,8 +320,8 @@
 </div>
 <!-- ./wrapper -->
 
-<!-- jQuery -->
-<script src="/adminlte/plugins/jquery/jquery.min.js"></script>
+<!-- Select2 -->
+<script src="/adminlte/plugins/select2/js/select2.full.min.js"></script>
 <!-- Bootstrap 4 -->
 <script src="/adminlte/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 <!-- AdminLTE App -->

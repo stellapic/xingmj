@@ -26,7 +26,8 @@ class BaseController extends Controller
 
     public function render($template, $data=[])
     {
-        return parent::render($template, array_merge($data, ['title' => $this->title]));
+        $this->view->params['title'] = $this->title;
+        return parent::render($template, $data);
     }
 
 }

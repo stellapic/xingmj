@@ -7,6 +7,7 @@ use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
 use common\models\LoginForm;
 use common\models\Photo;
+use common\models\PhotoCategory;
 use backend\models\search\PhotoSearch;
 
 /**
@@ -32,13 +33,17 @@ class PhotoController extends BaseController
         // echo "<pre>";
         // print_r($queryParams);exit;
         $searchModel = new PhotoSearch();
-        // $groupOrders = $searchModel->groupByOrderNo();
         $dataProvider = $searchModel->search($queryParams);
+
+        // photo category
+        $allCategory = PhotoCategory::find()->asArray()->all();
+        $allCategory = \yii\helpers\ArrayHelper::map($allCategory, 'category_name', 'category_title');
 
         return $this->render('index', [
             'searchModel'  => $searchModel,
             'dataProvider' => $dataProvider,
             'queryParams'  => $queryParams,
+            'allCategory'  => $allCategory,
         ]);
     }
 
