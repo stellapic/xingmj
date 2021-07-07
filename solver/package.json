@@ -12,9 +12,9 @@
   "author": "china.chenxi@gmail.com",
   "license": "ISC",
   "dependencies": {
-    "@hapi/hapi": "^20.1.4",
     "axios": "^0.21.1",
     "bunyan": "^1.8.15",
-    "form-data": "^2.3.3"
+    "form-data": "^2.3.3",
+    "ioredis": "^4.27.6"
   }
 }
