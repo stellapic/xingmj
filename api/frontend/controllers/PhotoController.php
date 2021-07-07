@@ -39,8 +39,11 @@ class PhotoController extends BaseJwtController
             'photo_path' => $photo->image,
         ]));
         // put into solver queue
-        $fullUrl = Yii::$app->params['fileServer'] . $photo->image;
-        Yii::$app->redis->lpush(Yii::$app->params['queueName']['solver_pending'], $fullUrl);
+        $message = [
+            'id' => $photo->id,
+            'url' => Yii::$app->params['fileServer'] . $photo->image,
+        ];
+        Yii::$app->redis->lpush(Yii::$app->params['queueName']['solver_pending'], json_encode($message));
         return [
             'shortid' => $photo->short_id,
         ];
