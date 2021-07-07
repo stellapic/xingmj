@@ -102,7 +102,7 @@ const login = async (apikey) => {
  * @returns int subid, submission id
  */
 const upload = async (session, image_url) => {
-    const url = config.API_URL_UPLOAD
+    const url = config.api.API_URL_UPLOAD
     const form = new FormData()
     const json = {
         'session': session,
@@ -120,7 +120,7 @@ const upload = async (session, image_url) => {
         const subid = response.data.subid
         // const hash = response.data.hash
         
-        if (status === config.STATUS_SUCCESS && subid) {
+        if (status === config.api.STATUS_SUCCESS && subid) {
             log.debug(`url upload success, subid: ${subid}`)
             resolve(subid)
         } else {
