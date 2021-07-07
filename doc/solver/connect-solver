@@ -2,13 +2,13 @@
 
 待解析队列：
 队列名称：queue:sovler:pending
-消息内容：{ "id": "123", "url": "https://bbs.imufu.com/upload/202107/2021071200291xx.jpg" }
+消息内容：{ "id": 1, "url": "https://bbs.imufu.cn/data/attachment/forum/202107/04/093749eyxotppsmxfp9mtm.jpg" }
 
 已解析队列：
 队列名称：queue:sovler:done
 消息内容：
 {
-	"id": "123",
+	"id": 1,
 	"status": "success",
 	"tags": [
 		"Crescent Nebula",
