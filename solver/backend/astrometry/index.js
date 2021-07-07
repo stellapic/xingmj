@@ -17,7 +17,7 @@ const log = Logger.getInstance()
  * @returns void
  */
 const request = (options) => {
-    axios.defaults.baseURL = config.BASE_URL
+    axios.defaults.baseURL = config.api.BASE_URL
 
     return new Promise((resolve, reject) => {
         log.debug(`url: ${options.url}`)
@@ -38,7 +38,7 @@ const request = (options) => {
         })
         .catch((error) => {
             const response = {
-                status: config.STATUS_ERROR,
+                status: config.api.STATUS_ERROR,
                 errormessage: ''
             }
             if (error.response) {
@@ -61,7 +61,7 @@ const request = (options) => {
  * @returns string session
  */
 const login = async (apikey) => {
-    const url = config.API_LOGIN
+    const url = config.api.API_LOGIN
     const form = new FormData()
     form.append('request-json', JSON.stringify({ 'apikey': apikey }))
 
@@ -69,7 +69,7 @@ const login = async (apikey) => {
         const status = response.data.status
         const session = response.data.session
         
-        if (status === config.STATUS_SUCCESS && typeof session !== 'undefined') {
+        if (status === config.api.STATUS_SUCCESS && typeof session !== 'undefined') {
             log.debug(`login success, session: ${session}`)
             resolve(response.data.session)
         } else {
@@ -172,7 +172,7 @@ const upload = async (session, image_url) => {
     }
  */
 const submission = async (subid) => {
-    const url = `${config.API_SUB_STATUS}/${subid}`
+    const url = `${config.api.API_SUB_STATUS}/${subid}`
 
     const callback = (response, resolve) => {
         const jobs = response.data.jobs
@@ -245,7 +245,7 @@ const submission = async (subid) => {
     }
  */
 const job = async (jobid) => {
-    const url = config.API_JOB_INFO.replace('{jobid}', jobid)
+    const url = config.api.API_JOB_INFO.replace('{jobid}', jobid)
 
     const callback = (response, resolve, reject) => {
         log.debug(`job status: ${response.data.status}`)
@@ -314,8 +314,8 @@ const annotate = async (jobid, filepath, type='full') => {
     // }
 
     const url = (type === 'full')
-                ? `${config.API_ANNOTATED_FULL}/${jobid}`
-                : `${config.API_ANNOTATED_DISPLAY}/${jobid}`
+                ? `${config.api.API_ANNOTATED_FULL}/${jobid}`
+                : `${config.api.API_ANNOTATED_DISPLAY}/${jobid}`
 
     try {
         await request(
@@ -337,7 +337,7 @@ const annotate = async (jobid, filepath, type='full') => {
  * @returns void
  */
 const skyplot = async (job_calibration_id, filepath, zoom=0) => {
-    const url = `${config.API_SKY_PLOT}${zoom}/${job_calibration_id}`
+    const url = `${config.api.API_SKY_PLOT}${zoom}/${job_calibration_id}`
 
     try {
         await request(

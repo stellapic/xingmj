@@ -11,7 +11,7 @@ import { login, upload, submission, job, annotate, skyplot } from '../backend/as
 const run_test = async (image_url) => {
     try {
         // let image_url = 'https://bbs.imufu.cn/data/attachment/forum/202106/21/155259okyu8eu8s8bou8kb.jpg'
-        let session = await login(config.API_KEY)
+        let session = await login(config.api.API_KEY)
         let subid = await upload(session, image_url)
 
         let got_sub_result = false
@@ -46,7 +46,7 @@ const run_test = async (image_url) => {
             // 只有档job_calibrations不为空时继续获取其他信息
             // if (sub.job_calibrations.length !== 0) {
                 jobinfo = await job(jobid)
-                job_solved = (jobinfo.status === config.STATUS_SUCCESS)
+                job_solved = (jobinfo.status === config.api.STATUS_SUCCESS)
             // }
         } while (!job_solved)
 

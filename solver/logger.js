@@ -11,8 +11,8 @@ export default class Logger {
     init() {
         this._log = bunyan.createLogger({
             name: 'solver',
-            level: config.LOG_LEVEL,    // fatal/error/warn/info/debug/trace
-            src: config.LOG_SRC
+            level: config.log.LOG_LEVEL,    // fatal/error/warn/info/debug/trace
+            src: config.log.LOG_SRC
             // stream: <node.js stream>,           // Optional, see "Streams" section
             // streams: [{
             //     level: 'info',
