@@ -2,9 +2,49 @@
 
 待解析队列：
 队列名称：queue:sovler:pending
-消息内容：{"id":"123", "url": "/upload/202107/2021071200291xx.jpg"}
+消息内容：{ "id": "123", "url": "https://bbs.imufu.com/upload/202107/2021071200291xx.jpg" }
 
 已解析队列：
 队列名称：queue:sovler:done
-消息内容：{"id":"123", "url": "/upload/202107/2021071200291xx.jpg", "graph_resolve": "/solver/202107/2021071200291xx.jpg", "graph_position": "/solver/202107/2021071200291xx_position.jpg"}
-
+消息内容：
+{
+	"id": "123",
+	"status": "success",
+	"tags": [
+		"Crescent Nebula",
+		"NGC 6888",
+		"IC 4996",
+		"The star 34Cyg"
+	],
+	"calibration": {
+		"ra": 303.03413131799505,
+		"dec": 38.34357146538215,
+		"radius": 1.869603156099992,
+		"pixscale": 5.484660589627083,
+		"orientation": 359.2039311771184,
+		"parity": 1.0
+	},
+	"submission": {
+		"user": 27946,
+		"processing_started": "2021-06-29 06:24:01.873119",
+		"processing_finished": "2021-06-29 06:24:03.171189",
+		"user_images": [
+			4824972
+		],
+		"images": [
+			11241864
+		],
+		"jobs": [
+			5391553
+		],
+		"job_calibrations": [
+			[
+				5391553,
+				3775027
+			]
+		]
+	},
+	"original": "/upload/202107/2021071200291xx.jpg",
+	"annotated": "/solver/202107/2021071200291xx.jpg",
+	"zoom": ["/zoom/0.jpg", "/zoom/1.jpg", "/zoom/2.jpg", "/zoom/3.jpg"]
+}
