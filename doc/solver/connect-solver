@@ -1,0 +1,10 @@
+基于Redis队列的星空图解析服务交互方式
+
+待解析队列：
+队列名称：queue:sovler:pending
+消息内容：{"id":"123", "url": "/upload/202107/2021071200291xx.jpg"}
+
+已解析队列：
+队列名称：queue:sovler:done
+消息内容：{"id":"123", "url": "/upload/202107/2021071200291xx.jpg", "graph_resolve": "/solver/202107/2021071200291xx.jpg", "graph_position": "/solver/202107/2021071200291xx_position.jpg"}
+
