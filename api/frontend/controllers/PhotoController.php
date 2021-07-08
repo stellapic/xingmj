@@ -37,7 +37,13 @@ class PhotoController extends BaseJwtController
         Yii::$app->queue->push(new \common\queues\ThumbnailJob([
             'photo_id' => $photo->id,
             'photo_path' => $photo->image,
-        ]));        
+        ]));
+        // put into solver queue
+        $message = [
+            'id' => $photo->id,
+            'url' => Yii::$app->params['fileServer'] . $photo->image,
+        ];
+        Yii::$app->redis->lpush(Yii::$app->params['queueName']['solver_pending'], json_encode($message));
         return [
             'shortid' => $photo->short_id,
         ];
