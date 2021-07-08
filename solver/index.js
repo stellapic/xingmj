@@ -34,6 +34,7 @@ import SolverFactory from './factory/SolverFactory.js'
             const task = JSON.parse(text)
             log.debug(`get task: ${text}`)
 
+            // check image url is or not exists
             const exists = await urlExist(task.url)
             if (!exists) {
                 log.warn(`url is not exists[${task.url}]`)
@@ -58,7 +59,7 @@ import SolverFactory from './factory/SolverFactory.js'
             }
 
             log.info('sleep 10s')
-            await setTimeout(10 * 1000)
+            await setTimeout(config.timeout)
         } while (true)
     } catch (e) {
         log.error(e)

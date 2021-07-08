@@ -6,6 +6,7 @@ const config = {
         LOG_SRC: false, // do not set true in production env
     },
     solver: 'astrometry', // astrometry | pi
+    timeout: 10000, // 10s
     retry: {
         RETRIES: 20,
         MIN_TIMEOUT: 10000, // 10s
