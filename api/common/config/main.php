@@ -7,6 +7,7 @@ return [
     'vendorPath' => dirname(dirname(__DIR__)) . '/vendor',
     'bootstrap' => [
         'queue', // 把这个组件注册到控制台
+        'queueSolver', // 把这个组件注册到控制台
     ],
     'components' => [
         'redis' => [
@@ -18,6 +19,12 @@ return [
             'as log' => \yii\queue\LogBehavior::class,//错误日志 默认为 console/runtime/logs/app.log
             'redis' => 'redis', // 连接组件或它的配置
             'channel' => 'queue', // Queue channel key
+        ],
+        'queueSolver' => [
+            'class' => \yii\queue\redis\Queue::class,
+            'as log' => \yii\queue\LogBehavior::class,//错误日志 默认为 console/runtime/logs/app.log
+            'redis' => 'redis', // 连接组件或它的配置
+            'channel' => 'queue:sovler:done', // Queue channel key
         ],
         'cache' => [
             'class' => 'yii\caching\FileCache',
