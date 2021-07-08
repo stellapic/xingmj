@@ -1,30 +1,73 @@
 'use strict'
 
-import Hapi from '@hapi/hapi'
+import IORedis from 'ioredis'
+import urlExist from "url-exist"
+import { setTimeout } from 'timers/promises'
 
-(() => {
-    const SOLVER_HOST = 'localhost'
-    const SOLVER_PORT = 3000
+import config from './config.js'
+import Logger from './logger.js'
+import SolverFactory from './factory/SolverFactory.js'
 
-    const server = new Hapi.server({
-        port: SOLVER_PORT,
-        host: SOLVER_HOST
+
+(async () => {
+    const log = Logger.getInstance()
+
+    process.on('unhandledRejection', (reason, promise) => {
+        log.error(`Unhandled Rejection at: ${promise}, 'reason: ${reason}`)
     })
 
-    // 
-    server.route({
-        method: 'GET',
-        path: '/',
-        handler: (request, h) => {
-            return 'welcome to astrometry'
-        }
-    })
+    try {
+        const client = new IORedis(config.redis.connect)
 
-    process.on('unhandledRejection', (err) => {
-        console.log(err)
-        process.exit(1)
-    })
+        do {
+            // task queue from php
+            const q_pending = 'queue:sovler:pending'
 
-    await server.start()
-    console.log('Server running on %s', server.info.uri)
+            // task queue needs to be run by solver
+            const q_solving = 'queue:sovler:solving'
+
+            // queue done
+            const q_done = 'queue:sovler:done'
+
+            // block
+            const text = await client.brpoplpush(q_pending, q_solving, config.redis.TIMEOUT_INDEFINITELY)
+            const task = JSON.parse(text)
+            log.debug(`get task: ${text}`)
+
+            const exists = await urlExist(task.url)
+            if (!exists) {
+                log.warn(`url is not exists[${task.url}]`)
+                continue
+            }
+
+            // create solver
+            const solver = SolverFactory.getSolver(config.solver)
+            // run solve process
+            const annotated = await solver.run(task.id, task.url)
+
+            // improve me!
+            // check solve result is or not valid
+
+            // store solve result to queue done
+            if (annotated) {
+                const result = await client
+                    .multi()
+                    .lpush(q_done, JSON.stringify(annotated)) // push astrometry result into queue done
+                    .rpop(q_solving) // remove task from queue solving
+                    .exec()
+            }
+
+            log.info('sleep 10s')
+            await setTimeout(10 * 1000)
+        } while (true)
+    } catch (e) {
+        log.error(e)
+
+        // push unfinished task to the top of queue solving
+        await client
+            .multi()
+            .rpop(q_solving)
+            .lpush(q_solving, text)
+    } finally {
+    }
 })()

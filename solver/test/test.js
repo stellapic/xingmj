@@ -1,12 +1,13 @@
 'use strict'
 
 import fs from 'fs'
+import retry from 'async-retry'
 import { basename } from 'path'
 import { setTimeout } from 'timers/promises'
 
 import config from '../config.js'
 
-import { login, upload, submission, job, annotate, skyplot } from '../backend/astrometry/index.js'
+import { login, upload, submission, job, annotate, skyplot } from '../backend/astrometry/functions.js'
 
 const run_test = async (image_url) => {
     try {
@@ -20,17 +21,22 @@ const run_test = async (image_url) => {
             job_calibrations: []
         }
         let jobinfo = {}
-        let retry = 0
+        let _retry = 1
         let sleep = [30, 30, 20, 20, 20, 20, 20, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10]
-        const max_retry = 20
-        do {
-            retry++
-            console.log(`try ${retry} times, sleep ${sleep[retry]} seconds`)
-            await setTimeout(sleep[retry] * 1000)
+
+        await retry(async bail => {
             sub = await submission(subid)
-            got_sub_result = (sub.jobs.length !== 0 && sub.jobs[0] && sub.job_calibrations.length !== 0)
-            console.log(got_sub_result, sub.jobs.length !== 0, sub.jobs[0], sub.job_calibrations.length !== 0)
-        } while (!got_sub_result && retry <= max_retry)
+            console.log(sub)
+            // got_sub_result = (sub.jobs.length !== 0 && sub.jobs[0] && sub.job_calibrations.length !== 0)
+            // console.log(got_sub_result, sub.jobs.length !== 0, sub.jobs[0], sub.job_calibrations.length !== 0)
+        }, {
+            retries: 20,
+            minTimeout: 10 * 1000,
+            maxTimeout: 20 * 1000,
+            onRetry: error => {
+                console.log(`retry ${_retry++} times to get submission`)
+            }
+        })
         console.log(sub)
 
         let job_solved = false
@@ -87,17 +93,17 @@ const run_test = async (image_url) => {
 }
 
 const images = [
-    'https://bbs.imufu.cn/data/attachment/forum/202106/21/155259okyu8eu8s8bou8kb.jpg',
-    'https://bbs.imufu.cn/data/attachment/forum/202106/21/155259mbm3h3m3e6z0i0nm.jpg',
-    'https://bbs.imufu.cn/data/attachment/forum/202106/21/155300tez5x5212ex6hlue.jpg',
-    'https://bbs.imufu.cn/data/attachment/forum/202106/21/155300yfh4em4c40py39mh.jpg',
-    'https://bbs.imufu.cn/data/attachment/forum/202106/21/155258o7ukz76xz8wjjnex.jpg',
-    'https://bbs.imufu.cn/data/attachment/forum/202106/21/155258v3cyofay2yj2icyc.jpg',
-    'https://bbs.imufu.cn/data/attachment/forum/202106/20/205419si6pzixij8zypr6j.jpg',
-    'https://bbs.imufu.cn/data/attachment/forum/202106/20/192412zzs7jj25wu3nuas5.jpg',
-    'https://bbs.imufu.cn/data/attachment/forum/202106/19/210431ae661me1plyezpjj.jpg',
-    'https://bbs.imufu.cn/data/attachment/forum/202106/16/142003v3yekioodeai6tdy.jpg',
-    'https://bbs.imufu.cn/data/attachment/forum/202106/16/170847m8z2f5zrc58oct42.jpg'
+    {'id': 1, 'url': 'https://bbs.imufu.cn/data/attachment/forum/202106/21/155259okyu8eu8s8bou8kb.jpg'},
+    {'id': 2, 'url': 'https://bbs.imufu.cn/data/attachment/forum/202106/21/155259mbm3h3m3e6z0i0nm.jpg'},
+    {'id': 3, 'url': 'https://bbs.imufu.cn/data/attachment/forum/202106/21/155300tez5x5212ex6hlue.jpg'},
+    {'id': 4, 'url': 'https://bbs.imufu.cn/data/attachment/forum/202106/21/155300yfh4em4c40py39mh.jpg'},
+    {'id': 5, 'url': 'https://bbs.imufu.cn/data/attachment/forum/202106/21/155258o7ukz76xz8wjjnex.jpg'},
+    {'id': 6, 'url': 'https://bbs.imufu.cn/data/attachment/forum/202106/21/155258v3cyofay2yj2icyc.jpg'},
+    {'id': 7, 'url': 'https://bbs.imufu.cn/data/attachment/forum/202106/20/205419si6pzixij8zypr6j.jpg'},
+    {'id': 8, 'url': 'https://bbs.imufu.cn/data/attachment/forum/202106/20/192412zzs7jj25wu3nuas5.jpg'},
+    {'id': 9, 'url': 'https://bbs.imufu.cn/data/attachment/forum/202106/19/210431ae661me1plyezpjj.jpg'},
+    {'id': 10, 'url': 'https://bbs.imufu.cn/data/attachment/forum/202106/16/142003v3yekioodeai6tdy.jpg'},
+    {'id': 11, 'url': 'https://bbs.imufu.cn/data/attachment/forum/202106/16/170847m8z2f5zrc58oct42.jpg'}
 ]
 
 for (let url of images) {

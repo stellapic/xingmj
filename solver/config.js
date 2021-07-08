@@ -5,6 +5,12 @@ const config = {
         LOG_LEVEL: 'trace', // fatal/error/warn/info/debug/trace
         LOG_SRC: false, // do not set true in production env
     },
+    solver: 'astrometry', // astrometry | pi
+    retry: {
+        RETRIES: 20,
+        MIN_TIMEOUT: 10000, // 10s
+        MAX_TIMEOUT: 20000 // 20s
+    },
     api: {
         BASE_URL: 'http://nova.astrometry.net',
         API_KEY: 'hopttfyedswulqlv',
@@ -18,11 +24,15 @@ const config = {
         API_ANNOTATED_DISPLAY: '/annotated_display',
         API_SKY_PLOT: 'sky_plot/zoom'
     },
+    annotated: '/Users/chenxi/Desktop/imufu/xingmj/solver/test/annotated_images',
     redis: {
-        port: 13697,
-        host: 'redis-13697.c275.us-east-1-4.ec2.cloud.redislabs.com',
-        password: '19810704',
-        db: 0
+        connect: {
+            port: 13697,
+            host: 'redis-13697.c275.us-east-1-4.ec2.cloud.redislabs.com',
+            password: '19810704',
+            db: 0
+        },
+        TIMEOUT_INDEFINITELY: 0
     }
 }
 

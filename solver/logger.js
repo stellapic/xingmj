@@ -27,10 +27,10 @@ export default class Logger {
     }
 
     static getInstance() {
-        if(!this._instance) {
-            this._instance = new Logger();
+        if (!this._instance) {
+            this._instance = new Logger()
         }
-        return this._instance._log;
+        return this._instance._log
     }
 }
 
