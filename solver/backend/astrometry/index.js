@@ -6,7 +6,7 @@ import { setTimeout } from 'timers/promises'
 
 import config from '../../config.js'
 import Logger from '../../logger.js'
-import { login, upload, submission, job, annotate, skyplot } from './functions.js'
+import { login, upload, submission, job, annotate, skyplot, grid } from './functions.js'
 
 export default class AstrometrySolver {
     /**
@@ -36,6 +36,17 @@ export default class AstrometrySolver {
         // define result, null initial
         let result = null
         const log = Logger.getInstance()
+        
+        // annotation dir
+        const annotated_dir = `${config.annotated}/${id}`
+
+        // check dir is or not exists
+        if (fs.existsSync(annotated_dir)) {
+            throw new Error(`dir already exists: ${annotated_dir}`)
+        }
+
+        // create annotated image dir
+        fs.mkdirSync(annotated_dir)
 
         try {
             // get session from astrometry
@@ -54,11 +65,11 @@ export default class AstrometrySolver {
             await retry(async bail => {
                 sub = await submission(subid)
             }, {
-                retries: config.retry.RETRIES,
-                minTimeout: config.retry.MIN_TIMEOUT,
-                maxTimeout: config.retry.MAX_TIMEOUT,
+                retries: config.api.retry.RETRIES,
+                minTimeout: config.api.retry.MIN_TIMEOUT,
+                maxTimeout: config.api.retry.MAX_TIMEOUT,
                 onRetry: error => {
-                    log.info(`retry to get submission`)
+                    // log.info(`retry to get submission`)
                 }
             })
 
@@ -76,15 +87,17 @@ export default class AstrometrySolver {
                 job_solved = (jobinfo.status === config.api.STATUS_SUCCESS)
             } while (!job_solved)
 
-            let tags = jobinfo.tags
-            const annotated_dir = `${config.annotated}/${id}`
-            fs.mkdirSync(annotated_dir)
+            // annotation
+            const annotated = { 'full': '', 'display': '' }
+            for (let type of config.types) {
+                const annotated_path = `${annotated_dir}/annotated_${type}_${jobinfo.original_filename}`
+                const bytes = await annotate(jobid, annotated_path, type)
+                if (bytes === 0) {
+                    log.warn(`get annotated ${type} image failed: ${annotated_path}`)
+                    continue
+                }
 
-            let type = 'full' // full/display
-            let annotated_path = `${annotated_dir}/annotated_${type}_${jobinfo.original_filename}`
-            let bytes = await annotate(jobid, annotated_path, type)
-            if (bytes === 0) {
-                console.log(`get annotated image failed: ${annotated_path}`)
+                annotated[type] = annotated_path
             }
 
             const skyplots = []
@@ -95,12 +108,24 @@ export default class AstrometrySolver {
                     let plot_path = `${annotated_dir}/skyplot_zoom${zoom}.png`
                     bytes = await skyplot(job_cal_id, plot_path, zoom)
                     if (bytes === 0) {
-                        console.log(`get annotated image failed: ${plot_path}`)
+                        log.warn(`get skyplot zoom${zoom} image failed: ${plot_path}`)
                         continue
                     }
 
                     skyplots.push(plot_path)
                 }
+            }
+
+            const grid = { 'full': '', 'display': '' }
+            for (let type of config.types) {
+                const grid_path = `${annotated_dir}/grid_${type}_${jobinfo.original_filename}`
+                const bytes = await grid(jobid, annotated_path, type)
+                if (bytes === 0) {
+                    log.warn(`get grid ${type} image failed: ${annotated_path}`)
+                    continue
+                }
+
+                grid[type] = grid_path
             }
 
             result = {
@@ -110,12 +135,14 @@ export default class AstrometrySolver {
                 'calibration': jobinfo.calibration,
                 'submission': sub,
                 'original': jobinfo.original_filename,
-                'annotated': annotated_path,
+                'annotated': annotated,
+                'grid': grid,
                 'zoom': skyplots
             }
-            console.log('finish')
+
+            log.info(`task ${id} solve finish`)
         } catch (e) {
-            console.log(e)
+            throw new Error(e)
         }
 
         return result
