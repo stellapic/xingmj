@@ -1,3 +1,3 @@
-sudo mkdir -p /data/{db,logs,resources,wwwroot}
+sudo mkdir -p /data/{db,logs,resources,wwwroot,secrets}
 
 cd /data/wwwroot && git clone git@github.com:stellapic/xingmj.git
