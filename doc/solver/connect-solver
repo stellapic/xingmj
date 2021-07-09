@@ -45,7 +45,13 @@
 		]
 	},
 	"original": "/upload/202107/2021071200291xx.jpg",
-	"annotated": "/solver/202107/annotated_2021071200291xx.jpg",
-	"sdss": "/solver/202107/sdss_2021071200291xx.jpg",
+	"annotated": {
+		"full": "/solver/202107/annotated_full_2021071200291xx.jpg",
+		"display: "/solver/202107/annotated_display_2021071200291xx.jpg"
+	},
+	"grid": {
+		"full": "/solver/202107/sdss_full_2021071200291xx.jpg",
+		"display: "/solver/202107/sdss_display_2021071200291xx.jpg"
+	},
 	"zoom": ["/zoom/0.jpg", "/zoom/1.jpg", "/zoom/2.jpg", "/zoom/3.jpg"]
 }
