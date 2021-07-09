@@ -61,6 +61,8 @@ const request = (options) => {
  * @returns string session
  */
 const login = async (apikey) => {
+    log.info('login')
+
     const url = config.api.API_LOGIN
     const form = new FormData()
     form.append('request-json', JSON.stringify({ 'apikey': apikey }))
@@ -178,8 +180,7 @@ const submission = async (subid) => {
         const jobs = response.data.jobs
         const job_calibrations = response.data.job_calibrations
 
-        // (sub.jobs.length !== 0 && sub.jobs[0] && sub.job_calibrations.length !== 0)
-        console.log(jobs, job_calibrations, jobs.length, jobs[0], job_calibrations.length)
+        // log.debug(jobs, job_calibrations, jobs.length, jobs[0], job_calibrations.length)
         if (jobs.length === 0 || !jobs[0] || job_calibrations.length === 0) {
             reject('submission is not finished yet')
         } else {
@@ -342,5 +343,26 @@ const skyplot = async (job_calibration_id, filepath, zoom=0) => {
     }
 }
 
+/**
+ * get sdss image from astrometry
+ * @param int job_calibration_id
+ * @returns void
+ */
+ const grid = async (job_calibration_id, filepath, type='full') => {
+    const url = `${config.api.API_GRID}_${type}/${job_calibration_id}`
 
-export { login, upload, submission, job, annotate, skyplot }
+    try {
+        await request(
+        {
+            'url': url,
+            'config': { responseType: 'arraybuffer' },
+            'method': 'get',
+            'callback': image_callback.bind({ 'filepath': filepath })
+        })
+    } catch (e) {
+        log.error(e)
+    }
+}
+
+
+export { login, upload, submission, job, annotate, skyplot, grid }
