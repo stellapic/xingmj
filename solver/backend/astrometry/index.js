@@ -35,6 +35,8 @@ export default class AstrometrySolver {
     async run(id, image_url) {
         // define result, null initial
         let result = null
+
+        // create logger
         const log = Logger.getInstance()
         
         // annotation dir
@@ -42,7 +44,10 @@ export default class AstrometrySolver {
 
         // check dir is or not exists
         if (fs.existsSync(annotated_dir)) {
-            throw new Error(`dir already exists: ${annotated_dir}`)
+            log.error(`annotated dir already exists: ${annotated_dir}`)
+            // throw new Error(`annotated dir already exists: ${annotated_dir}`)
+
+            return null
         }
 
         // create annotated image dir
@@ -106,9 +111,9 @@ export default class AstrometrySolver {
 
                 for (let zoom of [0, 1, 2, 3]) {
                     let plot_path = `${annotated_dir}/skyplot_zoom${zoom}.png`
-                    bytes = await skyplot(job_cal_id, plot_path, zoom)
+                    const bytes = await skyplot(job_cal_id, plot_path, zoom)
                     if (bytes === 0) {
-                        log.warn(`get skyplot zoom${zoom} image failed: ${plot_path}`)
+                        log.warn(`get skyplot zoom${zoom} image failed: ${plot_path}, bytes: ${bytes}`)
                         continue
                     }
 
@@ -116,16 +121,16 @@ export default class AstrometrySolver {
                 }
             }
 
-            const grid = { 'full': '', 'display': '' }
+            const grids = { 'full': '', 'display': '' }
             for (let type of config.types) {
                 const grid_path = `${annotated_dir}/grid_${type}_${jobinfo.original_filename}`
-                const bytes = await grid(jobid, annotated_path, type)
+                const bytes = await grid(jobid, grid_path, type)
                 if (bytes === 0) {
-                    log.warn(`get grid ${type} image failed: ${annotated_path}`)
+                    log.warn(`get grid ${type} image failed: ${grid_path}`)
                     continue
                 }
 
-                grid[type] = grid_path
+                grids[type] = grid_path
             }
 
             result = {
@@ -136,13 +141,15 @@ export default class AstrometrySolver {
                 'submission': sub,
                 'original': jobinfo.original_filename,
                 'annotated': annotated,
-                'grid': grid,
+                'grid': grids,
                 'zoom': skyplots
             }
 
             log.info(`task ${id} solve finish`)
         } catch (e) {
-            throw new Error(e)
+            log.error(e)
+
+            return null
         }
 
         return result

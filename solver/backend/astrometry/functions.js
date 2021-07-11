@@ -2,7 +2,6 @@
 
 import fs from 'fs'
 import axios from 'axios'
-import retry from 'async-retry'
 import FormData from 'form-data'
 
 import config from '../../config.js'
@@ -272,6 +271,7 @@ const image_callback = async function (response, resolve, reject) {
     const is_image = (content_type.split('/')[0] === 'image')
     
     if (!is_image) {
+        log.debug(`content type: ${content_type}`)
         reject('astrometry returns is not image')
         return
     }

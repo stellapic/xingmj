@@ -3,10 +3,10 @@
 const config = {
     log: {
         LOG_LEVEL: 'trace', // fatal/error/warn/info/debug/trace
-        LOG_SRC: true, // do not set true in production env
+        LOG_SRC: false, // do not set true in production env, only for debug
     },
     solver: 'astrometry', // astrometry | pi
-    timeout: 10000, // 10s
+    timeout: 2000, // 2s
     types: ['full', 'display'],
     api: {
         BASE_URL: 'http://nova.astrometry.net',
@@ -20,7 +20,7 @@ const config = {
         API_ANNOTATED_FULL: '/annotated_full',
         API_ANNOTATED_DISPLAY: '/annotated_display',
         API_SKY_PLOT: '/sky_plot/zoom',
-        API_GRID: '/grid_display',
+        API_GRID: '/grid',
         retry: {
             RETRIES: 40,
             MIN_TIMEOUT: 10000, // 10s
