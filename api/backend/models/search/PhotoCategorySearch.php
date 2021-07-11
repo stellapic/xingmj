@@ -2,13 +2,10 @@
 
 namespace backend\models\search;
 
-use common\enums\PhotoEnum;
-use common\enums\ThumbnailEnum;
-use common\models\User;
-use common\models\Photo;
+use common\models\PhotoCategory;
 use yii\data\ActiveDataProvider;
 
-class PhotoSearch extends Photo
+class PhotoCategorySearch extends PhotoCategory
 {
 
     public $keyword, $tag;
@@ -52,22 +49,11 @@ class PhotoSearch extends Photo
             return $dataProvider;
         }
 
-        $query->andFilterWhere([
-            'category' => $this->category,
-        ]);
-
-        if ($this->tag) {
-            $query->andWhere("tags->'$.{$this->tag}' = 1");
-        }
-
         if ($this->keyword) {
             $query->andFilterWhere([
                 'OR',
-                ['like', 'title', $this->keyword],
-                ['like', 'intro', $this->keyword],
-                ['like', 'take_place', $this->keyword],
-                ['category' => \common\models\PhotoCategory::find()->select('category_name')->where(['like', 'category_title', $this->keyword])],
-                ['creator' => User::find()->select('id')->where(['like', 'username', $this->keyword])],
+                ['like', 'category_title', $this->category_title],
+                ['like', 'category_name', $this->category_name],
             ]);
         }
 
@@ -80,20 +66,9 @@ class PhotoSearch extends Photo
     public function fields()
     {
         return [
-            'id' => function () {
-                return $this->short_id;
-            },
-            'image' => function () {
-                return ImageHelper::convertToThumbnailPath(\Yii::$app->params['fileServer'] . $this->image, ThumbnailEnum::TINY);
-                return \Yii::$app->params['fileServer'] . $this->image;
-            },
-            'title',
-            'creator' => function () {
-                return User::find()->limit(1)->select('username')->where(['id' => $this->creator])->scalar();
-            },
-            'tags' => function () {
-                return $this->tags ? array_keys($this->tags) : [];
-            },
+            'id',
+            'category_name',
+            'category_title',
         ];
     }
 

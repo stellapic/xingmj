@@ -4,6 +4,7 @@ namespace frontend\modules\user\controllers;
 use common\enums\UserRelPhotoEnum;
 use common\models\Photo;
 use common\models\UserRelPhoto;
+use common\models\PhotoComment;
 use Yii;
 
 class PhotoController extends BaseUserController
@@ -33,7 +34,7 @@ class PhotoController extends BaseUserController
     {
         $photo = Photo::findOne(['short_id' => $shortid]);
         if (!$photo) {
-            throw new \yii\base\UserException('parameter invalid.');
+            throw new \yii\base\UserException('shortid invalid.');
         }
 
         $relInstance = UserRelPhoto::findOne([
@@ -72,4 +73,43 @@ class PhotoController extends BaseUserController
             }
         }
     }
+
+    public function actionComments()
+    {
+        $shortid = Yii::$app->request->post('shortid');
+        $content = Yii::$app->request->post('content');
+        if (!$shortid) {
+            throw new \yii\base\UserException('parameter shortid required.');
+        }
+        if (!$content) {
+            throw new \yii\base\UserException('parameter content required.');
+        }
+        $photo = Photo::findOne(['short_id' => $shortid]);
+        if (!$photo) {
+            throw new \yii\base\UserException('shortid invalid.');
+        }
+        $comment = new PhotoComment();
+        $comment->photo_id = $photo->id;
+        $comment->user_id = Yii::$app->user->id;
+        $comment->content = $content;
+        $comment->save();
+    }
+
+    public function actionUncomments()
+    {
+        $commentId = Yii::$app->request->post('comment_id');
+        if (!$commentId) {
+            throw new \yii\base\UserException('parameter comment_id required.');
+        }
+        $comment = PhotoComment::findOne(['id' => $commentId]);
+        if (!$comment) {
+            throw new \yii\base\UserException('delete failed.');
+        }
+        if ($comment->user_id != Yii::$app->user->id) {
+            throw new \yii\base\UserException('not comment author.');
+        }
+        $comment->delete();
+    }
+
+
 }

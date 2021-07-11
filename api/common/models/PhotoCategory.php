@@ -40,8 +40,8 @@ class PhotoCategory extends BaseModel
     {
         return [
             'id' => 'ID',
-            'category_name' => 'Category Name',
-            'category_title' => 'Category Title',
+            'category_name' => '类别标识',
+            'category_title' => '类别名称',
         ];
     }
 }

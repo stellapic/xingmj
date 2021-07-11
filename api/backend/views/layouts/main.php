@@ -31,6 +31,19 @@
     .pagination-container>.pagination>li>a:hover {
       background: rgba(0,0,0,.075);
     }
+    .pagination-container>.pagination>li.active {
+      background: #ddd;
+    }
+    .pagination-container>.pagination>li.active>a {
+      color: #333;
+      cursor: default;
+    }
+    .form-control-navbar+.input-group-append>.btn-navbar,
+    input.form-control.form-control-navbar {
+        background-color: #f5f5f5;
+        border-color: #e8e8e8;
+        color: rgba(52,58,64,.8);
+    }
   </style>
 </head>
 <body class="hold-transition sidebar-mini layout-navbar-fixed text-sm sidebar-collapse" style="height: auto; min-height: 100%;">
@@ -46,14 +59,14 @@
         <a href="/" class="nav-link">首页</a>
       </li>
       <li class="nav-item d-none d-sm-inline-block">
-        <a href="#" class="nav-link">Contact</a>
+        <a href="#" class="nav-link">精选图片</a>
       </li>
     </ul>
 
     <!-- SEARCH FORM -->
-    <form class="form-inline ml-3">
+    <form class="form-inline ml-3" action="/photo">
       <div class="input-group input-group-sm">
-        <input class="form-control form-control-navbar" type="search" placeholder="Search" aria-label="Search">
+        <input class="form-control form-control-navbar" name="keyword" type="search" placeholder="搜索图片" aria-label="Search" value="<?= \Yii::$app->request->get('keyword') ?>">
         <div class="input-group-append">
           <button class="btn btn-navbar" type="submit">
             <i class="fas fa-search"></i>
@@ -150,6 +163,11 @@
         </div>
       </li>
       <li class="nav-item">
+        <a class="nav-link" data-widget="control-sidebar" data-slide="true" href="#" role="button">
+          <i class="fas fa-th-large"></i>
+        </a>
+      </li>
+      <li class="nav-item">
         <a class="nav-link" href="/site/logout">
           <i class="fas fa-sign-out-alt"></i>
         </a>
@@ -188,7 +206,7 @@
                with font-awesome or any other icon font library -->
 
           <li class="nav-item">
-            <a href="../widgets.html" class="nav-link">
+            <a href="/home/slides" class="nav-link">
               <i class="nav-icon fas fa-home"></i>
               <p>
                 首页轮播图
@@ -213,7 +231,7 @@
                 </a>
               </li>
               <li class="nav-item">
-                <a href="/adminlte/index3.html" class="nav-link">
+                <a href="/photo-category" class="nav-link">
                   <i class="far fa-folder nav-icon"></i>
                   <p>类别管理</p>
                 </a>
@@ -283,11 +301,22 @@
           <div class="col-sm-6">
             <h1><?= $this->params['title'] ?></h1>
           </div>
+
           <div class="col-sm-6">
             <!-- <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="#">Home</a></li>
               <li class="breadcrumb-item active">Icons</li>
             </ol> -->
+            <!-- <form class="form-inline ml-3">
+              <div class="input-group input-group-sm">
+                <input class="form-control form-control-navbar" type="search" placeholder="Search" aria-label="Search">
+                <div class="input-group-append">
+                  <button class="btn btn-navbar" type="submit">
+                    <i class="fas fa-search"></i>
+                  </button>
+                </div>
+              </div>
+            </form> -->
           </div>
         </div>
       </div><!-- /.container-fluid -->
@@ -315,6 +344,7 @@
   <!-- Control Sidebar -->
   <aside class="control-sidebar control-sidebar-dark">
     <!-- Control sidebar content goes here -->
+    <?php include 'sidebar.php' ?>
   </aside>
   <!-- /.control-sidebar -->
 </div>
@@ -327,6 +357,13 @@
 <!-- AdminLTE App -->
 <script src="/adminlte/dist/js/adminlte.min.js"></script>
 <!-- AdminLTE for demo purposes -->
-<!-- <script src="/adminlte/dist/js/demo.js"></script> -->
+<script src="/adminlte/dist/js/demo.js"></script>
+<script type="text/javascript">
+  $(function() {
+    $('input[name="id_all"]').click(function() {
+      $('input[name="id[]"]').trigger('click');
+    });
+  });
+</script>
 </body>
 </html>

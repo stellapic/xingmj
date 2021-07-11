@@ -86,7 +86,7 @@ class Photo extends BaseModel
             'intro' => '简介',
             'device' => '设备信息',
             'remote_station' => '远程台信息',
-            'graph_resolve' => '星空解析图',
+            'graph_resolve' => '解析图',
             'graph_position' => '天球定位图',
             'thumbs_count' => '点赞数量',
             'favorites_count' => '收藏数量',

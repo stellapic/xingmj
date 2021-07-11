@@ -5,7 +5,11 @@ use yii\helpers\Html;
 use kartik\grid\GridView;
 use kartik\dynagrid\DynaGrid;
 
+use common\models\Photo;
+
 ?>
+
+<?php \backend\assets\AppAsset::register($this); ?>
 
 <!-- grid
 <div class="card card-default">
@@ -30,83 +34,39 @@ $gridColumns = [
         'headerOptions'  => ['style' => 'min-width:40px;'],
 
     ],
-    [
-        'contentOptions' => ['class' => 'img_column'],
-        'order' => DynaGrid::ORDER_FIX_LEFT,
-        'enableSorting' => false,
-        'attribute' => 'image',
-        'format' => 'raw',
-        'value'  => function ($model) {
-            if ($model->short_id) {
-                return '<a target="_blank" href="/photos/show/' . $model->short_id . '">
-                <img style="display: block;width:100%;" src="' . \common\helpers\ImageHelper::convertToThumbnailPath(\Yii::$app->params['fileServer'] . $model->image, \common\enums\ThumbnailEnum::TINY) . '" alt="" class="">
-                </a>';
-            }
 
-            return '';
+    [
+        'attribute' => 'id',
+        'enableSorting' => false,
+    ],
+    [
+        'attribute' => 'category_name',
+        'enableSorting' => false,
+        // 'value'               => function($model) {
+        //     return $model->category_name ?? '';
+        // },
+    ],
+    [
+        // 'class' => 'kartik\grid\EditableColumn',
+        'attribute' => 'category_title',
+        'enableSorting' => false,
+        // 'headerOptions' => ['style' => 'min-width:150px'],
+        // 'contentOptions' => ['style' => 'min-width:150px'],
+        // 'editableOptions' => [
+        //     'asPopover' => false,
+        // ],
+        // 'refreshGrid' => true,
+    ],
+    [
+        'header' => '作品数量',
+        'value'  => function($model) {
+            return Photo::find()->where(['category' => $model->category_name])->count();
         },
-    ],
-
-    [
-        'enableSorting' => false,
-        'attribute' => 'title',
-    ],
-
-    [
-        'attribute'           => 'category',
-        'enableSorting' => false,
-        'value'               => function($model) use ($allCategory) {
-            return $allCategory[$model->category] ?? '';
-        }
-
-    ],
-    [
-        'attribute' => 'take_date',
-        'enableSorting' => false,
-        'value'               => function($model) {
-            return $model->take_date ?? '';
-        },
-    ],
-    [
-        'attribute' => 'take_place',
-        'enableSorting' => false,
-    ],
-    [
-        'attribute' => 'tags',
-        'enableSorting' => false,
-    ],
-    [
-        'attribute' => 'graph_resolve',
-        'enableSorting' => false,
-        'value'               => function($model) {
-            return $model->graph_resolve ?? '';
-        },
-    ],
-    [
-        'attribute' => 'graph_position',
-        'enableSorting' => false,
-         'value'               => function($model) {
-            return $model->graph_position ?? '';
-        },
-    ],
-
-    [
-        // 'headerOptions' => ['style' => 'min-width:120px'],
-        'enableSorting' => false,
-        'attribute'    => 'creator',
-        'value'               => function($model) {
-            return \common\models\User::find()->limit(1)->select('username')->where(['id' => $model->creator])->scalar();
-        }
-    ],
-    [
-        'headerOptions' => ['style' => 'min-width:120px'],
-        'enableSorting' => false,
-        'attribute'    => 'create_at',
     ],
 ];
 
 DynaGrid::begin([
-    'options'            => ['id' => 'dynagrid-photos'],
+    'options'            => ['id' => 'dynagrid-photos-category'],
     'columns'            => $gridColumns,
     // 'theme'              => 'panel-info',
     'showPersonalize' => true,
@@ -156,6 +116,7 @@ DynaGrid::end();
     </div>
     </div>
 </div> -->
+
 
 
 

@@ -17,7 +17,7 @@ $this->title = 'My Yii Application';
             <div class="card">
               <div class="card-header border-0">
                 <div class="d-flex justify-content-between">
-                  <h3 class="card-title">Online Store Visitors</h3>
+                  <h3 class="card-title">图片发布统计</h3>
                   <a href="javascript:void(0);">View Report</a>
                 </div>
               </div>
@@ -164,7 +164,7 @@ $this->title = 'My Yii Application';
             <div class="card">
               <div class="card-header border-0">
                 <div class="d-flex justify-content-between">
-                  <h3 class="card-title">Sales</h3>
+                  <h3 class="card-title">新增用户统计</h3>
                   <a href="javascript:void(0);">View Report</a>
                 </div>
               </div>
@@ -202,7 +202,7 @@ $this->title = 'My Yii Application';
 
             <div class="card">
               <div class="card-header border-0">
-                <h3 class="card-title">Online Store Overview</h3>
+                <h3 class="card-title">图片解析统计</h3>
                 <div class="card-tools">
                   <a href="#" class="btn btn-sm btn-tool">
                     <i class="fas fa-download"></i>

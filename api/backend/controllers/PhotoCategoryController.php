@@ -4,15 +4,12 @@ namespace backend\controllers;
 use Yii;
 use common\models\Photo;
 use common\models\PhotoCategory;
-use backend\models\search\PhotoSearch;
+use backend\models\search\PhotoCategorySearch;
 
-/**
- * Photo controller
- */
-class PhotoController extends BaseController
+class PhotoCategoryController extends BaseController
 {
 
-    public $title = '图片管理';
+    public $title = '类别管理';
 
     /**
      * Lists all photo models.
@@ -28,27 +25,22 @@ class PhotoController extends BaseController
         $queryParams = Yii::$app->request->queryParams;
         // echo "<pre>";
         // print_r($queryParams);exit;
-        $searchModel = new PhotoSearch();
+        $searchModel = new PhotoCategorySearch();
         $dataProvider = $searchModel->search($queryParams);
-
-        // photo category
-        $allCategory = PhotoCategory::find()->asArray()->all();
-        $allCategory = \yii\helpers\ArrayHelper::map($allCategory, 'category_name', 'category_title');
 
         return $this->render('index', [
             'searchModel'  => $searchModel,
             'dataProvider' => $dataProvider,
             'queryParams'  => $queryParams,
-            'allCategory'  => $allCategory,
         ]);
     }
 
     private function editRow()
     {
         $id = Yii::$app->request->post('editableKey');
-        $model = Photo::findOne(['id' => $id]);
+        $model = PhotoCategory::findOne(['id' => $id]);
         if (!$model) {
-            throw new NotFoundHttpException('photo id does not exist.');
+            throw new NotFoundHttpException('PhotoCategory does not exist.');
         }
         // update some fields
         // ..
