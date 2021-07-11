@@ -2,13 +2,12 @@
 
 namespace backend\models\search;
 
-use common\enums\PhotoEnum;
-use common\enums\ThumbnailEnum;
+use common\models\PhotoComment;
 use common\models\User;
-use common\models\Photo;
+use common\enums\ThumbnailEnum;
 use yii\data\ActiveDataProvider;
 
-class PhotoSearch extends Photo
+class PhotoCommentSearch extends PhotoComment
 {
 
     public $keyword, $tag;
@@ -52,22 +51,10 @@ class PhotoSearch extends Photo
             return $dataProvider;
         }
 
-        $query->andFilterWhere([
-            'category' => $this->category,
-        ]);
-
-        if ($this->tag) {
-            $query->andWhere("tags->'$.{$this->tag}' = 1");
-        }
-
         if ($this->keyword) {
             $query->andFilterWhere([
                 'OR',
-                ['like', 'title', $this->keyword],
-                ['like', 'intro', $this->keyword],
-                ['like', 'take_place', $this->keyword],
-                ['category' => \common\models\PhotoCategory::find()->select('category_name')->where(['like', 'category_title', $this->keyword])],
-                ['creator' => User::find()->select('id')->where(['like', 'username', $this->keyword])],
+                ['like', 'content', $this->content],
             ]);
         }
 
@@ -80,19 +67,16 @@ class PhotoSearch extends Photo
     public function fields()
     {
         return [
-            'id' => function () {
-                return $this->short_id;
+            'id',
+            'title' => function () {
+                $image = Photo::find()->select('image')->where(['id' => $this->photo_id])->scalar();
+                return ImageHelper::convertToThumbnailPath(\Yii::$app->params['fileServer'] . $image, ThumbnailEnum::TINY);
             },
-            'image' => function () {
-                return ImageHelper::convertToThumbnailPath(\Yii::$app->params['fileServer'] . $this->image, ThumbnailEnum::TINY);
-            },
-            'title',
-            'creator' => function () {
-                return User::find()->limit(1)->select('username')->where(['id' => $this->creator])->scalar();
-            },
-            'tags' => function () {
-                return $this->tags ? array_keys($this->tags) : [];
-            },
+            'content',
+            // 'user_id' => function () {
+            //     return User::find()->limit(1)->select('username')->where(['id' => $this->user_id])->scalar();
+            // },
+            'created_at',
         ];
     }
 

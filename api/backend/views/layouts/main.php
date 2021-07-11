@@ -237,19 +237,19 @@
                 </a>
               </li>
               <li class="nav-item">
-                <a href="/adminlte/index3.html" class="nav-link">
+                <a href="#/adminlte/index3.html" class="nav-link">
                   <i class="fas fa-hashtag nav-icon"></i>
                   <p>标签管理</p>
                 </a>
               </li>
               <li class="nav-item">
-                <a href="/adminlte/index3.html" class="nav-link">
+                <a href="#/adminlte/index3.html" class="nav-link">
                   <i class="fas fa-laptop-code nav-icon"></i>
                   <p>远程台管理</p>
                 </a>
               </li>
               <li class="nav-item">
-                <a href="/adminlte/index2.html" class="nav-link">
+                <a href="/photo-comment" class="nav-link">
                   <i class="far fa-comments nav-icon"></i>
                   <p>图片评论</p>
                 </a>
@@ -266,19 +266,19 @@
             </a>
             <ul class="nav nav-treeview">
               <li class="nav-item">
-                <a href="/adminlte/index.html" class="nav-link">
+                <a href="/managers" class="nav-link">
                   <i class="fas fa-user nav-icon"></i>
                   <p>管理员列表</p>
                 </a>
               </li>
               <li class="nav-item">
-                <a href="/adminlte/index.html" class="nav-link">
+                <a href="/members" class="nav-link">
                   <i class="fas fa-users nav-icon"></i>
                   <p>普通用户列表</p>
                 </a>
               </li>
               <li class="nav-item">
-                <a href="/adminlte/index2.html" class="nav-link">
+                <a href="#settings" class="nav-link">
                   <i class="fas fa-cog nav-icon"></i>
                   <p>系统设置</p>
                 </a>

@@ -43,9 +43,9 @@ class PhotoComment extends BaseModel
         return [
             'id' => 'ID',
             'photo_id' => 'Photo ID',
-            'user_id' => 'User ID',
-            'content' => 'Content',
-            'created_at' => 'Created At',
+            'user_id' => '用户',
+            'content' => '评论内容',
+            'created_at' => '发表时间',
         ];
     }
 }
