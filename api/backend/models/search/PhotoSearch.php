@@ -65,10 +65,14 @@ class PhotoSearch extends Photo
                 'OR',
                 ['like', 'title', $this->keyword],
                 ['like', 'intro', $this->keyword],
+                ['like', 'take_place', $this->keyword],
+                ['category' => \common\models\PhotoCategory::find()->select('category_name')->where(['like', 'category_title', $this->keyword])],
+                ['creator' => User::find()->select('id')->where(['like', 'username', $this->keyword])],
             ]);
         }
 
-        // p($params);
+        // echo "<pre>";
+        // print_r($params);
         // echo $query->createCommand()->getRawSql();exit;
         return $dataProvider;
     }
@@ -81,7 +85,6 @@ class PhotoSearch extends Photo
             },
             'image' => function () {
                 return ImageHelper::convertToThumbnailPath(\Yii::$app->params['fileServer'] . $this->image, ThumbnailEnum::TINY);
-                return \Yii::$app->params['fileServer'] . $this->image;
             },
             'title',
             'creator' => function () {

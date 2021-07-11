@@ -2,6 +2,7 @@
 namespace frontend\controllers;
 
 use common\models\PhotoCategory;
+use common\models\PhotoComment;
 use frontend\models\Photo;
 use frontend\models\search\PhotoSearch;
 use Yii;
@@ -14,6 +15,7 @@ class PhotoController extends BaseJwtController
         'list',
         'show',
         'user-works',
+        'comments',
     ];
 
     public function actionNew()
@@ -59,6 +61,23 @@ class PhotoController extends BaseJwtController
             throw new \yii\web\NotFoundHttpException('not found.');
         }
         return $photo;
+    }
+
+    public function actionComments($shortid)
+    {
+        $offset = Yii::$app->request->get('offset');
+        $photo = Photo::findOne(['short_id' => $shortid]);
+        if (!$photo) {
+            throw new \yii\base\UserException('shortid invalid.');
+        }
+        $query = PhotoComment::find()->alias('c');
+        $query->innerJoin('user as u', 'c.user_id=u.id');
+        $query->select('c.id as comment_id, c.content, c.created_at, u.username, u.avatar');
+        $query->limit($this->pageSize);
+        if ($offset > 0) {
+            $query->offset($offset);
+        }
+        return $query->asArray()->all();
     }
 
     public function actionMine()

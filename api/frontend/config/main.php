@@ -92,6 +92,7 @@ return [
                 // photos
                 '/photos/new' => '/photo/new',
                 '/photos/mine' => '/photo/mine',
+                '/photos/show/<shortid:(.)+>/comments' => '/photo/comments',
                 '/photos/show/<shortid:(.)+>' => '/photo/show',
                 '/photos/u/<username:(.)+>' => '/photo/user-works',
                 '/photos' => '/photo/list',

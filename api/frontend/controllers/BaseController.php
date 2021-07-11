@@ -9,6 +9,8 @@ class BaseController extends \yii\rest\Controller
 {
     public $enableCsrfValidation = false;
 
+    public $pageSize = 20;
+
     public $modelClass = 'frontend\models\User'; // 
 
     public function behaviors()
