@@ -162,11 +162,11 @@
           <a href="#" class="dropdown-item dropdown-footer">See All Notifications</a>
         </div>
       </li>
-      <li class="nav-item">
+      <!-- <li class="nav-item">
         <a class="nav-link" data-widget="control-sidebar" data-slide="true" href="#" role="button">
           <i class="fas fa-th-large"></i>
         </a>
-      </li>
+      </li> -->
       <li class="nav-item">
         <a class="nav-link" href="/site/logout">
           <i class="fas fa-sign-out-alt"></i>
@@ -344,7 +344,7 @@
   <!-- Control Sidebar -->
   <aside class="control-sidebar control-sidebar-dark">
     <!-- Control sidebar content goes here -->
-    <?php include 'sidebar.php' ?>
+    <?php // include 'sidebar.php' ?>
   </aside>
   <!-- /.control-sidebar -->
 </div>
@@ -357,7 +357,7 @@
 <!-- AdminLTE App -->
 <script src="/adminlte/dist/js/adminlte.min.js"></script>
 <!-- AdminLTE for demo purposes -->
-<script src="/adminlte/dist/js/demo.js"></script>
+<!-- <script src="/adminlte/dist/js/demo.js"></script> -->
 <script type="text/javascript">
   $(function() {
     $('input[name="id_all"]').click(function() {
