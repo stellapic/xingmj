@@ -79,6 +79,7 @@ export default class AstrometrySolver {
             })
 
             let job_solved = false
+            let is_annotated = true
             let jobid = sub.jobs[0]
     
             if (!jobid) {
@@ -86,55 +87,66 @@ export default class AstrometrySolver {
             }
 
             do {
-                await setTimeout(1000)
+                await setTimeout(500)
 
                 jobinfo = await job(jobid)
+
+                // break if image annotation failed
+                if (jobinfo.status === config.api.STATUS_FAILURE) {
+                    is_annotated = false
+                    break
+                }
+
                 job_solved = (jobinfo.status === config.api.STATUS_SUCCESS)
             } while (!job_solved)
 
             // annotation
-            const annotated = { 'full': '', 'display': '' }
-            for (let type of config.types) {
-                const annotated_path = `${annotated_dir}/annotated_${type}_${jobinfo.original_filename}`
-                const bytes = await annotate(jobid, annotated_path, type)
-                if (bytes === 0) {
-                    log.warn(`get annotated ${type} image failed: ${annotated_path}`)
-                    continue
-                }
-
-                annotated[type] = annotated_path
-            }
-
+            const grids = { 'full': '', 'display': '' }
             const skyplots = []
-            if (sub.job_calibrations.length !== 0 && sub.job_calibrations[0].length >= 2) {
-                const job_cal_id = sub.job_calibrations[0][1]
+            const annotated = { 'full': '', 'display': '' }
 
-                for (let zoom of [0, 1, 2, 3]) {
-                    let plot_path = `${annotated_dir}/skyplot_zoom${zoom}.png`
-                    const bytes = await skyplot(job_cal_id, plot_path, zoom)
+            if (is_annotated) {
+                for (let type of config.types) {
+                    const annotated_path = `${annotated_dir}/annotated_${type}_${jobinfo.original_filename}`
+                    const bytes = await annotate(jobid, annotated_path, type)
                     if (bytes === 0) {
-                        log.warn(`get skyplot zoom${zoom} image failed: ${plot_path}, bytes: ${bytes}`)
+                        log.warn(`get annotated ${type} image failed: ${annotated_path}`)
                         continue
                     }
 
-                    skyplots.push(plot_path)
-                }
-            }
-
-            const grids = { 'full': '', 'display': '' }
-            for (let type of config.types) {
-                const grid_path = `${annotated_dir}/grid_${type}_${jobinfo.original_filename}`
-                const bytes = await grid(jobid, grid_path, type)
-                if (bytes === 0) {
-                    log.warn(`get grid ${type} image failed: ${grid_path}`)
-                    continue
+                    annotated[type] = annotated_path
                 }
 
-                grids[type] = grid_path
+                if (sub.job_calibrations.length !== 0 && sub.job_calibrations[0].length >= 2) {
+                    const job_cal_id = sub.job_calibrations[0][1]
+
+                    for (let zoom of [0, 1, 2, 3]) {
+                        let plot_path = `${annotated_dir}/skyplot_zoom${zoom}.png`
+                        const bytes = await skyplot(job_cal_id, plot_path, zoom)
+                        if (bytes === 0) {
+                            log.warn(`get skyplot zoom${zoom} image failed: ${plot_path}, bytes: ${bytes}`)
+                            continue
+                        }
+
+                        skyplots.push(plot_path)
+                    }
+                }
+
+                for (let type of config.types) {
+                    const grid_path = `${annotated_dir}/grid_${type}_${jobinfo.original_filename}`
+                    const bytes = await grid(jobid, grid_path, type)
+                    if (bytes === 0) {
+                        log.warn(`get grid ${type} image failed: ${grid_path}`)
+                        continue
+                    }
+
+                    grids[type] = grid_path
+                }
             }
 
             result = {
                 'id': id,
+                'url': image_url,
                 'status': jobinfo.status,
                 'tags': jobinfo.tags,
                 'calibration': jobinfo.calibration,

@@ -1,9 +1,14 @@
 'use strict'
 
+import os from 'os'
+
 const config = {
     log: {
         LOG_LEVEL: 'trace', // fatal/error/warn/info/debug/trace
-        LOG_SRC: false, // do not set true in production env, only for debug
+        LOG_SRC: true, // do not set true in production env, only for debug
+    },
+    process: {
+        MAX_PROCESS: 3 // os.cpus().length
     },
     solver: 'astrometry', // astrometry | pi
     timeout: 2000, // 2s
@@ -12,6 +17,7 @@ const config = {
         BASE_URL: 'http://nova.astrometry.net',
         API_KEY: 'hopttfyedswulqlv',
         STATUS_SUCCESS: 'success',
+        STATUS_FAILURE: 'failure',
         STATUS_ERROR: 'error',
         API_LOGIN: '/api/login',
         API_URL_UPLOAD: '/api/url_upload',
@@ -35,14 +41,28 @@ const config = {
             password: '19810704',
             db: 0,
             lazyConnect: true,
-            showFriendlyErrorStack: true
+            showFriendlyErrorStack: true,
+            retryStrategy: () => { return false }
         },
         retry: {
-            RETRIES: 3,
+            RETRIES: 999999,
             MIN_TIMEOUT: 1000, // 500ms
             MAX_TIMEOUT: 2000 // 2s
         },
         TIMEOUT_INDEFINITELY: 0
+    },
+    command: {
+        REDIS_READY: 0,
+        REDIS_FAILED: 1,
+        GET_TASK_COUNT: 2,
+        NEW_TASK: 3,
+        TASK_SOLVED: 4,
+        SAVE_ANNOTATION: 5,
+        PROCESS_EXIT: 6,
+        ANNOTATION_SAVED: 7,
+        ERROR_TASK: 8,
+        TASK_COUNT: 9,
+        GET_TASKS: 10
     }
 }
 
