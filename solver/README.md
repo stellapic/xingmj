@@ -10,7 +10,6 @@ npm install
 ```
 
 yarn
-npm
 ```bash
 cd solver
 yarn
