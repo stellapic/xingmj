@@ -28,6 +28,11 @@ export default class AstrometrySolver {
         return this._instance
     }
 
+    storeAnnotation(result, annotated_dir) {
+        const filepath = `${annotated_dir}/result.json`
+        fs.writeFileSync(filepath, JSON.stringify(result))
+    }
+
     /**
      * 
      * @returns object astrometry result
@@ -44,14 +49,18 @@ export default class AstrometrySolver {
 
         // check dir is or not exists
         if (fs.existsSync(annotated_dir)) {
-            log.error(`annotated dir already exists: ${annotated_dir}`)
-            // throw new Error(`annotated dir already exists: ${annotated_dir}`)
+            const error = `annotated dir already exists: ${annotated_dir}`
+            log.warn(error)
 
-            return null
+            return {
+                'id': id,
+                'status': config.api.STATUS_ERROR,
+                'error': error
+            }
         }
 
         // create annotated image dir
-        fs.mkdirSync(annotated_dir)
+        fs.mkdirSync(annotated_dir, { recursive: true })
 
         try {
             // get session from astrometry
@@ -156,6 +165,8 @@ export default class AstrometrySolver {
                 'grid': grids,
                 'zoom': skyplots
             }
+
+            this.storeAnnotation(result, annotated_dir)
 
             log.info(`task ${id} solve finish`)
         } catch (e) {

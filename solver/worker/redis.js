@@ -29,15 +29,6 @@ import Logger from '../logger.js'
 
 (async () => {
     const log = Logger.getInstance()
-    
-    // task queue from php
-    const q_pending = 'queue:sovler:pending'
-
-    // task queue needs to be run by solver
-    const q_solving = 'queue:sovler:solving'
-
-    // queue done
-    const q_done = 'queue:sovler:done'
 
     log.info('create redis client')
     // create redis client with lazy connect
@@ -56,11 +47,11 @@ import Logger from '../logger.js'
     })
 
     client.once('end', () => {
-        process.send({ 'command': config.commandREDIS_FAILED })
+        process.send({ 'command': config.command.REDIS_FAILED })
     })
 
     client.once('disconnect', () => {
-        process.send({ 'command': config.commandREDIS_FAILED })
+        process.send({ 'command': config.command.REDIS_FAILED })
     })
 
     await retry(async (bail, times) => {
@@ -79,19 +70,21 @@ import Logger from '../logger.js'
         if (msg.command === config.command.GET_TASK_COUNT) {
             log.info('retrieve task from queue')
 
-            const task_length = await client.llen(q_pending)
+            const task_length = await client.llen(config.redis.QUEUE_PENDING)
             log.info(`get ${task_length} tasks`)
 
             process.send({ 'command': config.command.TASK_COUNT, 'count': task_length })
         } else if (msg.command === config.command.GET_TASKS) {
-            const task_length = await client.llen(q_pending)
+            const task_length = await client.llen(config.redis.QUEUE_PENDING)
             log.info(`${task_length} tasks wait for solve`)
 
             if (task_length > 0) {
+                console.log(`task_length > 0, ready to get ${msg.count} tasks`)
                 for (let i = 0; i < msg.count; i++) {
-                    const text = await client.rpoplpush(q_pending, q_solving)
+                    const text = await client.rpoplpush(config.redis.QUEUE_PENDING, config.redis.QUEUE_SOLVING)
+                    log.debug(`get new task: ${text}`)
                     if (!text || typeof text !== 'string') {
-                        log.debug(`no more task in ${q_pending}`)
+                        log.debug(`no more task in ${config.redis.QUEUE_PENDING}`)
                         break
                     }
 
@@ -104,18 +97,36 @@ import Logger from '../logger.js'
         } else if (msg.command === config.command.SAVE_ANNOTATION) {
             const annotated = msg.annotated
 
-            log.debug(`store solve task[${annotated.id}] to ${q_done}`)
+            log.debug(`store solve task[${annotated.id}] to ${config.redis.QUEUE_DONE}`)
 
             // store solve result to queue done
             const result = await client
                 .multi()
-                .lpush(q_done, JSON.stringify(annotated)) // push astrometry result into queue done
-                .rpop(q_solving) // remove task from queue solving
+                .lpush(config.redis.QUEUE_DONE, JSON.stringify(annotated)) // push astrometry result into queue done
+                .rpop(config.redis.QUEUE_SOLVING) // remove task from queue solving
                 .exec()
 
             log.debug(result)
 
             process.send({ 'command': config.command.ANNOTATION_SAVED, 'annotated': annotated })
+        } else if (msg.command === config.command.TASK_EXCEPTION) {
+            let task = msg.task
+
+            log.warn(`remove error task[${task.id}] from queue solving`)
+            const ret = await client.lrem(config.redis.QUEUE_SOLVING, 0, JSON.stringify(task))
+            console.log(`ret = ${ret}`, JSON.stringify(task))
+            if (ret <= 0) {
+                const cmd = `lrem ${config.redis.QUEUE_SOLVING} 0 ${JSON.stringify(task)}`
+                log.warn(`cmd failed: ${cmd}`)
+
+                return
+            }
+
+            // save eroor task to queue failed
+            task = Object.assign(task, { 'status': config.api.STATUS_ERROR, 'error': msg.error })
+            const lpush_result = await client.lpush(config.redis.QUEUE_FAILED, JSON.stringify(task))
+            
+            log.warn(`save error task[${task.id}] to ${config.redis.QUEUE_FAILED}`)
         }
     })
 })()

@@ -1,25 +1,18 @@
 'use strict'
 
 import { fork } from 'child_process'
-import { setTimeout, setInterval } from 'timers/promises'
+import { setTimeout } from 'timers/promises'
 
 import config from './config.js'
 import Logger from './logger.js'
 
 (async () => {
     const log = Logger.getInstance()
-
+    
     /**
-     * check annotated data is or not valid
-     * @param object annotated
-     * @returns boolean
+     * sleep
+     * @param int ms
      */
-    const isValidAnnotated = annotated => {
-        if (!annotated) return false
-    
-        return annotated.status === config.api.STATUS_SUCCESS
-    }
-    
     const sleep = async (ms) => {
         log.info(`sleep ${ms} secnods`)
         await setTimeout(ms)
@@ -28,7 +21,7 @@ import Logger from './logger.js'
     process.on('uncaughtExceptionMonitor', (err, origin) => {
         log.error(`uncaught exception: ${err}, 'origin: ${origin}`)
     })
-    
+
     process.on('unhandledRejection', (reason, promise) => {
         log.error(`Unhandled Rejection at: ${promise}, 'reason: ${reason}`)
     })
@@ -37,6 +30,10 @@ import Logger from './logger.js'
 
     const workers = new Map()
     const redis_worker = fork('./worker/redis.js')
+
+    // setInterval(() => {
+    //     console.log(workers.size)
+    // }, 1000)
 
     redis_worker.on('message', async (msg) => {
         log.debug(`receive command[${msg.command}] from redis_worker[${redis_worker.pid}]`)
@@ -59,16 +56,6 @@ import Logger from './logger.js'
                 redis_worker.send({ 'command': config.command.GET_TASKS, 'count': count })
                 break
 
-            // case config.command.TASK_COUNT:
-            //     const worker_count = workers.size
-            //     const pending_count = msg.count
-
-            //     let count = config.process.MAX_PROCESS - worker_count
-            //     if (count > 0) {
-            //         redis_worker.send({ 'command': , 'count': count })
-            //     }
-            //     break
-
             // new task from redis, fork new process to solve
             case config.command.NEW_TASK:
                 const solve_worker = fork('./worker/solver.js', ['|', './node_modules/bunyan/bin/bunyan'])
@@ -79,13 +66,9 @@ import Logger from './logger.js'
                 }
 
                 solve_worker.on('message', async (msg) => {
+                    console.log(msg)
                     if (msg.command === config.command.TASK_SOLVED) {
                         const annotation = msg.annotated
-
-                        if (!isValidAnnotated(annotation)) {
-                            log.warn(`annotation[${annotation.id}] failed`)
-                            return
-                        }
 
                         redis_worker.send({ 'command': config.command.SAVE_ANNOTATION, 'annotated': annotation })
                     } else if (msg.command === config.command.PROCESS_EXIT) {
@@ -93,20 +76,30 @@ import Logger from './logger.js'
                         workers.delete(key)
                         log.debug(`delete worker[${key}] from map`)
 
+                        log.debug(`${workers.size} worker in map now`)
+
                         // get new task from redis
-                        if (workers.size < config.process.MAX_PROCESS) {
+                        let count = config.process.MAX_PROCESS - workers.size
+                        if (count > 0) {
                             log.debug(`${workers.size} workers, create new one`)
 
-                            await sleep(5000)
-                            redis_worker.send({ 'command': config.command.GET_TASKS })
+                            await sleep(100)
+
+                            log.debug(`retrieve ${count} tasks from redis worker`)
+                            redis_worker.send({ 'command': config.command.GET_TASKS, 'count': count })
                         }
+                    } else if (msg.command === config.command.TASK_EXCEPTION) {
+                        // task error(e.g. annotate failed, url not exists, etc.), move task to failure list
+                        log.debug(`solver worker report task[${msg.task.id}] error`)
+                        console.log(msg.task)
+
+                        redis_worker.send({ 'command': config.command.TASK_EXCEPTION, 'task': msg.task, 'error': msg.error })
                     }
                 })
 
                 const task = msg.task
-                task.pid = solve_worker?.pid
                 await setTimeout(1000)
-                solve_worker.send({ 'command': config.command.NEW_TASK, 'task': task })
+                solve_worker.send({ 'command': config.command.NEW_TASK, 'task': task, 'pid': solve_worker?.pid })
 
                 workers.set(`solver_${solve_worker?.pid}`, solve_worker)
                 break
@@ -123,8 +116,9 @@ import Logger from './logger.js'
                     }
                 break
 
-            // task annotate failed, move task to failure list
-            case config.command.ERROR_TASK:
+            // default case
+            default:
+                console.log(msg)
                 break
         }
     })

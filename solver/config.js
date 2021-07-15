@@ -8,8 +8,9 @@ const config = {
         LOG_SRC: true, // do not set true in production env, only for debug
     },
     process: {
-        MAX_PROCESS: 3 // os.cpus().length
+        MAX_PROCESS: 2 // os.cpus().length
     },
+    UUID_NAMESPACE: 'fbd16f6f-bdb4-4312-8ffa-bb9deb0c8e7f',
     solver: 'astrometry', // astrometry | pi
     timeout: 2000, // 2s
     types: ['full', 'display'],
@@ -49,7 +50,11 @@ const config = {
             MIN_TIMEOUT: 1000, // 500ms
             MAX_TIMEOUT: 2000 // 2s
         },
-        TIMEOUT_INDEFINITELY: 0
+        TIMEOUT_INDEFINITELY: 0,
+        QUEUE_PENDING: 'queue:sovler:pending', // task queue from php
+        QUEUE_SOLVING: 'queue:sovler:solving', // task queue needs to be run by solver
+        QUEUE_DONE: 'queue:sovler:done', // queue done
+        QUEUE_FAILED: 'queue:sovler:failed' // queue failed
     },
     command: {
         REDIS_READY: 0,
@@ -60,7 +65,7 @@ const config = {
         SAVE_ANNOTATION: 5,
         PROCESS_EXIT: 6,
         ANNOTATION_SAVED: 7,
-        ERROR_TASK: 8,
+        TASK_EXCEPTION: 8,
         TASK_COUNT: 9,
         GET_TASKS: 10
     }
