@@ -54,6 +54,7 @@ import Logger from '../logger.js'
         process.send({ 'command': config.command.REDIS_FAILED })
     })
 
+    // retry loop
     await retry(async (bail, times) => {
         log.info(`connecting to redis, try ${times} times`)
         await client.connect()
@@ -66,7 +67,9 @@ import Logger from '../logger.js'
         }
     })
 
+    // message handler
     process.on('message', async msg => {
+        // retrieve count of pending tasks
         if (msg.command === config.command.GET_TASK_COUNT) {
             log.info('retrieve task from queue')
 
@@ -74,15 +77,21 @@ import Logger from '../logger.js'
             log.info(`get ${task_length} tasks`)
 
             process.send({ 'command': config.command.TASK_COUNT, 'count': task_length })
-        } else if (msg.command === config.command.GET_TASKS) {
+        }
+
+        // send pending tasks to master
+        else if (msg.command === config.command.GET_TASKS) {
             const task_length = await client.llen(config.redis.QUEUE_PENDING)
             log.info(`${task_length} tasks wait for solve`)
 
+            // pop task if pending queue has tasks
             if (task_length > 0) {
                 console.log(`task_length > 0, ready to get ${msg.count} tasks`)
                 for (let i = 0; i < msg.count; i++) {
                     const text = await client.rpoplpush(config.redis.QUEUE_PENDING, config.redis.QUEUE_SOLVING)
                     log.debug(`get new task: ${text}`)
+
+                    // task data is not valid json
                     if (!text || typeof text !== 'string') {
                         log.debug(`no more task in ${config.redis.QUEUE_PENDING}`)
                         break
@@ -94,7 +103,10 @@ import Logger from '../logger.js'
                     process.send({ 'command': config.command.NEW_TASK, 'task': task })
                 }
             }
-        } else if (msg.command === config.command.SAVE_ANNOTATION) {
+        }
+
+        // move solving task to queue done when annotation finished
+        else if (msg.command === config.command.SAVE_ANNOTATION) {
             const annotated = msg.annotated
 
             log.debug(`store solve task[${annotated.id}] to ${config.redis.QUEUE_DONE}`)
@@ -109,7 +121,10 @@ import Logger from '../logger.js'
             log.debug(result)
 
             process.send({ 'command': config.command.ANNOTATION_SAVED, 'annotated': annotated })
-        } else if (msg.command === config.command.TASK_EXCEPTION) {
+        }
+
+        // delete task when error occured, e.g. url not exists, dir exists, annotation failed, etc.
+        else if (msg.command === config.command.TASK_EXCEPTION) {
             let task = msg.task
 
             log.warn(`remove error task[${task.id}] from queue solving`)
@@ -127,6 +142,11 @@ import Logger from '../logger.js'
             const lpush_result = await client.lpush(config.redis.QUEUE_FAILED, JSON.stringify(task))
             
             log.warn(`save error task[${task.id}] to ${config.redis.QUEUE_FAILED}`)
+        }
+
+        // default
+        else {
+            log.warn(`unknow command from master: ${JSON.stringify(msg)}`)
         }
     })
 })()

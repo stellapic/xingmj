@@ -65,13 +65,19 @@ import Logger from './logger.js'
                     return
                 }
 
+                // message handler
                 solve_worker.on('message', async (msg) => {
-                    console.log(msg)
+                    // console.log(msg)
+
+                    // annotation success
                     if (msg.command === config.command.TASK_SOLVED) {
                         const annotation = msg.annotated
 
                         redis_worker.send({ 'command': config.command.SAVE_ANNOTATION, 'annotated': annotation })
-                    } else if (msg.command === config.command.PROCESS_EXIT) {
+                    }
+                    
+                    // solve process exited
+                    else if (msg.command === config.command.PROCESS_EXIT) {
                         const key = `solver_${solve_worker.pid}`
                         workers.delete(key)
                         log.debug(`delete worker[${key}] from map`)
@@ -88,12 +94,20 @@ import Logger from './logger.js'
                             log.debug(`retrieve ${count} tasks from redis worker`)
                             redis_worker.send({ 'command': config.command.GET_TASKS, 'count': count })
                         }
-                    } else if (msg.command === config.command.TASK_EXCEPTION) {
+                    }
+                    
+                    // task annotation error occured
+                    else if (msg.command === config.command.TASK_EXCEPTION) {
                         // task error(e.g. annotate failed, url not exists, etc.), move task to failure list
                         log.debug(`solver worker report task[${msg.task.id}] error`)
                         console.log(msg.task)
 
                         redis_worker.send({ 'command': config.command.TASK_EXCEPTION, 'task': msg.task, 'error': msg.error })
+                    }
+
+                    //
+                    else {
+                        log.warn(`unknow command from solver: ${JSON.stringify(msg)}`)
                     }
                 })
 
@@ -118,7 +132,7 @@ import Logger from './logger.js'
 
             // default case
             default:
-                console.log(msg)
+                log.warn(`unknow command from redis: ${JSON.stringify(msg)}`)
                 break
         }
     })

@@ -37,6 +37,7 @@ const sendErrorTask = (task, error) => {
     process.on('message', async (msg) => {
         log.debug(`get message from master: ${msg.command}`)
 
+        // new task annotation
         if (msg.command === config.command.NEW_TASK) {
             let task = msg.task
 
@@ -86,13 +87,22 @@ const sendErrorTask = (task, error) => {
             // send annotated to master process
             log.debug(`send solved task[${task.id}] to master`)
             process.send({ 'command': config.command.TASK_SOLVED, 'annotated': annotated })
-        } else if (msg.command === config.command.PROCESS_EXIT) {
+        }
+        
+        // do process exit
+        else if (msg.command === config.command.PROCESS_EXIT) {
             log.debug(`exiting subprocess solver[${process.pid}]`)
 
             process.exit()
         }
+
+        // default
+        else {
+            log.warn(`unknow command from master: ${JSON.stringify(msg)}`)
+        }
     })
 
+    // on process exit
     process.on('exit', () => {
         log.debug(`subprocess solver[${process.pid}] has exited`)
 
