@@ -51,11 +51,6 @@
     }
   </style>
 </head>
-<?php foreach(Yii::$app->session->getAllFlashes() as $type => $messages): ?>
-<?php foreach($messages as $message): ?>
-    <div class="alert alert-<?= $type ?>" role="alert"><?= $message ?></div>
-<?php endforeach ?>
-<?php endforeach ?>
 <body class="hold-transition sidebar-mini layout-navbar-fixed text-sm sidebar-collapse" style="height: auto; min-height: 100%;">
 <div class="wrapper">
   <!-- Navbar -->
@@ -220,7 +215,7 @@
               <i class="nav-icon fas fa-home"></i>
               <p>
                 首页轮播图
-                <span class="right badge badge-danger">New</span>
+                <!-- <span class="right badge badge-danger">New</span> -->
               </p>
             </a>
           </li>
