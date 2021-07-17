@@ -35,7 +35,7 @@ const sendErrorTask = (task, error) => {
 
     // message handler
     process.on('message', async (msg) => {
-        log.debug(`get message from master: ${msg.command}`)
+        log.debug(`get message from master: ${config.map[msg.command]}`)
 
         // new task annotation
         if (msg.command === config.command.NEW_TASK) {

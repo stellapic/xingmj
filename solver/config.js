@@ -20,6 +20,7 @@ const config = {
         STATUS_SUCCESS: 'success',
         STATUS_FAILURE: 'failure',
         STATUS_ERROR: 'error',
+        STATUS_SOLVING: 'solving',
         API_LOGIN: '/api/login',
         API_URL_UPLOAD: '/api/url_upload',
         API_SUB_STATUS: '/api/submissions',
@@ -31,7 +32,8 @@ const config = {
         retry: {
             RETRIES: 40,
             MIN_TIMEOUT: 10000, // 10s
-            MAX_TIMEOUT: 20000 // 20s
+            MAX_TIMEOUT: 20000, // 20s
+            MAX_RETRY_TIMES: 3
         }
     },
     annotated: '/Users/chenxi/Desktop/imufu/xingmj/solver/test/annotated_images',
@@ -50,7 +52,7 @@ const config = {
             MIN_TIMEOUT: 1000, // 500ms
             MAX_TIMEOUT: 2000 // 2s
         },
-        TIMEOUT_INDEFINITELY: 0,
+        TIMEOUT: 0,
         QUEUE_PENDING: 'queue:sovler:pending', // task queue from php
         QUEUE_SOLVING: 'queue:sovler:solving', // task queue needs to be run by solver
         QUEUE_DONE: 'queue:sovler:done', // queue done
@@ -69,7 +71,21 @@ const config = {
         TASK_COUNT: 9,
         GET_TASKS: 10,
         REDIS_ERROR: 11
-    }
+    },
+    map: [
+        'REDIS_READY',
+        'REDIS_FAILED',
+        'GET_TASK_COUNT',
+        'NEW_TASK',
+        'TASK_SOLVED',
+        'SAVE_ANNOTATION',
+        'PROCESS_EXIT',
+        'ANNOTATION_SAVED',
+        'TASK_EXCEPTION',
+        'TASK_COUNT',
+        'GET_TASKS',
+        'REDIS_ERROR'
+    ]
 }
 
 export default config

@@ -182,10 +182,11 @@ const submission = async (subid) => {
         const job_calibrations = response.data.job_calibrations
 
         // log.debug(jobs, job_calibrations, jobs.length, jobs[0], job_calibrations.length)
-        if (jobs.length === 0 || !jobs[0] || job_calibrations.length === 0) {
+        if (jobs.length === 0 || !jobs[0]) { //  || job_calibrations.length === 0
             reject('submission is not finished yet')
         } else {
-            log.debug(`get submission success, jobs: [${jobs.join(', ')}], job_calibrations: [${job_calibrations[0].join(', ')}]`)
+            // log.debug(`get submission success, jobs: [${jobs.join(', ')}], job_calibrations: [${job_calibrations[0].join(', ')}]`)
+            log.debug(`get submission success, jobs: [${jobs.join(', ')}]`)
             resolve({
                 jobs: jobs,
                 job_calibrations: job_calibrations
@@ -241,23 +242,20 @@ const job = async (jobid) => {
 
     const callback = (response, resolve, reject) => {
         log.debug(`job status: ${response.data.status}`)
-        resolve(response.data)
+
+        if (response.data.status === config.api.STATUS_SOLVING) {
+            reject('job still in solving')
+        } else {
+            resolve(response.data)
+        }
     }
 
-    let job = null
-    try {
-        job = await request(
-        {
-            'url': url,
-            'config': {},
-            'method': 'get',
-            'callback': callback
-        })
-    } catch (e) {
-        log.error(e)
-    }
-
-    return job
+    return await request({
+        'url': url,
+        'config': {},
+        'method': 'get',
+        'callback': callback
+    })
 }
 
 /**

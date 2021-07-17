@@ -72,7 +72,6 @@ export default class AstrometrySolver {
                 jobs: [],
                 job_calibrations: []
             }
-            let jobinfo = {}
 
             // loop get submission info, retry 20 times
             await retry(async bail => {
@@ -81,32 +80,36 @@ export default class AstrometrySolver {
                 retries: config.api.retry.RETRIES,
                 minTimeout: config.api.retry.MIN_TIMEOUT,
                 maxTimeout: config.api.retry.MAX_TIMEOUT,
-                onRetry: error => {
-                    // log.info(`retry to get submission`)
+                onRetry: (error, times) => {
+                    // log.info(`retry ${times} times`)
                 }
             })
 
-            let job_solved = false
+            let jobinfo = {}
             let is_annotated = true
             let jobid = sub.jobs[0]
-    
+
             if (!jobid) {
                 throw new Error(`job error: ${sub.jobs.join(', ')}`)
             }
 
-            do {
-                await setTimeout(500)
-
+            // loop get job info
+            await retry(async bail => {
                 jobinfo = await job(jobid)
-
-                // break if image annotation failed
-                if (jobinfo.status === config.api.STATUS_FAILURE) {
-                    is_annotated = false
-                    break
+            }, {
+                retries: config.api.retry.RETRIES,
+                minTimeout: config.api.retry.MIN_TIMEOUT,
+                maxTimeout: config.api.retry.MAX_TIMEOUT,
+                onRetry: (error, times) => {
+                    log.info(`retry ${times} times`)
                 }
+            })
 
-                job_solved = (jobinfo.status === config.api.STATUS_SUCCESS)
-            } while (!job_solved)
+            if (jobinfo.status !== config.api.STATUS_SUCCESS) {
+                return Object.assign(result, { 'error': 'image solve failed' })
+            }
+
+            sub = await submission(subid)
 
             // annotation
             const skyplots = []
@@ -169,7 +172,7 @@ export default class AstrometrySolver {
 
             log.info(`task ${id} solve finish`)
         } catch (e) {
-            log.error(e.message)
+            log.error(e)
 
             // delete task annotation dir
             fs.rmdirSync(annotated_dir)

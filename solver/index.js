@@ -32,26 +32,9 @@ import Logger from './logger.js'
     const redis_worker = fork('./worker/redis.js')
 
     let ready = false
-    setInterval(() => {
-        if (!ready) return
-    
-        console.log(workers.size, config.process.MAX_PROCESS, workers.size >= config.process.MAX_PROCESS)
-        if (workers.size >= config.process.MAX_PROCESS) return
-
-        let count = config.process.MAX_PROCESS - workers.size
-        if (count <= 0) {
-            log.debug(`workers map is full`)
-            return
-        }
-
-        // log.debug(`need ${count} solver work`)
-
-        // send get task command
-        // redis_worker.send({ 'command': config.command.GET_TASKS, 'count': count })
-    }, 1000)
 
     redis_worker.on('message', async (msg) => {
-        log.debug(`receive command[${msg.command}] from redis_worker[${redis_worker.pid}]`)
+        log.debug(`receive command[${config.map[msg.command]}] from redis_worker[${redis_worker.pid}]`)
 
         // redis connect success
         switch (msg.command) {
@@ -91,15 +74,15 @@ import Logger from './logger.js'
                         log.debug(`${workers.size} worker in map now`)
 
                         // get new task from redis
-                        let count = config.process.MAX_PROCESS - workers.size
-                        if (count > 0) {
-                            log.debug(`${workers.size} workers, create new one`)
+                        // let count = config.process.MAX_PROCESS - workers.size
+                        // if (count > 0) {
+                        //     log.debug(`${workers.size} workers, create new one`)
 
-                            await sleep(100)
+                        //     await sleep(100)
 
-                            log.debug(`retrieve ${count} tasks from redis worker`)
-                            redis_worker.send({ 'command': config.command.GET_TASKS, 'count': count })
-                        }
+                        //     log.debug(`retrieve ${count} tasks from redis worker`)
+                        //     redis_worker.send({ 'command': config.command.GET_TASKS, 'count': count })
+                        // }
                     }
                     
                     // task annotation error occured

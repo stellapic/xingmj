@@ -2,9 +2,11 @@
 
 import IORedis from 'ioredis'
 import retry from 'async-retry'
+import { setTimeout } from 'timers/promises'
 
 import config from '../config.js'
 import Logger from '../logger.js'
+
 
 /**
  * get task object
@@ -26,8 +28,9 @@ import Logger from '../logger.js'
     return null
 }
 
-
 (async () => {
+    let ready = false
+    let tasks = 0
     const log = Logger.getInstance()
 
     log.info('create redis client')
@@ -38,20 +41,26 @@ import Logger from '../logger.js'
     client.once('error',  error => {
         log.error(error.message)
         
-        process.send({ 'command': config.command.REDIS_ERROR, 'error': error.message })
+        // process.send({ 'command': config.command.REDIS_ERROR, 'error': error.message })
     })
 
     client.once('ready', () => {
         log.info(`connect to redis success`)
+
+        ready = true
         process.send({ 'command': config.command.REDIS_READY })
     })
 
     client.once('end', () => {
-        process.send({ 'command': config.command.REDIS_FAILED })
+        ready = false
+        log.error('redis client end')
+        // process.send({ 'command': config.command.REDIS_FAILED })
     })
 
     client.once('disconnect', () => {
-        process.send({ 'command': config.command.REDIS_FAILED })
+        ready = false
+        log.error('redis disconnect end')
+        // process.send({ 'command': config.command.REDIS_FAILED })
     })
 
     // retry loop
@@ -63,50 +72,14 @@ import Logger from '../logger.js'
         minTimeout: config.redis.retry.MIN_TIMEOUT,
         maxTimeout: config.redis.retry.MAX_TIMEOUT,
         onRetry: error => {
-            log.error(`connect failed: ${error.message}`)
+            if (error) log.error(`connect failed: ${error.message}`)
         }
     })
 
-    // message handler
+
+    // worker message handler
     process.on('message', async msg => {
-        // retrieve count of pending tasks
-        if (msg.command === config.command.GET_TASK_COUNT) {
-            log.info('retrieve task from queue')
-
-            const task_length = await client.llen(config.redis.QUEUE_PENDING)
-            log.info(`get ${task_length} tasks`)
-
-            process.send({ 'command': config.command.TASK_COUNT, 'count': task_length })
-        }
-
-        // send pending tasks to master
-        else if (msg.command === config.command.GET_TASKS) {
-            const task_length = await client.llen(config.redis.QUEUE_PENDING)
-            // log.info(`${task_length} tasks wait for solve`)
-
-            // pop task if pending queue has tasks
-            if (task_length > 0) {
-                log.debug(`task_length > 0, ready to get ${msg.count} tasks`)
-                for (let i = 0; i < msg.count; i++) {
-                    const text = await client.rpoplpush(config.redis.QUEUE_PENDING, config.redis.QUEUE_SOLVING)
-                    // log.debug(`get new task: ${text}`)
-
-                    // task data is not valid json
-                    if (!text || typeof text !== 'string') {
-                        log.debug(`no more task in ${config.redis.QUEUE_PENDING}`)
-                        break
-                    }
-
-                    const task = getTask(text)
-                    // log.debug(`get task: ${task?.id}`)
-
-                    process.send({ 'command': config.command.NEW_TASK, 'task': task })
-                }
-            }
-        }
-
-        // move solving task to queue done when annotation finished
-        else if (msg.command === config.command.SAVE_ANNOTATION) {
+        if (msg.command === config.command.SAVE_ANNOTATION) {
             const annotated = msg.annotated
 
             log.debug(`store solve task[${annotated.id}] to ${config.redis.QUEUE_DONE}`)
@@ -121,6 +94,7 @@ import Logger from '../logger.js'
             log.debug(result)
 
             process.send({ 'command': config.command.ANNOTATION_SAVED, 'annotated': annotated })
+            tasks--
         }
 
         // delete task when error occured, e.g. url not exists, dir exists, annotation failed, etc.
@@ -133,6 +107,7 @@ import Logger from '../logger.js'
             if (ret <= 0) {
                 const cmd = `lrem ${config.redis.QUEUE_SOLVING} 0 ${JSON.stringify(task)}`
                 log.warn(`cmd failed: ${cmd}`)
+                tasks--
 
                 return
             }
@@ -142,6 +117,7 @@ import Logger from '../logger.js'
             const lpush_result = await client.lpush(config.redis.QUEUE_FAILED, JSON.stringify(task))
             
             log.warn(`save error task[${task.id}] to ${config.redis.QUEUE_FAILED}`)
+            tasks--
         }
 
         // default
@@ -149,4 +125,41 @@ import Logger from '../logger.js'
             log.warn(`unknow command from master: ${JSON.stringify(msg)}`)
         }
     })
+
+    // console.log(123)
+    do {
+        console.log(ready)
+        if (!ready) {
+            await setTimeout(1000)
+            continue
+        }
+
+        const diff = config.process.MAX_PROCESS - tasks
+        console.log(diff)
+        if (diff <= 0) {
+            log.info(`task pool is full[${config.process.MAX_PROCESS}]`)
+            await setTimeout(500)
+
+            continue
+        }
+
+        const text = await client.brpoplpush(config.redis.QUEUE_PENDING, config.redis.QUEUE_SOLVING, config.redis.TIMEOUT)
+        const task = getTask(text)
+        log.debug(`get task: ${text}`)
+
+        // check task string is or not valid json
+        if (!text || typeof text !== 'string') {
+            log.debug(`task json string invalid`)
+            break
+        }
+
+        log.info(`send task[${task.id}] to master, and transfer to solver worker`)
+        let ret = process.send({ 'command': config.command.NEW_TASK, 'task': task })
+        if (!ret) {
+            log.info(`send task[${task.id}] failed`)
+        }
+
+        tasks++
+        log.debug(`task pool: ${tasks}/${config.process.MAX_PROCESS}`)
+    } while (true)
 })()
