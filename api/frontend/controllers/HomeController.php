@@ -13,7 +13,15 @@ class HomeController extends BaseController
 
     public function actionSlides()
     {
-        return RuntimeVariables::getJson('home_slides', true);
+        $slides = RuntimeVariables::getJson('home_slides', true);
+        usort($slides, function($a, $b)
+        {
+            if ($a['sort'] == $b['sort']) {
+                return 0;
+            }
+            return ($a['sort'] < $b['sort']) ? -1 : 1;
+        });
+        return $slides;
     }
 
 }
