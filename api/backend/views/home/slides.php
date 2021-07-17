@@ -2,17 +2,18 @@
     .container{
         height: 225px;
         margin: 20px;
-        /*background: yellow;*/
     }
-    .left{
+    .container .left{
         float: left;
         width: 400px;
         height: 100%;
-        /*background: red;*/
     }
-    .right{
+    .container .left img{
+        width:400px;
+        height: 225px;
+    }
+    .container .right{
         margin-left: 420px;
-        /*background: green;*/
         height: 100%;
     }
     .container .right input {
@@ -30,7 +31,7 @@
     <?php foreach ($slides as $key => $value): ?>
         <li class="container">
             <div class="left">
-                <img style="width:400px;" src="<?php echo $value['image'] ?>">
+                <img src="<?php echo $value['image'] ?>">
             </div>
             <div class="right">
                 <label>跳转链接：
