@@ -90,32 +90,17 @@ $(function() {
         if (file == '') {
             return;
         }
-        loading_show();
         // send file
         var fd = new FormData();
         fd.append('file', document.getElementById(obj.attr('id')).files[0]);
-        $.ajax({
-            url: '/uploads/photo',
-            data: fd,
-            cache: false,
-            contentType: false,
-            processData: false,
-            method: 'POST',
-            dataType: 'json',
-            type: 'POST', // For jQuery < 1.9
-            success: function(data) {
-                console.log(data);
-                if (data.message) {
-                    tipError('图片上传失败', data.message);
-                } else {
-                    $('input[name="'+obj.attr('data-target')+'"]').val(data.url);
-                    tipSuccess('图片上传成功', '需要点保存按钮才会更新到网站首页');
-                }
-            },
-            complete: function(jqXHR, textStatus) {
-                loading_hide();
+        asyncProcess(
+            '/uploads/photo',
+            fd,
+            function(json) {
+                $('input[name="'+obj.attr('data-target')+'"]').val(json.url);
+                tipSuccess('图片上传成功', '需要点保存按钮才会更新到网站首页');
             }
-        });
+        );
     });
 });
 </script>

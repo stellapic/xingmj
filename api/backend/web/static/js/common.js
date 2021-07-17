@@ -67,7 +67,7 @@ function asyncProcess(url, data, cb) {
                     cb(json.data);
                 }
             } else if (json.message) {
-                tipError('图片上传失败', json.message);
+                tipError('异常提示', json.message);
             }
         }
     });
