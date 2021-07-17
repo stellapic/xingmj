@@ -97,7 +97,7 @@ return [
                 '/photos/u/<username:(.)+>' => '/photo/user-works',
                 '/photos' => '/photo/list',
                 // pages
-                '/page/photo/<shortid:(.)+>' => '/page/photos/detail'
+                '/page/photo-detail/<shortid:(.)+>' => '/page/photo-detail'
                 // [
                 //     'class' => 'yii\rest\UrlRule',
                 //     'controller' => ['user', 'photo', 'news'],
