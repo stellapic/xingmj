@@ -38,7 +38,7 @@ import Logger from '../logger.js'
     client.once('error',  error => {
         log.error(error.message)
         
-        // process.send({ ready: config.commandREDIS_FAILED })
+        process.send({ 'command': config.command.REDIS_ERROR, 'error': error.message })
     })
 
     client.once('ready', () => {
@@ -82,14 +82,14 @@ import Logger from '../logger.js'
         // send pending tasks to master
         else if (msg.command === config.command.GET_TASKS) {
             const task_length = await client.llen(config.redis.QUEUE_PENDING)
-            log.info(`${task_length} tasks wait for solve`)
+            // log.info(`${task_length} tasks wait for solve`)
 
             // pop task if pending queue has tasks
             if (task_length > 0) {
-                console.log(`task_length > 0, ready to get ${msg.count} tasks`)
+                log.debug(`task_length > 0, ready to get ${msg.count} tasks`)
                 for (let i = 0; i < msg.count; i++) {
                     const text = await client.rpoplpush(config.redis.QUEUE_PENDING, config.redis.QUEUE_SOLVING)
-                    log.debug(`get new task: ${text}`)
+                    // log.debug(`get new task: ${text}`)
 
                     // task data is not valid json
                     if (!text || typeof text !== 'string') {
@@ -98,7 +98,7 @@ import Logger from '../logger.js'
                     }
 
                     const task = getTask(text)
-                    log.debug(`get task: ${task?.id}`)
+                    // log.debug(`get task: ${task?.id}`)
 
                     process.send({ 'command': config.command.NEW_TASK, 'task': task })
                 }
