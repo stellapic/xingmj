@@ -65,19 +65,8 @@ class PhotoController extends BaseJwtController
 
     public function actionComments($shortid)
     {
-        $offset = Yii::$app->request->get('offset');
-        $photo = Photo::findOne(['short_id' => $shortid]);
-        if (!$photo) {
-            throw new \yii\base\UserException('shortid invalid.');
-        }
-        $query = PhotoComment::find()->alias('c');
-        $query->innerJoin('user as u', 'c.user_id=u.id');
-        $query->select('c.id as comment_id, c.content, c.created_at, u.username, u.avatar');
-        $query->limit($this->pageSize);
-        if ($offset > 0) {
-            $query->offset($offset);
-        }
-        return $query->asArray()->all();
+        $query = \frontend\serviceProviders\PhotoCommentProvider::list($shortid);
+        return $this->pageQuery($query, true);
     }
 
     public function actionMine()
@@ -86,7 +75,7 @@ class PhotoController extends BaseJwtController
         $searchModel = new PhotoSearch();
         $dataProvider = $searchModel->search($queryParams);
         $dataProvider->query->andWhere(['creator' => Yii::$app->user->id]);
-        return $dataProvider;
+        return $this->pageQuery($dataProvider->query);
     }
 
     public function actionList()
@@ -94,7 +83,7 @@ class PhotoController extends BaseJwtController
         $queryParams = Yii::$app->request->queryParams;
         $searchModel = new PhotoSearch();
         $dataProvider = $searchModel->search($queryParams);
-        return $dataProvider;
+        return $this->pageQuery($dataProvider->query);
     }
 
 
@@ -109,7 +98,7 @@ class PhotoController extends BaseJwtController
         $searchModel = new PhotoSearch();
         $dataProvider = $searchModel->search($queryParams);
         $dataProvider->query->andWhere(['creator' => $user->id]);
-        return $dataProvider;
+        return $this->pageQuery($dataProvider->query);
     }
 
 

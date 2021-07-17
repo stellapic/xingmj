@@ -66,4 +66,20 @@ class BaseController extends \yii\rest\Controller
         return $frontUser;
     }
 
+    protected function pageQuery($query, $asArray=false)
+    {
+        $start = (int)Yii::$app->request->get('start');
+        $limit = (int)Yii::$app->request->get('limit', $this->pageSize);
+        $total = (int)$query->count();
+        $query->limit($limit);
+        if ($start > 0) {
+            $query->offset($start);
+        }
+        return [
+            'total' => $total,
+            'start' => ($start + $limit >= $total ? null : ($start + $limit)),
+            'data' => $query->asArray($asArray)->all(),
+        ];
+    }
+
 }
