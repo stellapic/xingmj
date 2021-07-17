@@ -49,4 +49,16 @@ class RuntimeVariables extends BaseModel
         return json_decode(self::getString($variableKey), $asArray);
     }
 
+    public static function setValue($key, $value)
+    {
+        if (FALSE !== self::getString($key)) {
+            $where = sprintf('variable_key="%s"', $key);
+            return self::updateAll(['variable_value' => $value], ['variable_key' => $key]);
+        }
+        $obj = new self();
+        $obj->variable_key = $key;
+        $obj->variable_value = $value;
+        return $obj->save();
+    }
+
 }

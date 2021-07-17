@@ -30,4 +30,50 @@ class BaseController extends Controller
         return parent::render($template, $data);
     }
 
+    public function jsonSuccess($data=[])
+    {
+        return $this->asJson([
+            'code' => 200,
+            'message' => 'success',
+            'data' => $data,
+        ]);
+    }
+
+    public function jsonFailure($message='', $data=[])
+    {
+        return $this->asJson([
+            'code' => 500,
+            'message' => $message,
+            'data' => $data,
+        ]);
+    }
+
+    public function flashSuccess($message)
+    {
+        \Yii::$app->session->addFlash('success', $message);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }

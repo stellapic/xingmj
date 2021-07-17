@@ -13,6 +13,7 @@
   <link href="https://cdn.bootcdn.net/ajax/libs/ionicons/2.0.1/css/ionicons.min.css" rel="stylesheet">
   <!-- Theme style -->
   <link rel="stylesheet" href="/adminlte/dist/css/adminlte.min.css">
+  <link rel="stylesheet" href="/static/css/common.css">
   <!-- Select2 -->
   <link rel="stylesheet" href="/adminlte/plugins/select2/css/select2.min.css">
   <!-- Google Font: Source Sans Pro -->
@@ -44,8 +45,17 @@
         border-color: #e8e8e8;
         color: rgba(52,58,64,.8);
     }
+    /*toastr*/
+    .toasts-top-right.fixed {
+      min-width: 300px;
+    }
   </style>
 </head>
+<?php foreach(Yii::$app->session->getAllFlashes() as $type => $messages): ?>
+<?php foreach($messages as $message): ?>
+    <div class="alert alert-<?= $type ?>" role="alert"><?= $message ?></div>
+<?php endforeach ?>
+<?php endforeach ?>
 <body class="hold-transition sidebar-mini layout-navbar-fixed text-sm sidebar-collapse" style="height: auto; min-height: 100%;">
 <div class="wrapper">
   <!-- Navbar -->
@@ -325,6 +335,7 @@
     <!-- Main content -->
     <!-- jQuery -->
     <script src="/adminlte/plugins/jquery/jquery.min.js"></script>
+    <script src="/static/js/common.js"></script>
     <section class="content">
       <div class="container-fluid">
                 <?= $content ?>
@@ -364,6 +375,13 @@
       $('input[name="id[]"]').trigger('click');
     });
   });
+//ajax post请求添加X-CSRF-Token
+$(document).ajaxSend(function(a, b, c) {
+    if (c.type == 'POST') {
+        b.setRequestHeader('X-CSRF-Token', '<?=  Yii::$app->request->csrfToken; ?>');
+    }
+});
 </script>
+
 </body>
 </html>

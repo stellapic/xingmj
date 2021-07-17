@@ -55,20 +55,69 @@
 <div class="row" style="margin-bottom: 10px;padding: 60px 0;">
     <div class="col-sm-3"></div>
     <div class="col-sm-6">
-        <span class="btn btn-success col">
+        <span class="btn btn-success col" id="btn-save">
             <i class="fas fa-save"></i>
             保存设置
         </span>
     </div>
     <div class="col-sm-3"></div>
 </div>
+
 <script type="text/javascript">
-    $(function() {
-        // jQuery
-        $("ol#slides").find('.dz-clickable').click(function() {
-            $('#'+$(this).attr('data-target')).trigger('click');
+
+$(function() {
+    $("ol#slides").find('.dz-clickable').click(function() {
+        $('#'+$(this).attr('data-target')).trigger('click');
+    });
+    $('#btn-save').click(function () {
+        var fd = new FormData(), elements = $('#slides').find('input[type="text"], input[type="hidden"]');
+        elements.each(function(index, ele) {
+            fd.append(ele.name, ele.value);
+        });
+        asyncProcess(
+            '/home/slides',
+            fd,
+            function(json) {
+                console.log(json);
+                tipSuccess();
+                location.reload();
+            }
+        );
+    })
+    $('input[type="file"]').change(function(){
+        console.log('trigger:' + $(this).val());
+        var obj = $(this), file = obj.val();
+        if (file == '') {
+            return;
+        }
+        loading_show();
+        // send file
+        var fd = new FormData();
+        fd.append('file', document.getElementById(obj.attr('id')).files[0]);
+        $.ajax({
+            url: '/uploads/photo',
+            data: fd,
+            cache: false,
+            contentType: false,
+            processData: false,
+            method: 'POST',
+            dataType: 'json',
+            type: 'POST', // For jQuery < 1.9
+            success: function(data) {
+                console.log(data);
+                if (data.message) {
+                    tipError('图片上传失败', data.message);
+                } else {
+                    $('input[name="'+obj.attr('data-target')+'"]').val(data.url);
+                    tipSuccess('图片上传成功', '需要点保存按钮才会更新到网站首页');
+                }
+            },
+            complete: function(jqXHR, textStatus) {
+                loading_hide();
+            }
         });
     });
+});
 </script>
 
 

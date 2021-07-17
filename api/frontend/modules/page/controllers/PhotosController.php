@@ -18,4 +18,16 @@ class PhotosController extends BasePageController
             'list' => $dataProvider,
         ];
     }
+
+    public function actionDetail($shortid)
+    {
+        $queryParams = Yii::$app->request->queryParams;
+        $searchModel = new PhotoSearch();
+        $dataProvider = $searchModel->search($queryParams);
+        return [
+            'photo' => [],
+            'author' => [],
+            'comments' => [],
+        ];
+    }
 }
