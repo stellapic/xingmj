@@ -31,7 +31,7 @@
     <?php foreach ($slides as $key => $value): ?>
         <li class="container">
             <div class="left">
-                <img src="<?php echo $value['image'] ?>">
+                <img src="<?php echo $value['image'] ?>" data-id="slide[<?=$key?>][image]" />
             </div>
             <div class="right">
                 <label>跳转链接：
@@ -99,6 +99,7 @@ $(function() {
             fd,
             function(json) {
                 $('input[name="'+obj.attr('data-target')+'"]').val(json.url);
+                $('img[data-id="'+obj.attr('data-target')+'"]').attr('src', json.url);
                 tipSuccess('图片上传成功', '需要点保存按钮才会更新到网站首页');
             }
         );
