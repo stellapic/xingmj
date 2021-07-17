@@ -39,7 +39,10 @@ export default class AstrometrySolver {
      */
     async run(id, image_url) {
         // define result, null initial
-        let result = null
+        let result = {
+            'id': id,
+            'status': config.api.STATUS_ERROR
+        }
 
         // create logger
         const log = Logger.getInstance()
@@ -52,11 +55,7 @@ export default class AstrometrySolver {
             const error = `annotated dir already exists: ${annotated_dir}`
             log.warn(error)
 
-            return {
-                'id': id,
-                'status': config.api.STATUS_ERROR,
-                'error': error
-            }
+            return Object.assign(result, { 'error': error })
         }
 
         // create annotated image dir
@@ -110,8 +109,8 @@ export default class AstrometrySolver {
             } while (!job_solved)
 
             // annotation
-            const grids = { 'full': '', 'display': '' }
             const skyplots = []
+            const grids = { 'full': '', 'display': '' }
             const annotated = { 'full': '', 'display': '' }
 
             if (is_annotated) {
@@ -170,9 +169,12 @@ export default class AstrometrySolver {
 
             log.info(`task ${id} solve finish`)
         } catch (e) {
-            log.error(e)
+            log.error(e.message)
 
-            return null
+            // delete task annotation dir
+            fs.rmdirSync(annotated_dir)
+
+            return Object.assign(result, { 'error': e.message })
         }
 
         return result

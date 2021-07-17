@@ -91,6 +91,8 @@ const login = async (apikey) => {
         })
     } catch (e) {
         log.error(e)
+
+        throw new Error(e)
     }
 
     return session

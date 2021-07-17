@@ -8,7 +8,7 @@ const config = {
         LOG_SRC: true, // do not set true in production env, only for debug
     },
     process: {
-        MAX_PROCESS: 2 // os.cpus().length
+        MAX_PROCESS: 1 // os.cpus().length
     },
     UUID_NAMESPACE: 'fbd16f6f-bdb4-4312-8ffa-bb9deb0c8e7f',
     solver: 'astrometry', // astrometry | pi
@@ -67,7 +67,8 @@ const config = {
         ANNOTATION_SAVED: 7,
         TASK_EXCEPTION: 8,
         TASK_COUNT: 9,
-        GET_TASKS: 10
+        GET_TASKS: 10,
+        REDIS_ERROR: 11
     }
 }
 

@@ -14,7 +14,7 @@ import Logger from './logger.js'
      * @param int ms
      */
     const sleep = async (ms) => {
-        log.info(`sleep ${ms} secnods`)
+        log.info(`sleep ${ms/1000} secnods`)
         await setTimeout(ms)
     }
 
@@ -31,9 +31,24 @@ import Logger from './logger.js'
     const workers = new Map()
     const redis_worker = fork('./worker/redis.js')
 
-    // setInterval(() => {
-    //     console.log(workers.size)
-    // }, 1000)
+    let ready = false
+    setInterval(() => {
+        if (!ready) return
+    
+        console.log(workers.size, config.process.MAX_PROCESS, workers.size >= config.process.MAX_PROCESS)
+        if (workers.size >= config.process.MAX_PROCESS) return
+
+        let count = config.process.MAX_PROCESS - workers.size
+        if (count <= 0) {
+            log.debug(`workers map is full`)
+            return
+        }
+
+        // log.debug(`need ${count} solver work`)
+
+        // send get task command
+        // redis_worker.send({ 'command': config.command.GET_TASKS, 'count': count })
+    }, 1000)
 
     redis_worker.on('message', async (msg) => {
         log.debug(`receive command[${msg.command}] from redis_worker[${redis_worker.pid}]`)
@@ -44,16 +59,7 @@ import Logger from './logger.js'
             case config.command.REDIS_READY:
                 log.debug('redis connection is ready')
 
-                let count = config.process.MAX_PROCESS - workers.size
-                if (count <= 0) {
-                    log.debug(`workers map is full`)
-                    return
-                }
-
-                log.debug(`retrieve ${count} tasks from redis worker`)
-
-                // send get task command
-                redis_worker.send({ 'command': config.command.GET_TASKS, 'count': count })
+                ready = true
                 break
 
             // new task from redis, fork new process to solve
@@ -128,6 +134,18 @@ import Logger from './logger.js'
                     if (worker) {
                         worker.send({ 'command': config.command.PROCESS_EXIT })
                     }
+                break
+
+            // redis connection failed
+            case config.command.REDIS_FAILED:
+                log.error('redis connection failed')
+
+                ready = false
+                break
+
+            // redis error occured
+            case config.command.REDIS_ERROR:
+                log.error('redis error occured')
                 break
 
             // default case
