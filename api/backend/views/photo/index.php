@@ -22,13 +22,49 @@ $gridColumns = [
         'headerOptions'  => ['class' => 'serial_number_th'],
     ],
 
-    [
-        'class'          => 'kartik\grid\CheckboxColumn',
-        'order'          => DynaGrid::ORDER_FIX_LEFT,
-        'name'           => 'id',
-        'contentOptions' => ['style' => 'min-width:40px;'],
-        'headerOptions'  => ['style' => 'min-width:40px;'],
+    // [
+    //     'class'          => 'kartik\grid\CheckboxColumn',
+    //     'order'          => DynaGrid::ORDER_FIX_LEFT,
+    //     'name'           => 'id',
+    //     'contentOptions' => ['style' => 'min-width:40px;'],
+    //     'headerOptions'  => ['style' => 'min-width:40px;'],
 
+    // ],
+    [
+        //操作
+        'class' => 'kartik\grid\ActionColumn',
+        'order' => DynaGrid::ORDER_FIX_LEFT,
+        'header' => '操作',
+        'contentOptions' => ['class' => 'operation_td'],
+        'headerOptions'  => ['class' => 'operation_th'],
+        'template' => '{mark} {preview}',
+        'buttons' => [
+            // 前台查看
+            'preview' => function ($url, $model, $key) {
+                return Html::a(
+                        '<i class="fa fa-eye"></i>', 
+                        $model->getPreviewUrl(), 
+                        [
+                            'title' => '前台查看',
+                            'target' => '_blank',
+                            'class' => 'tooltips',
+                        ]
+                    );
+            },
+            // 设为精选
+            'mark' => function ($url, $model, $key) {
+                $options = [
+                    'title' => '设为精选',
+                    'class' => 'tooltips',
+                    'onclick' => 'togglePremium('.$model->id.', this)',
+                ];
+                if ($model->is_recommend) {
+                    $options['title'] = '取消精选';
+                    $options['class'] = 'tooltips disabled';
+                }
+                return Html::a('<i class="fa fa-star"></i>', 'javascript:void(0)', $options);
+            },
+        ],
     ],
     [
         'contentOptions' => ['class' => 'img_column'],
@@ -37,9 +73,13 @@ $gridColumns = [
         'attribute' => 'image',
         'format' => 'raw',
         'value'  => function ($model) {
+            if (!$model->image || $model->image == 'null') {
+                return '';
+            }
+
             if ($model->short_id) {
                 return '<a target="_blank" href="/photos/show/' . $model->short_id . '">
-                <img style="display: block;width:100%;" src="' . \common\helpers\ImageHelper::convertToThumbnailPath(\Yii::$app->params['fileServer'] . $model->image, \common\enums\ThumbnailEnum::TINY) . '" alt="" class="">
+                <img style="display: block;width:120px;" src="' . \common\helpers\ImageHelper::convertToThumbnailPath(\Yii::$app->params['fileServer'] . $model->image, \common\enums\ThumbnailEnum::TINY) . '" alt="" class="">
                 </a>';
             }
 
@@ -78,15 +118,23 @@ $gridColumns = [
     [
         'attribute' => 'graph_resolve',
         'enableSorting' => false,
-        'value'               => function($model) {
-            return $model->graph_resolve ?? '';
+        'format' => 'raw',
+        'value'  => function($model) {
+            if ($model->annotatedImage) {
+                return '<img style="display: block;width:110px;" src="' . $model->annotatedImage . '" alt="" class="">';
+            }
+            return '';
         },
     ],
     [
         'attribute' => 'graph_position',
         'enableSorting' => false,
-         'value'               => function($model) {
-            return $model->graph_position ?? '';
+        'format' => 'raw',
+        'value'  => function($model) {
+            if ($model->zoomImage) {
+                return '<img style="display: block;width:110px;" src="' . $model->zoomImage . '" alt="" class="">';
+            }
+            return '';
         },
     ],
 
@@ -157,7 +205,22 @@ DynaGrid::end();
     </div>
 </div> -->
 
+<script type="text/javascript">
+    function togglePremium(id, obj) {
+        var url = '/photo/toggle-premium?photo_id=' + id;
+        asyncProcess(url, {}, function (json) {
+            $(obj).toggleClass('disabled');
+            if ($(obj).attr('data-original-title') == '取消精选') {
+                $(obj).attr('data-original-title', '设为精选');
+                tipSuccess('操作成功', '取消精选成功');
+            } else {
+                $(obj).attr('data-original-title', '取消精选');
+                tipSuccess('操作成功', '图片已设为精选');
+            }
 
+        });
+    }
+</script>
 
 
 

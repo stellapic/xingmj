@@ -26,6 +26,9 @@ class PhotoController extends BaseController
         }
 
         $queryParams = Yii::$app->request->queryParams;
+        if ($queryParams['is_recommend'] == '1') {
+            $this->title = '精选图片';
+        }
         // echo "<pre>";
         // print_r($queryParams);exit;
         $searchModel = new PhotoSearch();
@@ -41,6 +44,13 @@ class PhotoController extends BaseController
             'queryParams'  => $queryParams,
             'allCategory'  => $allCategory,
         ]);
+    }
+
+    public function actionTogglePremium($photo_id)
+    {
+        $sql = 'update photo set is_recommend=(case is_recommend when 1 then 0 else 1 end) where id=' . (int)$photo_id;
+        Photo::getDb()->createCommand($sql)->execute();
+        return $this->jsonSuccess();
     }
 
     private function editRow()

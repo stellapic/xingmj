@@ -49,6 +49,13 @@
     .toasts-top-right.fixed {
       min-width: 300px;
     }
+    /*rewrite*/
+    a.disabled {
+      color: #aaa;
+    }
+    a.tooltips {
+        margin: 0 2px;
+    }
   </style>
 </head>
 <body class="hold-transition sidebar-mini layout-navbar-fixed text-sm sidebar-collapse" style="height: auto; min-height: 100%;">
@@ -64,7 +71,7 @@
         <a href="/" class="nav-link">首页</a>
       </li>
       <li class="nav-item d-none d-sm-inline-block">
-        <a href="#" class="nav-link">精选图片</a>
+        <a href="/photo?is_recommend=1" class="nav-link">精选图片</a>
       </li>
     </ul>
 
@@ -298,7 +305,7 @@
   </aside>
 
   <!-- Content Wrapper. Contains page content -->
-  <div class="content-wrapper">
+  <div class="content-wrapper" style="overflow: auto;">
     <!-- Content Header (Page header) -->
     <section class="content-header">
       <div class="container-fluid">
@@ -365,16 +372,19 @@
 <!-- AdminLTE for demo purposes -->
 <!-- <script src="/adminlte/dist/js/demo.js"></script> -->
 <script type="text/javascript">
-  $(function() {
-    $('input[name="id_all"]').click(function() {
-      $('input[name="id[]"]').trigger('click');
-    });
+$(function() {
+  // list select-all
+  $('input[name="id_all"]').click(function() {
+    $('input[name="id[]"]').trigger('click');
   });
-//ajax post请求添加X-CSRF-Token
-$(document).ajaxSend(function(a, b, c) {
+  // add tooltip
+  $('.tooltips').tooltip()
+  //ajax post请求添加X-CSRF-Token
+  $(document).ajaxSend(function(a, b, c) {
     if (c.type == 'POST') {
         b.setRequestHeader('X-CSRF-Token', '<?=  Yii::$app->request->csrfToken; ?>');
     }
+  });
 });
 </script>
 
