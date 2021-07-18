@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
 import { Row, Col, Menu, Button } from "antd";
-import { HomeOutlined, LogoutOutlined } from "@ant-design/icons";
 import { apiGetUserInfo } from "../../request/api";
 import styles from "./style.less";
 
@@ -56,8 +55,8 @@ const UserInfoMenu = (props: { userToken: string | null }) => {
               alt="头像"
             />
           </Col>
-          <Col span={24} style={{ textAlign: "center", fontSize: "24px", fontWeight: 600 }}>
-            {userInfoData.userName}
+          <Col span={24}>
+            <Button type="link" block style={{fontSize: "20px", fontWeight: 600}}>{userInfoData.userName}</Button>
           </Col>
           <Col span={24} style={{ textAlign: "center" }}>
             {userInfoData.email}
@@ -88,13 +87,13 @@ const UserInfoMenu = (props: { userToken: string | null }) => {
             {userInfoData.intro}
           </Col>
           <Col flex="1 1 auto">
-            <Button type="primary" ghost block>
-              个人主页
+            <Button type="primary" danger ghost block>
+              退出登录
             </Button>
           </Col>
-          <Col span={4} style={{ textAlign: "center" }}>
+          {/* <Col span={4} style={{ textAlign: "center" }}>
             <Button type="text" danger ghost icon={ <LogoutOutlined /> }></Button>
-          </Col>
+          </Col> */}
         </Row>
       </Menu.Item>
     </Menu>
