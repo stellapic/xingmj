@@ -75,6 +75,7 @@ class BaseController extends \yii\rest\Controller
         if ($start > 0) {
             $query->offset($start);
         }
+        // echo $query->createCommand()->getRawSql();exit;
         return [
             'total' => $total,
             'start' => ($start + $limit >= $total ? null : ($start + $limit)),

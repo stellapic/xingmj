@@ -4,6 +4,7 @@ namespace frontend\models\search;
 
 use common\enums\PhotoEnum;
 use common\enums\ThumbnailEnum;
+use common\helpers\ImageHelper;
 use common\models\User;
 use frontend\models\Photo;
 use yii\data\ActiveDataProvider;
@@ -80,7 +81,7 @@ class PhotoSearch extends Photo
                 return $this->short_id;
             },
             'image' => function () {
-                return \Yii::$app->params['fileServer'] . $this->image;
+                return ImageHelper::convertToThumbnailPath(\Yii::$app->params['fileServer'] . $this->image, ThumbnailEnum::MEDIUM);
             },
             'title',
             'creator' => function () {
