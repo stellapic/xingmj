@@ -16,14 +16,23 @@
 		"IC 4996",
 		"The star 34Cyg"
 	],
+	// 显示参考 http://nova.astrometry.net/user_images/4891546#annotated
 	"calibration": {
-		"ra": 303.03413131799505,
-		"dec": 38.34357146538215,
-		"radius": 1.869603156099992,
-		"pixscale": 5.484660589627083,
-		"orientation": 359.2039311771184,
-		"parity": 1.0
-	},
+        "ra": "19:59.5626571566774:33.759429400644194", // h:m:s, 19h 59.56m 33.759s
+        "dec": "22:43:37.684427699376215", // d:m:s, +22° 43' 37.684"
+        "radius": 0.3342502082187191, // 0.334 deg
+        "pixscale": 1.3444910922262074, // 1.344 arcsec/pixel
+        "orientation": 243.37792467021484, // Up is 243.38 degrees E of S
+        "parity": -1
+    },
+    "calibration_original": {
+        "ra": 299.89066428916937,
+        "dec": 22.727134563249827,
+        "radius": 0.3342502082187191,
+        "pixscale": 1.3444910922262074,
+        "orientation": 243.37792467021484,
+        "parity": -1
+    },
 	"submission": {
 		"user": 27946,
 		"processing_started": "2021-06-29 06:24:01.873119",
