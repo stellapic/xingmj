@@ -16,7 +16,7 @@ class PhotoSearch extends Photo
     public function rules()
     {
         return [
-            [['keyword', 'category', 'tag'], 'safe'],
+            [['keyword', 'category', 'tag', 'is_recommend'], 'safe'],
         ];
     }
 
@@ -54,6 +54,7 @@ class PhotoSearch extends Photo
 
         $query->andFilterWhere([
             'category' => $this->category,
+            'is_recommend' => $this->is_recommend,
         ]);
 
         if ($this->tag) {

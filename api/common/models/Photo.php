@@ -98,4 +98,27 @@ class Photo extends BaseModel
             'is_recommend' => '是否精选',
         ];
     }
+
+    public function getAnnotatedImage()
+    {
+        if ($this->graph_resolve) {
+            return \Yii::$app->params['fileServer'] . $this->graph_resolve;
+        }
+        return '';
+    }
+
+    public function getZoomImage()
+    {
+        if ($this->graph_position) {
+            return \Yii::$app->params['fileServer'] . $this->graph_position;
+        }
+        return '';
+    }
+
+    public function getPreviewUrl()
+    {
+        return '/photo/show/' . $this->short_id;
+    }
+
+
 }
