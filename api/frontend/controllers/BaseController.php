@@ -9,6 +9,8 @@ class BaseController extends \yii\rest\Controller
 {
     public $enableCsrfValidation = false;
 
+    public $pageSize = 20;
+
     public $modelClass = 'frontend\models\User'; // 
 
     public function behaviors()
@@ -62,6 +64,23 @@ class BaseController extends \yii\rest\Controller
             throw new \yii\base\UserException('user not exists.');
         }
         return $frontUser;
+    }
+
+    protected function pageQuery($query, $asArray=false)
+    {
+        $start = (int)Yii::$app->request->get('start');
+        $limit = (int)Yii::$app->request->get('limit', $this->pageSize);
+        $total = (int)$query->count();
+        $query->limit($limit);
+        if ($start > 0) {
+            $query->offset($start);
+        }
+        // echo $query->createCommand()->getRawSql();exit;
+        return [
+            'total' => $total,
+            'start' => ($start + $limit >= $total ? null : ($start + $limit)),
+            'data' => $query->asArray($asArray)->all(),
+        ];
     }
 
 }

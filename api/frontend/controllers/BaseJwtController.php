@@ -31,7 +31,7 @@ class BaseJwtController extends BaseController
     {
         try {
             $headers = Yii::$app->request->headers;
-            $token = $headers->get('era_tkn');
+            $token = $headers->get('era_tkn') ?? $headers->get('Era-Tkn');
             if (!$token) {
                 throw new \yii\base\UserException('invalid token.');
             }

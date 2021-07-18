@@ -8,10 +8,22 @@ $params = array_merge(
 
 return [
     'id' => 'app-backend',
+    'language' => 'zh-CN',
     'basePath' => dirname(__DIR__),
     'controllerNamespace' => 'backend\controllers',
     'bootstrap' => ['log'],
-    'modules' => [],
+    'modules' => [
+        'dynagrid' => [
+            'class' => '\kartik\dynagrid\Module',
+            //'cookieSettings' => ['httpOnly' => true, 'expire' => time() + 8640000],
+            'defaultPageSize' => 20,
+            'minPageSize' => 20,
+            'maxPageSize' => 100,
+        ],
+        'gridview' => [
+            'class' => '\kartik\grid\Module',
+        ],
+    ],
     'components' => [
         'request' => [
             'csrfParam' => '_csrf-backend',
@@ -37,14 +49,12 @@ return [
         'errorHandler' => [
             'errorAction' => 'site/error',
         ],
-        /*
         'urlManager' => [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
             ],
         ],
-        */
     ],
     'params' => $params,
 ];

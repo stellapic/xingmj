@@ -16,6 +16,9 @@ return [
         'user' => [
             'class' => 'frontend\modules\user\Module',
         ],
+        'page' => [
+            'class' => 'frontend\modules\page\Module',
+        ],
     ],
     'components' => [
         'request' => [
@@ -89,9 +92,12 @@ return [
                 // photos
                 '/photos/new' => '/photo/new',
                 '/photos/mine' => '/photo/mine',
+                '/photos/show/<shortid:(.)+>/comments' => '/photo/comments',
                 '/photos/show/<shortid:(.)+>' => '/photo/show',
                 '/photos/u/<username:(.)+>' => '/photo/user-works',
                 '/photos' => '/photo/list',
+                // pages
+                '/page/photo-detail/<shortid:(.)+>' => '/page/photo-detail'
                 // [
                 //     'class' => 'yii\rest\UrlRule',
                 //     'controller' => ['user', 'photo', 'news'],

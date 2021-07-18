@@ -1,0 +1,66 @@
+基于Redis队列的星空图解析服务交互方式
+
+待解析队列：
+队列名称：queue:sovler:pending
+消息内容：{ "id": 1, "url": "https://bbs.imufu.cn/data/attachment/forum/202107/04/093749eyxotppsmxfp9mtm.jpg" }
+
+已解析队列：
+队列名称：queue:sovler:done
+消息内容：
+{
+	"id": 1,
+	"status": "success",
+	"tags": [
+		"Crescent Nebula",
+		"NGC 6888",
+		"IC 4996",
+		"The star 34Cyg"
+	],
+	// 显示参考 http://nova.astrometry.net/user_images/4891546#annotated
+	"calibration": {
+        "ra": "19:59.5626571566774:33.759429400644194", // h:m:s, 19h 59.56m 33.759s
+        "dec": "22:43:37.684427699376215", // d:m:s, +22° 43' 37.684"
+        "radius": 0.3342502082187191, // 0.334 deg
+        "pixscale": 1.3444910922262074, // 1.344 arcsec/pixel
+        "orientation": 243.37792467021484, // Up is 243.38 degrees E of S
+        "parity": -1
+    },
+    "calibration_original": {
+        "ra": 299.89066428916937,
+        "dec": 22.727134563249827,
+        "radius": 0.3342502082187191,
+        "pixscale": 1.3444910922262074,
+        "orientation": 243.37792467021484,
+        "parity": -1
+    },
+	"submission": {
+		"user": 27946,
+		"processing_started": "2021-06-29 06:24:01.873119",
+		"processing_finished": "2021-06-29 06:24:03.171189",
+		"user_images": [
+			4824972
+		],
+		"images": [
+			11241864
+		],
+		"jobs": [
+			5391553
+		],
+		"job_calibrations": [
+			[
+				5391553,
+				3775027
+			]
+		]
+	},
+	"original": "/upload/202107/2021071200291xx.jpg",
+	"annotated": {
+		"full": "/solver/202107/annotated_full_2021071200291xx.jpg",
+		"display": "/solver/202107/annotated_display_2021071200291xx.jpg"
+	},
+	"grid": {
+		"full": "/solver/202107/sdss_full_2021071200291xx.jpg",
+		"display": "/solver/202107/sdss_display_2021071200291xx.jpg"
+	},
+	"zoom": ["/zoom/0.jpg", "/zoom/1.jpg", "/zoom/2.jpg", "/zoom/3.jpg"]
+}

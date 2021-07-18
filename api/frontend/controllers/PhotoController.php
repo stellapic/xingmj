@@ -2,6 +2,7 @@
 namespace frontend\controllers;
 
 use common\models\PhotoCategory;
+use common\models\PhotoComment;
 use frontend\models\Photo;
 use frontend\models\search\PhotoSearch;
 use Yii;
@@ -14,6 +15,7 @@ class PhotoController extends BaseJwtController
         'list',
         'show',
         'user-works',
+        'comments',
     ];
 
     public function actionNew()
@@ -37,7 +39,13 @@ class PhotoController extends BaseJwtController
         Yii::$app->queue->push(new \common\queues\ThumbnailJob([
             'photo_id' => $photo->id,
             'photo_path' => $photo->image,
-        ]));        
+        ]));
+        // put into solver queue
+        $message = [
+            'id' => $photo->id,
+            'url' => Yii::$app->params['fileServer'] . $photo->image,
+        ];
+        Yii::$app->redis->lpush(Yii::$app->params['queueName']['solver_pending'], json_encode($message));
         return [
             'shortid' => $photo->short_id,
         ];
@@ -55,13 +63,19 @@ class PhotoController extends BaseJwtController
         return $photo;
     }
 
+    public function actionComments($shortid)
+    {
+        $query = \frontend\serviceProviders\PhotoCommentProvider::list($shortid);
+        return $this->pageQuery($query, true);
+    }
+
     public function actionMine()
     {
         $queryParams = Yii::$app->request->queryParams;
         $searchModel = new PhotoSearch();
         $dataProvider = $searchModel->search($queryParams);
         $dataProvider->query->andWhere(['creator' => Yii::$app->user->id]);
-        return $dataProvider;
+        return $this->pageQuery($dataProvider->query);
     }
 
     public function actionList()
@@ -69,7 +83,7 @@ class PhotoController extends BaseJwtController
         $queryParams = Yii::$app->request->queryParams;
         $searchModel = new PhotoSearch();
         $dataProvider = $searchModel->search($queryParams);
-        return $dataProvider;
+        return $this->pageQuery($dataProvider->query);
     }
 
 
@@ -84,7 +98,7 @@ class PhotoController extends BaseJwtController
         $searchModel = new PhotoSearch();
         $dataProvider = $searchModel->search($queryParams);
         $dataProvider->query->andWhere(['creator' => $user->id]);
-        return $dataProvider;
+        return $this->pageQuery($dataProvider->query);
     }
 
 
