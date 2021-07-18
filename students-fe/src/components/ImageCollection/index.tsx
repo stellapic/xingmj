@@ -23,7 +23,9 @@ const ImageCollection: React.FC<ImageCollectionProps> = (props) => {
       size: 20,
       page: 0,
     }).then((res) => {
-      const newPhotos: GalleryPhoto[] = res.data.map((item: Photo) => {
+      console.log(res);
+      
+      const newPhotos: GalleryPhoto[] = res.data.data.map((item: Photo) => {
         return {
           src: item.image + '_medium.jpg',
           width: item.width,
