@@ -1,6 +1,6 @@
 'use strict'
 
-import AstrometrySolver from '../backend/astrometry/index.js'
+import AstrometrySolver from '../backend/astrometry/AstrometrySolver.js'
 
 export default class SolverFactory {
     constructor() {}

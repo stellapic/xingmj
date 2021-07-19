@@ -27,6 +27,7 @@ import Logger from './logger.js'
     })
 
     log.info('astrometry solver started')
+    log.info(`max process: ${config.process.MAX_PROCESS}`)
 
     const workers = new Map()
     const redis_worker = fork('./worker/redis.js')
@@ -47,7 +48,7 @@ import Logger from './logger.js'
 
             // new task from redis, fork new process to solve
             case config.command.NEW_TASK:
-                const solve_worker = fork('./worker/solver.js', ['|', './node_modules/bunyan/bin/bunyan'])
+                const solve_worker = fork('./worker/solver.js')
 
                 if (!solve_worker) {
                     log.error('fork solver.js failed')
@@ -60,9 +61,9 @@ import Logger from './logger.js'
 
                     // annotation success
                     if (msg.command === config.command.TASK_SOLVED) {
-                        const annotation = msg.annotated
+                        console.log(msg.annotated, msg.task)
 
-                        redis_worker.send({ 'command': config.command.SAVE_ANNOTATION, 'annotated': annotation })
+                        redis_worker.send({ 'command': config.command.SAVE_ANNOTATION, 'annotated': msg.annotated, 'task': task })
                     }
                     
                     // solve process exited
@@ -72,24 +73,13 @@ import Logger from './logger.js'
                         log.debug(`delete worker[${key}] from map`)
 
                         log.debug(`${workers.size} worker in map now`)
-
-                        // get new task from redis
-                        // let count = config.process.MAX_PROCESS - workers.size
-                        // if (count > 0) {
-                        //     log.debug(`${workers.size} workers, create new one`)
-
-                        //     await sleep(100)
-
-                        //     log.debug(`retrieve ${count} tasks from redis worker`)
-                        //     redis_worker.send({ 'command': config.command.GET_TASKS, 'count': count })
-                        // }
                     }
-                    
+
                     // task annotation error occured
                     else if (msg.command === config.command.TASK_EXCEPTION) {
                         // task error(e.g. annotate failed, url not exists, etc.), move task to failure list
                         log.debug(`solver worker report task[${msg.task.id}] error`)
-                        console.log(msg.task)
+                        // console.log(msg.task)
 
                         redis_worker.send({ 'command': config.command.TASK_EXCEPTION, 'task': msg.task, 'error': msg.error })
                     }
@@ -110,8 +100,17 @@ import Logger from './logger.js'
             // annotation finish, save result to done list
             case config.command.ANNOTATION_SAVED:
                     const annotated = msg.annotated
+                    
+                    const it = workers.keys();
 
+                    let keys = []
+                    for (let key of it) {
+                        keys.push(key)
+                    }
+                    console.log(keys.join(', '))
+                    console.log(`solver_${annotated?.pid}`)
                     const worker = workers.get(`solver_${annotated?.pid}`)
+                    console.log('*******************************  ' + typeof worker + '  *******************************')
 
                     // kill sovler subprocess
                     if (worker) {

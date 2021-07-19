@@ -5,10 +5,10 @@ import os from 'os'
 const config = {
     log: {
         LOG_LEVEL: 'trace', // fatal/error/warn/info/debug/trace
-        LOG_SRC: true, // do not set true in production env, only for debug
+        LOG_SRC: false, // do not set true in production env, only for debug
     },
     process: {
-        MAX_PROCESS: 1 // os.cpus().length
+        MAX_PROCESS: os.cpus().length
     },
     UUID_NAMESPACE: 'fbd16f6f-bdb4-4312-8ffa-bb9deb0c8e7f',
     solver: 'astrometry', // astrometry | pi
@@ -52,7 +52,7 @@ const config = {
             MIN_TIMEOUT: 1000, // 500ms
             MAX_TIMEOUT: 2000 // 2s
         },
-        TIMEOUT: 0,
+        TIMEOUT: 0, // seconds, 0 means infinity
         QUEUE_PENDING: 'queue:sovler:pending', // task queue from php
         QUEUE_SOLVING: 'queue:sovler:solving', // task queue needs to be run by solver
         QUEUE_DONE: 'queue:sovler:done', // queue done

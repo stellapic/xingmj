@@ -13,14 +13,14 @@ import Logger from '../logger.js'
  * @param string str
  * @returns json
  */
- const getTask = str => {
-    if (typeof(str) === 'string') {
+const getTask = str => {
+    if (typeof (str) === 'string') {
         try {
             const json = JSON.parse(str)
-            if (typeof(json) === 'object' && json) {
+            if (typeof (json) === 'object' && json) {
                 return json
             }
-        } catch(e) {
+        } catch (e) {
             return null
         }
     }
@@ -38,9 +38,9 @@ import Logger from '../logger.js'
     const client = new IORedis(config.redis.connect)
 
     // event handler
-    client.once('error',  error => {
+    client.once('error', error => {
         log.error(error.message)
-        
+
         // process.send({ 'command': config.command.REDIS_ERROR, 'error': error.message })
     })
 
@@ -59,7 +59,7 @@ import Logger from '../logger.js'
 
     client.once('disconnect', () => {
         ready = false
-        log.error('redis disconnect end')
+        log.error('redis client disconnect')
         // process.send({ 'command': config.command.REDIS_FAILED })
     })
 
@@ -87,14 +87,16 @@ import Logger from '../logger.js'
             // store solve result to queue done
             const result = await client
                 .multi()
+                .lrem(config.redis.QUEUE_SOLVING, 0, JSON.stringify(msg.task))
+                // .rpop(config.redis.QUEUE_SOLVING) // remove task from queue solving
                 .lpush(config.redis.QUEUE_DONE, JSON.stringify(annotated)) // push astrometry result into queue done
-                .rpop(config.redis.QUEUE_SOLVING) // remove task from queue solving
                 .exec()
 
-            log.debug(result)
+            console.log(result)
 
             process.send({ 'command': config.command.ANNOTATION_SAVED, 'annotated': annotated })
             tasks--
+            log.debug(`${tasks} in pool`)
         }
 
         // delete task when error occured, e.g. url not exists, dir exists, annotation failed, etc.
@@ -109,15 +111,19 @@ import Logger from '../logger.js'
                 log.warn(`cmd failed: ${cmd}`)
                 tasks--
 
+                log.debug(`${tasks} in pool`)
+
                 return
             }
 
             // save eroor task to queue failed
             task = Object.assign(task, { 'status': config.api.STATUS_ERROR, 'error': msg.error })
             const lpush_result = await client.lpush(config.redis.QUEUE_FAILED, JSON.stringify(task))
-            
+
             log.warn(`save error task[${task.id}] to ${config.redis.QUEUE_FAILED}`)
             tasks--
+
+            log.debug(`${tasks} in pool`)
         }
 
         // default
@@ -127,30 +133,35 @@ import Logger from '../logger.js'
     })
 
     // console.log(123)
+    let last_diff = 0
     do {
-        console.log(ready)
         if (!ready) {
             await setTimeout(1000)
             continue
         }
 
         const diff = config.process.MAX_PROCESS - tasks
-        console.log(diff)
+        if (last_diff !== diff) {
+            last_diff = diff
+        }
         if (diff <= 0) {
-            log.info(`task pool is full[${config.process.MAX_PROCESS}]`)
             await setTimeout(500)
 
             continue
         }
 
-        const text = await client.brpoplpush(config.redis.QUEUE_PENDING, config.redis.QUEUE_SOLVING, config.redis.TIMEOUT)
+        // log.debug('loop rpoplpush')
+        // As per Redis 6.2.0, BRPOPLPUSH is considered deprecated. Please prefer BLMOVE in new code.
+        // const text = await client.lmove(config.redis.QUEUE_PENDING, config.redis.QUEUE_SOLVING, 'right', 'left')
+        // const text = await client.brpoplpush(config.redis.QUEUE_PENDING, config.redis.QUEUE_SOLVING, config.redis.TIMEOUT)
+        const text = await client.rpoplpush(config.redis.QUEUE_PENDING, config.redis.QUEUE_SOLVING)
         const task = getTask(text)
-        log.debug(`get task: ${text}`)
 
-        // check task string is or not valid json
-        if (!text || typeof text !== 'string') {
-            log.debug(`task json string invalid`)
-            break
+        if (!task) {
+            // log.debug(`no task found or task json string invalid`)
+
+            await setTimeout(1000)
+            continue
         }
 
         log.info(`send task[${task.id}] to master, and transfer to solver worker`)

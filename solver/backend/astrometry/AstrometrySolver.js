@@ -4,6 +4,7 @@ import fs from 'fs'
 import retry from 'async-retry'
 import { setTimeout } from 'timers/promises'
 
+import utils from '../../utils.js'
 import config from '../../config.js'
 import Logger from '../../logger.js'
 import { login, upload, submission, job, annotate, skyplot, grid } from './functions.js'
@@ -155,12 +156,17 @@ export default class AstrometrySolver {
                 }
             }
 
+            const calibration = Object.assign({}, jobinfo.calibration)
+            calibration.ra = utils.ra_degree2hms(jobinfo.calibration.ra)
+            calibration.dec = utils.dec_degree2hms(jobinfo.calibration.dec)
+
             result = {
                 'id': id,
                 'url': image_url,
                 'status': jobinfo.status,
                 'tags': jobinfo.tags,
-                'calibration': jobinfo.calibration,
+                'calibration': calibration,
+                'calibration_original': jobinfo.calibration,
                 'submission': sub,
                 'original': jobinfo.original_filename,
                 'annotated': annotated,

@@ -86,7 +86,7 @@ const sendErrorTask = (task, error) => {
 
             // send annotated to master process
             log.debug(`send solved task[${task.id}] to master`)
-            process.send({ 'command': config.command.TASK_SOLVED, 'annotated': annotated })
+            process.send({ 'command': config.command.TASK_SOLVED, 'annotated': annotated, 'task': task })
         }
         
         // do process exit
