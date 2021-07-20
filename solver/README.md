@@ -32,4 +32,5 @@ yarn start
 ```
 
 ## What's the next
-Inform the operation and maintenance person when the fault occurs, e.g redis disconnect, anntation failed
+1、Inform the operation and maintenance person when the fault occurs, e.g redis disconnect, anntation failed
+2、In solving and failed tasks, retry or ?
