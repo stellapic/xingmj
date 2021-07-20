@@ -1,6 +1,6 @@
 # Solver service
 
-Astronomical image annotation by astrometry.net online api
+Astronomical image annotation by astrometry.net online api, see [online doc](http://astrometry.net/doc/net/api.html).
 
 ## Install package
 npm
