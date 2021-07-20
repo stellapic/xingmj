@@ -7,16 +7,7 @@ import config from './config.js'
 import Logger from './logger.js'
 
 (async () => {
-    const log = Logger.getInstance()
-    
-    /**
-     * sleep
-     * @param int ms
-     */
-    const sleep = async (ms) => {
-        log.info(`sleep ${ms/1000} secnods`)
-        await setTimeout(ms)
-    }
+    const log = Logger.getInstance('master')
 
     process.on('uncaughtExceptionMonitor', (err, origin) => {
         log.error(`uncaught exception: ${err}, 'origin: ${origin}`)

@@ -1,11 +1,19 @@
 'use strict'
 
 import os from 'os'
+import log4js from 'log4js'
+// console.log(log4js)
 
 const config = {
     log: {
-        LOG_LEVEL: 'trace', // fatal/error/warn/info/debug/trace
-        LOG_SRC: false, // do not set true in production env, only for debug
+        backend: 'log4js',
+        bunyan: {
+            LOG_LEVEL: 'trace', // fatal/error/warn/info/debug/trace
+            LOG_SRC: false // do not set true in production env, only for debug
+        },
+        log4js: {
+            LOG_LEVEL: log4js.levels.ALL // OFF/FATAL/ERROR/WARN/INFO/DEBUG/TRACE/ALL
+        }
     },
     process: {
         MAX_PROCESS: os.cpus().length
@@ -32,14 +40,13 @@ const config = {
         retry: {
             RETRIES: 40,
             MIN_TIMEOUT: 10000, // 10s
-            MAX_TIMEOUT: 20000, // 20s
-            MAX_RETRY_TIMES: 3
+            MAX_TIMEOUT: 20000 // 20s
         }
     },
     annotated: '/Users/chenxi/Desktop/imufu/xingmj/solver/test/annotated_images',
     redis: {
         connect: {
-            port: 13697,
+            port: 23697,
             host: 'redis-13697.c275.us-east-1-4.ec2.cloud.redislabs.com',
             password: '19810704',
             db: 0,

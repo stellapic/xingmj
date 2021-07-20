@@ -46,7 +46,7 @@ export default class AstrometrySolver {
         }
 
         // create logger
-        const log = Logger.getInstance()
+        const log = Logger.getInstance('solver')
         
         // annotation dir
         const annotated_dir = `${config.annotated}/${id}`

@@ -31,7 +31,7 @@ const sendErrorTask = (task, error) => {
 
 (async () => {
     // get logger instance
-    const log = Logger.getInstance()
+    const log = Logger.getInstance('solver')
 
     // message handler
     process.on('message', async (msg) => {

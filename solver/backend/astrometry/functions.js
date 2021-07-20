@@ -8,7 +8,7 @@ import config from '../../config.js'
 import Logger from '../../logger.js'
 
 
-const log = Logger.getInstance()
+const log = Logger.getInstance('solver')
 
 /**
  * send request to astrometry api by axios

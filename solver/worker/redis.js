@@ -31,7 +31,7 @@ const getTask = str => {
 (async () => {
     let ready = false
     let tasks = 0
-    const log = Logger.getInstance()
+    const log = Logger.getInstance('redis')
 
     log.info('create redis client')
     // create redis client with lazy connect
