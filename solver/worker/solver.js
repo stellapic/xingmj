@@ -4,7 +4,7 @@ import urlExist from "url-exist"
 
 import config from '../config.js'
 import Logger from '../logger.js'
-import Utils from './utils.js'
+import Utils from '../utils.js'
 import SolverFactory from '../factory/SolverFactory.js'
 
 
