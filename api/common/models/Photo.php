@@ -107,10 +107,18 @@ class Photo extends BaseModel
         return '';
     }
 
-    public function getZoomImage()
+    public function getPositionImage()
     {
         if ($this->graph_position) {
             return \Yii::$app->params['fileServer'] . $this->graph_position;
+        }
+        return '';
+    }
+
+    public function getZoomImage()
+    {
+        if ($this->graph_zoom) {
+            return \Yii::$app->params['fileServer'] . $this->graph_zoom;
         }
         return '';
     }

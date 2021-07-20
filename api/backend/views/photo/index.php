@@ -93,6 +93,52 @@ $gridColumns = [
     ],
 
     [
+        'attribute' => 'graph_resolve',
+        'enableSorting' => false,
+        'format' => 'raw',
+        'value'  => function($model) {
+            if ($model->annotatedImage) {
+                return '<img style="display: block;width:110px;" src="' . $model->annotatedImage . '" alt="" class="">';
+            }
+            return '';
+        },
+    ],
+    [
+        'attribute' => 'graph_position',
+        'enableSorting' => false,
+        'format' => 'raw',
+        'value'  => function($model) {
+            if ($model->positionImage) {
+                return '<img style="display: block;width:110px;" src="' . $model->positionImage . '" alt="" class="">';
+            }
+            return '';
+        },
+    ],
+    [
+        'attribute' => 'graph_zoom',
+        'enableSorting' => false,
+        'format' => 'raw',
+        'value'  => function($model) {
+            if ($model->zoomImage) {
+                return '<img style="display: block;width:110px;" src="' . $model->zoomImage . '" alt="" class="">';
+            }
+            return '';
+        },
+    ],
+    [
+        'attribute' => 'tags_solver',
+        'enableSorting' => false,
+        'format' => 'raw',
+        'value'  => function($model) {
+            $str = [];
+            foreach ($model->tags_solver as $tag) {
+                $str[] = '<span class="badge badge-success">' . $tag . '</span>';
+            }
+            return implode('<br/>', $str) ?? '';
+        },
+    ],
+
+    [
         'attribute'           => 'category',
         'enableSorting' => false,
         'value'               => function($model) use ($allCategory) {
@@ -115,29 +161,6 @@ $gridColumns = [
         'attribute' => 'tags',
         'enableSorting' => false,
     ],
-    [
-        'attribute' => 'graph_resolve',
-        'enableSorting' => false,
-        'format' => 'raw',
-        'value'  => function($model) {
-            if ($model->annotatedImage) {
-                return '<img style="display: block;width:110px;" src="' . $model->annotatedImage . '" alt="" class="">';
-            }
-            return '';
-        },
-    ],
-    [
-        'attribute' => 'graph_position',
-        'enableSorting' => false,
-        'format' => 'raw',
-        'value'  => function($model) {
-            if ($model->zoomImage) {
-                return '<img style="display: block;width:110px;" src="' . $model->zoomImage . '" alt="" class="">';
-            }
-            return '';
-        },
-    ],
-
     [
         // 'headerOptions' => ['style' => 'min-width:120px'],
         'enableSorting' => false,
