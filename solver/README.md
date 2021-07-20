@@ -24,5 +24,12 @@ cd solver
 npm start
 ```
 
-## Plan
-improve redis worker, connection break
+or
+
+```bash
+cd solver
+yarn start
+```
+
+## What's the next
+Inform the operation and maintenance person when the fault occurs, e.g redis disconnect, anntation failed
