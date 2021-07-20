@@ -2,10 +2,10 @@
 
 import IORedis from 'ioredis'
 import retry from 'async-retry'
-import { setTimeout } from 'timers/promises'
 
 import config from '../config.js'
 import Logger from '../logger.js'
+import { sleep } from './utils.js'
 
 
 /**
@@ -92,7 +92,7 @@ const getTask = str => {
                 .lpush(config.redis.QUEUE_DONE, JSON.stringify(annotated)) // push astrometry result into queue done
                 .exec()
 
-            console.log(result)
+            log.debug(result)
 
             process.send({ 'command': config.command.ANNOTATION_SAVED, 'annotated': annotated })
             tasks--
@@ -105,7 +105,7 @@ const getTask = str => {
 
             log.warn(`remove error task[${task.id}] from queue solving`)
             const ret = await client.lrem(config.redis.QUEUE_SOLVING, 0, JSON.stringify(task))
-            console.log(`ret = ${ret}`, JSON.stringify(task))
+            log.debug(`ret = ${ret}`, JSON.stringify(task))
             if (ret <= 0) {
                 const cmd = `lrem ${config.redis.QUEUE_SOLVING} 0 ${JSON.stringify(task)}`
                 log.warn(`cmd failed: ${cmd}`)
@@ -136,7 +136,7 @@ const getTask = str => {
     let last_diff = 0
     do {
         if (!ready) {
-            await setTimeout(1000)
+            await sleep(1)
             continue
         }
 
@@ -145,7 +145,7 @@ const getTask = str => {
             last_diff = diff
         }
         if (diff <= 0) {
-            await setTimeout(500)
+            await sleep(0.5)
 
             continue
         }
@@ -160,7 +160,7 @@ const getTask = str => {
         if (!task) {
             // log.debug(`no task found or task json string invalid`)
 
-            await setTimeout(1000)
+            await sleep(1)
             continue
         }
 

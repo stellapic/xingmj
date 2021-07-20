@@ -1,10 +1,10 @@
 'use strict'
 
 import urlExist from "url-exist"
-import { setTimeout } from 'timers/promises'
 
 import config from '../config.js'
 import Logger from '../logger.js'
+import { sleep } from './utils.js'
 import SolverFactory from '../factory/SolverFactory.js'
 
 
@@ -51,15 +51,13 @@ const sendErrorTask = (task, error) => {
                 log.debug(`send task[${task.id}] exception to master`)
                 sendErrorTask(task, `image url does't exists`)
 
-                await setTimeout(1000)
+                await sleep(1)
 
                 log.debug('process.exit')
                 process.exit()
 
                 return
             }
-
-            // task = Object.assign(task, { 'pid': msg.pid })
 
             // create solver
             const solver = SolverFactory.getSolver(config.solver)
@@ -74,7 +72,7 @@ const sendErrorTask = (task, error) => {
                 log.debug(`send error task[${task.id}] to master`)
                 sendErrorTask(task, error)
 
-                await setTimeout(1000)
+                await sleep(1)
 
                 log.debug('process.exit')
                 process.exit()

@@ -37,8 +37,8 @@ export default class utils {
      * sleep
      * @param int ms
      */
-     static sleep(ms) {
+     static async sleep(s) {
         // log.info(`sleep ${ms/1000} secnods`)
-        await setTimeout(ms)
+        await setTimeout(s * 1000)
     }
 }

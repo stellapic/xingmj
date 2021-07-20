@@ -1,10 +1,10 @@
 'use strict'
 
 import { fork } from 'child_process'
-import { setTimeout } from 'timers/promises'
 
 import config from './config.js'
 import Logger from './logger.js'
+import { sleep } from './utils.js'
 
 (async () => {
     const log = Logger.getInstance('master')
@@ -48,12 +48,8 @@ import Logger from './logger.js'
 
                 // message handler
                 solve_worker.on('message', async (msg) => {
-                    // console.log(msg)
-
                     // annotation success
                     if (msg.command === config.command.TASK_SOLVED) {
-                        console.log(msg.annotated, msg.task)
-
                         redis_worker.send({ 'command': config.command.SAVE_ANNOTATION, 'annotated': msg.annotated, 'task': task })
                     }
                     
@@ -70,7 +66,6 @@ import Logger from './logger.js'
                     else if (msg.command === config.command.TASK_EXCEPTION) {
                         // task error(e.g. annotate failed, url not exists, etc.), move task to failure list
                         log.debug(`solver worker report task[${msg.task.id}] error`)
-                        // console.log(msg.task)
 
                         redis_worker.send({ 'command': config.command.TASK_EXCEPTION, 'task': msg.task, 'error': msg.error })
                     }
@@ -82,7 +77,7 @@ import Logger from './logger.js'
                 })
 
                 const task = msg.task
-                await setTimeout(1000)
+                await sleep(1)
                 solve_worker.send({ 'command': config.command.NEW_TASK, 'task': task, 'pid': solve_worker?.pid })
 
                 workers.set(`solver_${solve_worker?.pid}`, solve_worker)
@@ -91,20 +86,19 @@ import Logger from './logger.js'
             // annotation finish, save result to done list
             case config.command.ANNOTATION_SAVED:
                     const annotated = msg.annotated
-                    
                     const it = workers.keys();
 
                     let keys = []
                     for (let key of it) {
                         keys.push(key)
                     }
-                    console.log(keys.join(', '))
-                    console.log(`solver_${annotated?.pid}`)
+                    log.debug(keys.join(', '))
+                    log.debug(`solver_${annotated?.pid}`)
                     const worker = workers.get(`solver_${annotated?.pid}`)
-                    console.log('*******************************  ' + typeof worker + '  *******************************')
 
                     // kill sovler subprocess
                     if (worker) {
+                        log.debug(`worker[${worker.pid}] annotation success and ready to exit`)
                         worker.send({ 'command': config.command.PROCESS_EXIT })
                     }
                 break
