@@ -5,7 +5,7 @@ import retry from 'async-retry'
 
 import config from '../config.js'
 import Logger from '../logger.js'
-import { sleep } from './utils.js'
+import Utils from './utils.js'
 
 
 /**
@@ -136,7 +136,7 @@ const getTask = str => {
     let last_diff = 0
     do {
         if (!ready) {
-            await sleep(1)
+            await Utils.sleep(1)
             continue
         }
 
@@ -145,7 +145,7 @@ const getTask = str => {
             last_diff = diff
         }
         if (diff <= 0) {
-            await sleep(0.5)
+            await Utils.sleep(0.5)
 
             continue
         }
@@ -160,7 +160,7 @@ const getTask = str => {
         if (!task) {
             // log.debug(`no task found or task json string invalid`)
 
-            await sleep(1)
+            await Utils.sleep(1)
             continue
         }
 

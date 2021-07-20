@@ -1,6 +1,6 @@
 'use strict'
 
-export default class utils {
+export default class Utils {
     /**
      * ra(right ascension) degree to dms format
      * @param float ra

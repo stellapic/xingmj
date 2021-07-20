@@ -4,7 +4,7 @@ import urlExist from "url-exist"
 
 import config from '../config.js'
 import Logger from '../logger.js'
-import { sleep } from './utils.js'
+import Utils from './utils.js'
 import SolverFactory from '../factory/SolverFactory.js'
 
 
@@ -51,7 +51,7 @@ const sendErrorTask = (task, error) => {
                 log.debug(`send task[${task.id}] exception to master`)
                 sendErrorTask(task, `image url does't exists`)
 
-                await sleep(1)
+                await Utils.sleep(1)
 
                 log.debug('process.exit')
                 process.exit()
@@ -72,7 +72,7 @@ const sendErrorTask = (task, error) => {
                 log.debug(`send error task[${task.id}] to master`)
                 sendErrorTask(task, error)
 
-                await sleep(1)
+                await Utils.sleep(1)
 
                 log.debug('process.exit')
                 process.exit()

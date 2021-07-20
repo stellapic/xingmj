@@ -4,7 +4,7 @@ import { fork } from 'child_process'
 
 import config from './config.js'
 import Logger from './logger.js'
-import { sleep } from './utils.js'
+import Utils from './utils.js'
 
 (async () => {
     const log = Logger.getInstance('master')
@@ -77,7 +77,7 @@ import { sleep } from './utils.js'
                 })
 
                 const task = msg.task
-                await sleep(1)
+                await Utils.sleep(1)
                 solve_worker.send({ 'command': config.command.NEW_TASK, 'task': task, 'pid': solve_worker?.pid })
 
                 workers.set(`solver_${solve_worker?.pid}`, solve_worker)
