@@ -1,5 +1,7 @@
 'use strict'
 
+import { setTimeout } from 'timers/promises'
+
 export default class Utils {
     /**
      * ra(right ascension) degree to dms format

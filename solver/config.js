@@ -46,7 +46,7 @@ const config = {
     annotated: '/Users/chenxi/Desktop/imufu/xingmj/solver/test/annotated_images',
     redis: {
         connect: {
-            port: 23697,
+            port: 13697,
             host: 'redis-13697.c275.us-east-1-4.ec2.cloud.redislabs.com',
             password: '19810704',
             db: 0,

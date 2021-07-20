@@ -30,22 +30,36 @@ export default class Logger {
     }
 
     initLog4js() {
+        log4js.configure({
+            appenders: {
+                'console': { 'type': 'stdout', 'layout': {
+                    type: 'coloured',
+                    pattern: '[%d] [%p] %c/%z - %m'
+                }},
+                'file': { 'type': 'dateFile', 'filename': 'logs/solver.log', 'layout': {
+                    type: 'basic',
+                    pattern: '[%d] [%p] %c/%z - %m'
+                }, daysToKeep: 7 }
+            },
+            categories: {
+                default: { appenders: ['console'], level: 'debug'},
+                master: { appenders: ['console', 'file'], level: 'all' },
+                redis: { appenders: ['console', 'file'], level: 'all' },
+                solver: { appenders: ['console', 'file'], level: 'all' }
+            }
+        })
+
         this.log4js_master = new log4js.getLogger('master')
-        this.log4js_master.level = config.log.log4js.LOG_LEVEL
-
         this.log4js_redis = new log4js.getLogger('redis')
-        this.log4js_redis.level = config.log.log4js.LOG_LEVEL
-
         this.log4js_solver = new log4js.getLogger('solver')
-        this.log4js_solver.level = config.log.log4js.LOG_LEVEL
     }
 
-    static getInstance(namespace) {
+    static getInstance(category) {
         if (!this._instance) {
-            this._instance = new Logger(namespace)
+            this._instance = new Logger(category)
         }
 
-        return this._instance[`${config.log.backend}_${namespace}`]
+        return this._instance[`${config.log.backend}_${category}`]
     }
 }
 

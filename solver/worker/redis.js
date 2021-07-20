@@ -5,7 +5,7 @@ import retry from 'async-retry'
 
 import config from '../config.js'
 import Logger from '../logger.js'
-import Utils from './utils.js'
+import Utils from '../utils.js'
 
 
 /**
