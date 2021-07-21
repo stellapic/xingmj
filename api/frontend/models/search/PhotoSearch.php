@@ -59,7 +59,8 @@ class PhotoSearch extends Photo
 
         if ($this->tag) {
             // $query->andWhere("tags->'$.{$this->tag}' = 1");
-            $query->orderBy(new \yii\db\Expression("tags->'$.{$this->tag}' DESC"));
+            // $query->orderBy(new \yii\db\Expression("tags->'$.{$this->tag}' DESC"));
+            $this->applyTagCondition($query);
         }
 
         if ($this->keyword) {
@@ -71,7 +72,7 @@ class PhotoSearch extends Photo
         }
 
         // p($params);
-        echo $query->createCommand()->getRawSql();exit;
+        // echo $query->createCommand()->getRawSql();exit;
         return $dataProvider;
     }
 
@@ -99,6 +100,25 @@ class PhotoSearch extends Photo
             },
             'take_date',
         ];
+    }
+
+    private function applyTagCondition($query)
+    {
+        if (!$this->tag) {
+            return;
+        }
+        switch ($this->tag) {
+            case 'hot':
+                $query->orderBy('thumbs_count DESC');
+                break;
+            case 'recommend':
+                $query->orderBy('is_recommend DESC');
+                break;
+
+            default:
+                $query->orderBy('id DESC');
+                break;
+        }
     }
 
 }
