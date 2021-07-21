@@ -23,3 +23,12 @@ code {
   height: auto !important;
   max-height: 160px;
 }
+
+/* 自定义的链接样式 */
+.xingmj-a {
+  color: #fff;
+  transition: all .3;
+}
+.xingmj-a:hover {
+  opacity: 0.9;
+}

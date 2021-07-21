@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import Gallery from "react-photo-gallery";
 import { Photo } from "../../models/photo.interface";
-import { apiListPhotos } from "../../request/api";
+import { apiListPhotos, ListPhotosParam } from "../../request/api";
 
-interface ImageCollectionProps {}
+interface ImageCollectionProps { categoryName?: string }
 
 interface GalleryPhoto {
   src: string;
@@ -16,13 +16,16 @@ interface GalleryPhoto {
 }
 
 const ImageCollection: React.FC<ImageCollectionProps> = (props) => {
+  const { categoryName } = props;
   const [photos, setPhotos] = useState<GalleryPhoto[]>([]);
+  const params: ListPhotosParam = {
+    size: 20,
+    page: 0
+  }
+  if (categoryName !== "all") params.category = categoryName;
 
   useEffect(() => {
-    apiListPhotos({
-      size: 20,
-      page: 0,
-    }).then((res) => {
+    apiListPhotos(params).then((res) => {
       console.log(res);
       
       const newPhotos: GalleryPhoto[] = res.data.data.map((item: Photo) => {

@@ -7,6 +7,7 @@ import { CarouselItem } from "../../models/carousel-item.interface";
 import { apiListHomeSlides } from "../../request/api";
 
 import styles from "./style.less";
+import "../../index.css";
 
 const { Search } = Input;
 const { Title } = Typography;
@@ -28,6 +29,7 @@ const Home: React.FC<{}> = () => {
     <>
       {/* 顶部轮播图模块 */}
       <div className={styles.homeBanner}>
+        <div className={styles.carouselMask}></div>
         {/* 搜索框 */}
         <div className={styles.bannerContent}>
           {/* 主标题 */}
@@ -36,7 +38,7 @@ const Home: React.FC<{}> = () => {
           </Title>
           {/* 次级标题 */}
           <Title level={3} style={{ marginBottom: "50px", marginTop: "20px", color: "#fff" }}>
-            {dataList[currentIndex].text}
+            <a className={styles.xingmj_a} href={dataList[currentIndex].redirect_url}>{dataList[currentIndex].text}</a>
           </Title>
           {/* 搜索框 */}
           <Search
@@ -44,7 +46,7 @@ const Home: React.FC<{}> = () => {
             size="large"
             allowClear
             enterButton="搜索"
-            style={{ width: "80%" }}
+            style={{ maxWidth: "500px", margin: "0 auto" }}
           />
         </div>
         {/* 底部轮播图 */}

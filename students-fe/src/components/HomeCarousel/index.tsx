@@ -3,9 +3,6 @@ import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a lo
 import { Carousel } from "react-responsive-carousel";
 import { CarouselItem } from "../../models/carousel-item.interface";
 import { Image } from "antd";
-
-import styles from "./style.less";
-
 interface HomeCarouselProps {
   dataList: CarouselItem[];
   indexChange: (currentIndex: number, Item: React.ReactNode) => void;
@@ -16,16 +13,14 @@ const HomeCarousel: React.FC<HomeCarouselProps> = (props) => {
 
   const children = dataList.map((item: CarouselItem) => {
     return (
-      <a target="blank" className={styles.carouselInner} href={item.redirect_url} key={item.image}>
-        <Image src={item.image} preview={false} width={'100%'} />
-      </a>
+      // <a target="blank" className={styles.carouselInner} href={item.redirect_url} key={item.image}>
+        <Image src={item.image} preview={false} key={item.image} style={{ objectFit: "cover", height: "500px" }}/>
+      // </a>
     );
   });
 
   return (
     <Carousel
-      dynamicHeight={false}
-      width="100%"
       showThumbs={false}
       autoPlay
       stopOnHover={false}

@@ -45,6 +45,10 @@ export const apiListPhotos = (params: ListPhotosParam) => {
   });
 };
 
+export const apiPhotoCategory = () => {
+  return service.get("photo-category");
+}
+
 export const apiListHomeSlides = () => {
   return service.get("home/slides", {});
 };

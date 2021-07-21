@@ -1,13 +1,19 @@
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { stateType } from "../../redux/store";
-import { Link } from "react-router-dom";
+import { NavLink, withRouter, RouteComponentProps } from "react-router-dom";
 import { Row, Col, Dropdown } from "antd";
 import UserInfoMenu from "./UserInfoMenu";
 import Modal, { modalTypes } from "../Modals";
 import styles from "./style.less";
 
-const Header: React.FC<{ userToken: string | null }> = (props) => {
+type HeaderProps = {
+  userToken: string | null
+}
+
+let Header: React.FC<HeaderProps & RouteComponentProps> = (props) => {
+  const {userToken, history} = props;
+
   let avatarUrl =
     (localStorage.getItem("avatarUrl") as string) ||
     "https://ftp.bmp.ovh/imgs/2021/06/d3edeccdd9ffeedb.png";
@@ -25,39 +31,43 @@ const Header: React.FC<{ userToken: string | null }> = (props) => {
   const typeChange = (type: modalTypes) => {
     setModalType(type);
   };
-  const userInfoMenu = UserInfoMenu({ userToken: props.userToken });
+  const userInfoMenu = UserInfoMenu({ userToken });
+
+  // 获取当前页面路径的第一级路径，用来判断选中哪个link
+  const rootPath = history.location.pathname.split('/')[1];
+
   return (
     <Row id={styles.header}>
       {/* 左侧 */}
       <Col flex="auto">
         <Row className={styles.headerLeft}>
-          <Link className={styles.headerLink} to="/home">
+          <NavLink className={styles.headerLink + ' ' + (rootPath == 'home'? styles.headerLinkActive : '')} to="/home">
             <span>首页</span>
-          </Link>
-          <Link className={styles.headerLink} to="/community">
+          </NavLink>
+          <NavLink className={styles.headerLink + ' ' + (rootPath == 'community'? styles.headerLinkActive : '')} to="/community">
             <span>社区</span>
-          </Link>
-          <Link className={styles.headerLink} to="/collections">
+          </NavLink>
+          <NavLink className={styles.headerLink + ' ' + (rootPath == 'collections'? styles.headerLinkActive : '')} to="/collections">
             <span>图集</span>
-          </Link>
+          </NavLink>
         </Row>
       </Col>
       {/* Logo */}
       <Col flex="auto">
-        <Link className={styles.logo} to="/">
+        <NavLink className={styles.logo} to="/">
           {logoUrl ? <img src={logoUrl} alt="LOGO" /> : <span>LOGO</span>}
           <span>&emsp;星美集</span>
-        </Link>
+        </NavLink>
       </Col>
       {/* 右侧 */}
       <Col flex="auto">
         <Row className={styles.headerRight}>
-          <Link className={styles.headerLink} to="/posting">
+          <NavLink className={styles.headerLink} to="/posting">
             发布文章
-          </Link>
-          <Link className={styles.headerLink} to="/upload">
+          </NavLink>
+          <NavLink className={styles.headerLink} to="/upload">
             上传作品
-          </Link>
+          </NavLink>
 
           {props.userToken ? (
             <div className={styles.login}>
@@ -81,4 +91,4 @@ const Header: React.FC<{ userToken: string | null }> = (props) => {
   );
 };
 
-export default connect((state: stateType) => ({ userToken: state.userToken }))(Header);
+export default withRouter(connect((state: stateType) => ({ userToken: state.userToken }))(Header));
