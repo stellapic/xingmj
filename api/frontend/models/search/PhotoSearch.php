@@ -58,7 +58,8 @@ class PhotoSearch extends Photo
         ]);
 
         if ($this->tag) {
-            $query->andWhere("tags->'$.{$this->tag}' = 1");
+            // $query->andWhere("tags->'$.{$this->tag}' = 1");
+            $query->orderBy(new \yii\db\Expression("tags->'$.{$this->tag}' DESC"));
         }
 
         if ($this->keyword) {
@@ -70,7 +71,7 @@ class PhotoSearch extends Photo
         }
 
         // p($params);
-        // echo $query->createCommand()->getRawSql();exit;
+        echo $query->createCommand()->getRawSql();exit;
         return $dataProvider;
     }
 
