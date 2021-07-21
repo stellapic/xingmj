@@ -34,6 +34,7 @@ class PhotoDetail extends \common\models\Photo
             'device',
             'remote_station',
             'graph_resolve',
+            'graph_zoom',
             'graph_position',
             'thumbs_count',
             'favorites_count',
