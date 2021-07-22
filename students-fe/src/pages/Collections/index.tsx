@@ -42,10 +42,10 @@ const Collections: React.FC = () => {
       </Row>
       {/* 列表页导航栏 */}
       {/* <CollectionsCategory></CollectionsCategory> */}
-      <Tabs defaultActiveKey={tabList[0].category_name} animated>
-        {
-          tabList.map(tab => {
-            return (
+      <Tabs defaultActiveKey={tabList[0].category_name} style={{marginTop: "20px"}}>
+        {tabList.map(tab => {
+          return (
+            // 列表详情
             <TabPane key={tab.category_name} tab={tab.category_title}>
               <ImageCollection categoryName={tab.category_name}></ImageCollection>
             </TabPane>
@@ -53,7 +53,6 @@ const Collections: React.FC = () => {
           })
         }
       </Tabs>
-      {/* 列表页详情 */}
     </div>
   );
 }
