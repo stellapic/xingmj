@@ -42,7 +42,7 @@ const UserInfoMenu = (props: { userToken: string | null }) => {
         } catch (e) {}
       });
     }
-  });
+  }, []);
 
   return (
     <Menu style={{ width: "240px", padding: "10px 15px" }}>

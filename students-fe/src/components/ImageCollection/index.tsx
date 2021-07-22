@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
-import Gallery from "react-photo-gallery";
+import Gallery, {RenderImageProps} from "react-photo-gallery";
+import EachImage from "./EachImage";
 import { Photo } from "../../models/photo.interface";
 import { apiListPhotos, ListPhotosParam } from "../../request/api";
 
 interface ImageCollectionProps { categoryName?: string }
 
-interface GalleryPhoto {
+export interface GalleryPhoto {
   src: string;
   srcSet?: string | string[] | undefined;
   sizes?: string | string[] | undefined;
@@ -40,8 +41,12 @@ const ImageCollection: React.FC<ImageCollectionProps> = (props) => {
     });
   }, []);
 
+  const imageRenderer: React.FC<RenderImageProps> = ({ index, left, top, photo, margin }) => {
+    return <EachImage photo={photo} margin={margin} key={photo.src}></EachImage>
+  }
+
   return (
-    <Gallery photos={photos} />
+    <Gallery photos={photos} renderImage={imageRenderer} />
   );
 };
 

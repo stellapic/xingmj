@@ -30,7 +30,7 @@ const Collections: React.FC = () => {
     <div style={{maxWidth: "1200px", width: "80%", minHeight: "90vh", margin: "0 auto", padding: "20px 0"}}>
       {/* 搜索栏 */}
       <Row justify="center" align="middle" gutter={20}>
-        <Col span={15}>
+        <Col sm={15} xs={24}>
           <Search
               placeholder={'搜索 ' + tabList[0].category_title}
               size="large"
@@ -42,7 +42,7 @@ const Collections: React.FC = () => {
       </Row>
       {/* 列表页导航栏 */}
       {/* <CollectionsCategory></CollectionsCategory> */}
-      <Tabs defaultActiveKey={tabList[0].category_name}>
+      <Tabs defaultActiveKey={tabList[0].category_name} animated>
         {
           tabList.map(tab => {
             return (
