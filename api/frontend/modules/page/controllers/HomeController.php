@@ -9,7 +9,7 @@ class HomeController extends BasePageController
     public function actionIndex()
     {
         return [
-            'slides' => RuntimeVariables::getJson('home_slides', true),
+            'slides' => RuntimeVariables::getHomeSlides(),
             'photos' => Photo::getRecommendList(),
         ];
     }

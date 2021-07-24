@@ -29,14 +29,7 @@ class HomeController extends BaseController
             return $this->jsonSuccess($post['slide']);
         }
 
-        $slides = RuntimeVariables::getJson('home_slides', true);
-        usort($slides, function($a, $b)
-        {
-            if ($a['sort'] == $b['sort']) {
-                return 0;
-            }
-            return ($a['sort'] < $b['sort']) ? -1 : 1;
-        });
+        $slides = RuntimeVariables::getHomeSlides();
 
         return $this->render($this->action->id, [
             'slides'  => $slides,

@@ -20,6 +20,7 @@ class PhotoCommentProvider
         $query = PhotoComment::find()->alias('c');
         $query->innerJoin('user as u', 'c.user_id=u.id');
         $query->select('c.id as comment_id, c.content, c.created_at, u.username, u.avatar');
+        $query->where(['c.photo_id' => $photo->id]);
         return $query;
     }
 }

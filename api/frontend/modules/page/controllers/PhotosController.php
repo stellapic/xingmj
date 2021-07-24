@@ -15,7 +15,7 @@ class PhotosController extends BasePageController
         $dataProvider = $searchModel->search($queryParams);
         return [
             'category' => PhotoCategory::find()->select('category_name, category_title')->asArray()->all(),
-            'list' => $dataProvider,
+            'list' => $this->pageQuery($dataProvider->query),
         ];
     }
 
