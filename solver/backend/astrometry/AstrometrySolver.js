@@ -82,7 +82,7 @@ export default class AstrometrySolver {
                 minTimeout: config.api.retry.MIN_TIMEOUT,
                 maxTimeout: config.api.retry.MAX_TIMEOUT,
                 onRetry: (error, times) => {
-                    // log.info(`retry ${times} times`)
+                    log.info(`submission retry ${times} times`)
                 }
             })
 
@@ -102,7 +102,7 @@ export default class AstrometrySolver {
                 minTimeout: config.api.retry.MIN_TIMEOUT,
                 maxTimeout: config.api.retry.MAX_TIMEOUT,
                 onRetry: (error, times) => {
-                    log.info(`retry ${times} times`)
+                    log.info(`job retry ${times} times`)
                 }
             })
 
@@ -178,12 +178,12 @@ export default class AstrometrySolver {
 
             log.info(`task ${id} solve finish`)
         } catch (e) {
-            log.error(e)
+            log.error(e.message || e.errormessage || e)
 
             // delete task annotation dir
             fs.rmdirSync(annotated_dir)
 
-            return Object.assign(result, { 'error': e.message })
+            return Object.assign(result, { 'error': e.message || e.errormessage })
         }
 
         return result

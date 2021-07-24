@@ -3,6 +3,7 @@
 import fs from 'fs'
 import axios from 'axios'
 import FormData from 'form-data'
+import nodemailer from 'nodemailer'
 
 import config from '../../config.js'
 import Logger from '../../logger.js'
@@ -10,48 +11,73 @@ import Logger from '../../logger.js'
 
 const log = Logger.getInstance('solver')
 
+axios.defaults.baseURL = config.api.BASE_URL
+axios.interceptors.response.use(response => {
+    return response
+}, function (error) {
+    if (error.response.status === 500) {
+        sendMail('astrometry http 500 error', error.request.res.responseUrl)
+    }
+
+    return Promise.reject(error)
+})
+
+/**
+ * send email
+ * @param stribg subject, mail subject
+ * @param stribg text, mail content
+ * @returns void
+ */
+const sendMail = (subject, text) => {
+    const transporter = nodemailer.createTransport(config.smtp.options)
+
+    const data = Object.assign(config.smtp.tpl, { 'subject': subject, 'text': text })
+    transporter.sendMail(data, (err, info) => {
+        if (err) log.error(err)
+        else log.debug(info)
+    })
+}
+
 /**
  * send request to astrometry api by axios
  * @param object options { url, form, headers, config, callback }
  * @returns void
  */
 const request = (options) => {
-    axios.defaults.baseURL = config.api.BASE_URL
-
     return new Promise((resolve, reject) => {
         log.debug(`url: ${options.url}`)
         let self = this
-
         let promise = null
+
         if (options.method === 'post') {
             promise = axios.post(options.url, options.form, options.config)
         } else {
             promise = axios.get(options.url, options.config)
         }
-        
+
         promise.then((response) => {
             if (typeof options.callback === 'function') {
                 // callback(response.data, resolve, reject)
                 options.callback.call(self, response, resolve, reject)
             }
-        })
-        .catch((error) => {
+        }).catch((error) => {
             const response = {
                 status: config.api.STATUS_ERROR,
                 errormessage: ''
             }
+
             if (error.response) {
-                response.errormessage = `http ${error.response.status} error`
+                response.errormessage = `http ${error.response.status} error, [${error.request.res.responseUrl}]`
             } else if (error.request) {
-                response.errormessage = `request ${error.request._currentUrl} failed`
+                response.errormessage = `request ${error.request.res.responseUrl} failed`
             } else {
                 response.errormessage = error.message
             }
 
-            log.error(`request error: ${response.errormessage}`)
+            // log.error(`request error: ${response.errormessage}`)
             reject(response)
         })
-    });
+    })
 }
 
 /**
@@ -64,12 +90,14 @@ const login = async (apikey) => {
 
     const url = config.api.API_LOGIN
     const form = new FormData()
-    form.append('request-json', JSON.stringify({ 'apikey': apikey }))
+    form.append('request-json', JSON.stringify({
+        'apikey': apikey
+    }))
 
     const callback = (response, resolve, reject) => {
         const status = response.data.status
         const session = response.data.session
-        
+
         if (status === config.api.STATUS_SUCCESS && typeof session !== 'undefined') {
             log.debug(`login success, session: ${session}`)
             resolve(response.data.session)
@@ -81,18 +109,20 @@ const login = async (apikey) => {
 
     let session = null
     try {
-        session = await request(
-        {
+        session = await request({
             'url': url,
             'form': form,
-            'config': { headers: form.getHeaders() },
+            'config': {
+                headers: form.getHeaders()
+            },
             'method': 'post',
             'callback': callback
         })
     } catch (e) {
-        log.error(e)
+        const message = e.message || e.errormessage
+        log.error(message)
 
-        throw new Error(e)
+        throw new Error(message)
     }
 
     return session
@@ -122,7 +152,7 @@ const upload = async (session, image_url) => {
         const status = response.data.status
         const subid = response.data.subid
         // const hash = response.data.hash
-        
+
         if (status === config.api.STATUS_SUCCESS && subid) {
             log.debug(`url upload success, subid: ${subid}`)
             resolve(subid)
@@ -134,16 +164,17 @@ const upload = async (session, image_url) => {
 
     let subid = null
     try {
-        subid = await request(
-        {
+        subid = await request({
             'url': url,
             'form': form,
-            'config': { headers: form.getHeaders() },
+            'config': {
+                headers: form.getHeaders()
+            },
             'method': 'post',
             'callback': callback
         })
     } catch (e) {
-        log.error(e)
+        log.error(e.message || e.errormessage)
     }
 
     return subid
@@ -269,7 +300,7 @@ const image_callback = async function (response, resolve, reject) {
     const content_type = response.headers['content-type']
     const content_length = parseInt(response.headers['content-length'])
     const is_image = (content_type.split('/')[0] === 'image')
-    
+
     if (!is_image) {
         log.debug(`content type: ${content_type}`)
         reject('astrometry returns is not image')
@@ -297,27 +328,30 @@ const image_callback = async function (response, resolve, reject) {
  * @param string type, full/display, default is full
  * @returns int bytes, images bytes
  */
-const annotate = async (jobid, filepath, type='full') => {
+const annotate = async (jobid, filepath, type = 'full') => {
     // try {
     //     fs.accessSync(filepath, fs.constants.R_OK | fs.constants.W_OK)
     // } catch (e) {
     //     return 0
     // }
 
-    const url = (type === 'full')
-                ? `${config.api.API_ANNOTATED_FULL}/${jobid}`
-                : `${config.api.API_ANNOTATED_DISPLAY}/${jobid}`
+    const url = (type === 'full') ?
+        `${config.api.API_ANNOTATED_FULL}/${jobid}` :
+        `${config.api.API_ANNOTATED_DISPLAY}/${jobid}`
 
     try {
-        await request(
-        {
+        await request({
             'url': url,
-            'config': { responseType: 'arraybuffer' },
+            'config': {
+                responseType: 'arraybuffer'
+            },
             'method': 'get',
-            'callback': image_callback.bind({ 'filepath': filepath })
+            'callback': image_callback.bind({
+                'filepath': filepath
+            })
         })
     } catch (e) {
-        log.error(e)
+        log.error(e.message || e.errormessage)
         return 0
     }
 }
@@ -327,19 +361,22 @@ const annotate = async (jobid, filepath, type='full') => {
  * @param int job_calibration_id
  * @returns void
  */
-const skyplot = async (job_calibration_id, filepath, zoom=0) => {
+const skyplot = async (job_calibration_id, filepath, zoom = 0) => {
     const url = `${config.api.API_SKY_PLOT}${zoom}/${job_calibration_id}`
 
     try {
-        await request(
-        {
+        await request({
             'url': url,
-            'config': { responseType: 'arraybuffer' },
+            'config': {
+                responseType: 'arraybuffer'
+            },
             'method': 'get',
-            'callback': image_callback.bind({ 'filepath': filepath })
+            'callback': image_callback.bind({
+                'filepath': filepath
+            })
         })
     } catch (e) {
-        log.error(e)
+        log.error(e.message || e.errormessage)
     }
 }
 
@@ -348,21 +385,32 @@ const skyplot = async (job_calibration_id, filepath, zoom=0) => {
  * @param int job_calibration_id
  * @returns void
  */
- const grid = async (job_calibration_id, filepath, type='full') => {
+const grid = async (job_calibration_id, filepath, type = 'full') => {
     const url = `${config.api.API_GRID}_${type}/${job_calibration_id}`
 
     try {
-        await request(
-        {
+        await request({
             'url': url,
-            'config': { responseType: 'arraybuffer' },
+            'config': {
+                responseType: 'arraybuffer'
+            },
             'method': 'get',
-            'callback': image_callback.bind({ 'filepath': filepath })
+            'callback': image_callback.bind({
+                'filepath': filepath
+            })
         })
     } catch (e) {
-        log.error(e)
+        log.error(e.message || e.errormessage)
     }
 }
 
 
-export { login, upload, submission, job, annotate, skyplot, grid }
+export {
+    login,
+    upload,
+    submission,
+    job,
+    annotate,
+    skyplot,
+    grid
+}

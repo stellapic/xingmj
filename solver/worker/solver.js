@@ -8,6 +8,9 @@ import Utils from '../utils.js'
 import SolverFactory from '../factory/SolverFactory.js'
 
 
+// get logger instance
+const log = Logger.getInstance('solver')
+
 /**
  * check annotated data is or not valid
  * @param object annotated
@@ -29,10 +32,14 @@ const sendErrorTask = (task, error) => {
     process.send({ 'command': config.command.TASK_EXCEPTION, 'task': task, 'error': error })
 }
 
-(async () => {
-    // get logger instance
-    const log = Logger.getInstance('solver')
+const delay_exit = (delay) => {
+    setTimeout(() => {
+        log.debug('solver process.exit')
+        process.exit()
+    }, delay)
+}
 
+(async () => {
     // message handler
     process.on('message', async (msg) => {
         log.debug(`get message from master: ${config.map[msg.command]}`)
@@ -51,10 +58,7 @@ const sendErrorTask = (task, error) => {
                 log.debug(`send task[${task.id}] exception to master`)
                 sendErrorTask(task, `image url does't exists`)
 
-                await Utils.sleep(1)
-
-                log.debug('process.exit')
-                process.exit()
+                delay_exit(3000)
 
                 return
             }
@@ -67,15 +71,12 @@ const sendErrorTask = (task, error) => {
             if (!isValidAnnotated(annotated)) {
                 log.warn(`annotation[${annotated.id}] failed`)
 
-                const error = annotated?.error ? annotated?.error: 'unknown error'
+                const error = annotated?.error ? annotated?.error : 'unknown error'
 
                 log.debug(`send error task[${task.id}] to master`)
                 sendErrorTask(task, error)
 
-                await Utils.sleep(1)
-
-                log.debug('process.exit')
-                process.exit()
+                delay_exit(3000)
 
                 return
             }
@@ -86,12 +87,12 @@ const sendErrorTask = (task, error) => {
             log.debug(`send solved task[${task.id}] to master`)
             process.send({ 'command': config.command.TASK_SOLVED, 'annotated': annotated, 'task': task })
         }
-        
+
         // do process exit
         else if (msg.command === config.command.PROCESS_EXIT) {
             log.debug(`exiting subprocess solver[${process.pid}]`)
 
-            process.exit()
+            delay_exit(3000)
         }
 
         // default

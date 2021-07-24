@@ -42,13 +42,13 @@ const images = [
     {'id': 26, 'url': 'https://bbs.imufu.cn/data/attachment/forum/202107/14/024935csvpmfzwfvpjssxh.jpg'},
 ]
 
-let i = 220
+let i = 1645
 let j = 1
 // for (let task of images) {
-while (true) {
+// while (true) {
     let random = Math.floor(Math.random() * (25 - 0 + 1) ) + 0
 
-    const task = images[random]
+    const task = images[11] // random
     
     // let t = Object.assign({}, task)
     // rpoplpush
@@ -60,7 +60,7 @@ while (true) {
 
     random = Math.floor(Math.random() * (60 - 1 + 1) ) + 1
     console.log(`sleep ${random} seconds`)
-    await setTimeout(random * 1000)
-}
+    // await setTimeout(random * 1000)
+// }
 
 pub.disconnect()

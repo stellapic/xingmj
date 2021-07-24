@@ -2,28 +2,28 @@
 
 import os from 'os'
 import log4js from 'log4js'
-// console.log(log4js)
 
 const config = {
+    debug: true,
     log: {
-        backend: 'log4js',
+        backend: 'bunyan', // log4js
         bunyan: {
             LOG_LEVEL: 'trace', // fatal/error/warn/info/debug/trace
-            LOG_SRC: false // do not set true in production env, only for debug
+            LOG_SRC: true // do not set true in production env, only for debug
         },
         log4js: {
             LOG_LEVEL: log4js.levels.ALL // OFF/FATAL/ERROR/WARN/INFO/DEBUG/TRACE/ALL
         }
     },
     process: {
-        MAX_PROCESS: os.cpus().length
+        MAX_PROCESS: 1 //os.cpus().length
     },
     UUID_NAMESPACE: 'fbd16f6f-bdb4-4312-8ffa-bb9deb0c8e7f',
     solver: 'astrometry', // astrometry | pi
     timeout: 2000, // 2s
     types: ['full', 'display'],
     api: {
-        BASE_URL: 'http://nova.astrometry.net',
+        BASE_URL: 'http://nova.astrometry.net', // 'https://78466952-9f59-40e3-bfba-51bce8af5490.mock.pstmn.io',
         API_KEY: 'hopttfyedswulqlv',
         STATUS_SUCCESS: 'success',
         STATUS_FAILURE: 'failure',
@@ -38,7 +38,7 @@ const config = {
         API_SKY_PLOT: '/sky_plot/zoom',
         API_GRID: '/grid',
         retry: {
-            RETRIES: 40,
+            RETRIES: 3,
             MIN_TIMEOUT: 10000, // 10s
             MAX_TIMEOUT: 20000 // 20s
         }
@@ -92,7 +92,23 @@ const config = {
         'TASK_COUNT',
         'GET_TASKS',
         'REDIS_ERROR'
-    ]
+    ],
+    smtp: {
+        options: {
+            host: 'smtp.qq.com',
+            port: 465,
+            auth: {
+                user: '105091016@qq.com',
+                pass: 'urrwkbqtdiugbgeh'
+            }
+        },
+        tpl: {
+            'from': '105091016@qq.com',
+            'to': '105091016@qq.com',
+            'subject': 'test',
+            'text': 'test'
+        }
+    }
 }
 
 export default config

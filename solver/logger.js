@@ -7,13 +7,13 @@ export default class Logger {
     constructor() {
         this._instance = null
 
-        // this.initBunyan()
-        this.initLog4js()
+        if (config.debug) this.initBunyan()
+        else this.initLog4js()
     }
 
     initBunyan() {
-        this.bunyan = bunyan.createLogger({
-            name: 'solver',
+        this.bunyan_master = bunyan.createLogger({
+            name: 'master',
             level: config.log.bunyan.LOG_LEVEL,    // fatal/error/warn/info/debug/trace
             src: config.log.bunyan.LOG_SRC
             // stream: <node.js stream>,           // Optional, see "Streams" section
@@ -27,6 +27,15 @@ export default class Logger {
             // }],   // Optional, see "Streams" section
             // serializers: <serializers mapping> // Optional, see "Serializers" section
         })
+        this.bunyan_redis = bunyan.createLogger({
+            name: 'redis',
+            level: config.log.bunyan.LOG_LEVEL,    // fatal/error/warn/info/debug/trace
+            src: config.log.bunyan.LOG_SRC
+        })
+        this.bunyan_solver = bunyan.createLogger({
+            name: 'solver',
+            level: config.log.bunyan.LOG_LEVEL,    // fatal/error/warn/info/debug/trace
+            src: config.log.bunyan.LOG_SRC})
     }
 
     initLog4js() {
@@ -39,7 +48,7 @@ export default class Logger {
                 'file': { 'type': 'dateFile', 'filename': 'logs/solver.log', 'layout': {
                     type: 'basic',
                     pattern: '[%d] [%p] %c/%z - %m'
-                }, daysToKeep: 7 }
+                }, daysToKeep: 31 }
             },
             categories: {
                 default: { appenders: ['console'], level: 'debug'},
