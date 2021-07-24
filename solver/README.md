@@ -33,4 +33,7 @@ yarn start
 
 ## What's the next
 1、Inform the operation and maintenance person when the fault occurs, e.g redis disconnect, anntation failed
+
 2、In solving and failed tasks, retry or ?
+
+3、astrometry 500 error

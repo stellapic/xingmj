@@ -90,6 +90,7 @@ class Photo extends BaseModel
             'graph_position' => '天球定位图',
             'thumbs_count' => '点赞数量',
             'favorites_count' => '收藏数量',
+            'comments_count' => '评论数量',
             'general_status' => '状态',
             'deleted' => 'Deleted',
             'creator' => '上传人',

@@ -25,7 +25,7 @@ class PhotoSearch extends Photo
     {
         $query = self::find();
 
-        $query->select('short_id, image, title, creator, image_info, take_date');
+        $query->select(parent::SHOW_FIELDS);
 
         // add common conditions here
         $query->andWhere(['general_status' => PhotoEnum::GENERAL_STATUS_READY]);
@@ -99,6 +99,7 @@ class PhotoSearch extends Photo
                 return $this->tags ? array_keys($this->tags) : [];
             },
             'take_date',
+            'comments_count',
         ];
     }
 

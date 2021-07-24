@@ -93,6 +93,7 @@ class PhotoController extends BaseUserController
         $comment->user_id = Yii::$app->user->id;
         $comment->content = $content;
         $comment->save();
+        $photo->updateCounters(['comments_count' => 1]);
     }
 
     public function actionUncomments()
@@ -109,6 +110,7 @@ class PhotoController extends BaseUserController
             throw new \yii\base\UserException('not comment author.');
         }
         $comment->delete();
+        $photo->updateCounters(['comments_count' => -1]);
     }
 
 
